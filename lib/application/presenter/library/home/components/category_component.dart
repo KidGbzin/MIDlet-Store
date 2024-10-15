@@ -16,7 +16,7 @@ class _Category extends StatefulWidget {
   State<_Category> createState() => _CategoryState();
 }
 
-class _CategoryState extends State<_Category> {
+class _CategoryState extends State<_Category> with AutomaticKeepAliveClientMixin {
 
   @override
   void initState() {
@@ -24,9 +24,13 @@ class _CategoryState extends State<_Category> {
     super.initState();
   }
 
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Section(
       description: widget.tag.description,
       title: widget.tag.name,
