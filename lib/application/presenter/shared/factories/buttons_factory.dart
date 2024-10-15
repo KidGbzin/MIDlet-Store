@@ -11,14 +11,20 @@ class Button extends StatelessWidget {
 
   const Button._({
     required this.child,
+    required this.rippleColor,
     required this.onTap,
   });
 
-  /// Callback function to be called when the button is tapped.
-  final void Function() onTap;
+  /// The color of the ripple effect for the [InkWell].
+  ///
+  /// If this parameter is not specified, the ripple effect color defaults to the current theme's [ThemeData.splashColor] and [ThemeData.highlightColor].
+  final Color? rippleColor;
 
   /// The widget representing the button's appearance.
   final Widget child;
+
+  /// Callback function to be called when the button is tapped.
+  final void Function() onTap;
 
   /// Creates a square [Button].
   factory Button({
@@ -26,6 +32,7 @@ class Button extends StatelessWidget {
     required void Function() onTap,
   }) {
     return Button._(
+      rippleColor: Palette.divider.color,
       onTap: onTap,
       child: _Button(
         icon: icon,
@@ -42,6 +49,7 @@ class Button extends StatelessWidget {
     bool filled = false,
   }) {
     return Button._(
+      rippleColor: filled ? Palette.primary.color.withOpacity(0.15) : null,
       onTap: onTap,
       child: _NamedButton(
         filled: filled,
@@ -54,9 +62,11 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(15),
+      highlightColor: rippleColor,
       onTap: onTap,
-      behavior: HitTestBehavior.opaque,
+      splashColor: rippleColor,
       child: child,
     );
   }

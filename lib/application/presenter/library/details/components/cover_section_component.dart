@@ -21,7 +21,6 @@ class _Cover extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
           if (snapshot.hasData) {
             return Thumbnail(
-              border: const Border(),
               borderRadius: BorderRadius.zero,
               image: FileImage(snapshot.data!),
               filterQuality: FilterQuality.none,
@@ -31,7 +30,7 @@ class _Cover extends StatelessWidget {
             if (snapshot.error is ResponseException) {
               final ResponseException exception = snapshot.error as ResponseException;
               Logger.error.print(
-                label: 'Details | Component • Previews Section',
+                label: 'Details | Component • Cover Section',
                 message: exception.message,
               );
             }

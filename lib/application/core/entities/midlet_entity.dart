@@ -4,11 +4,11 @@ class MIDlet {
   MIDlet({
     required this.brand,
     required this.file,
-    required this.isTouchscreen,
     required this.languages,
     required this.resolution,
     required this.size,
     required this.title,
+    required this.touchscreen,
     required this.version,
   });
 
@@ -17,9 +17,6 @@ class MIDlet {
 
   /// Is the name of the [MIDlet] file with the extension .JAR.
   final String file;
-
-  /// A boolean to show if the [MIDlet] supports touchscreen input.
-  final bool isTouchscreen;
 
   /// A list of all languages codes supported from the [MIDlet] file.
   final List<String> languages;
@@ -33,6 +30,9 @@ class MIDlet {
   /// Self-explanatory, just the game's title.
   final String title;
 
+  /// A boolean to show if the [MIDlet] supports touchscreen input.
+  final bool touchscreen;
+
   /// The [MIDlet] release version.
   final String version;
 
@@ -43,11 +43,11 @@ class MIDlet {
     return MIDlet(
       brand: json['brand'] as String,
       file: json['file'] as String,
-      isTouchscreen: json['isTouchscreen'] as bool,
       languages: List<String>.from(json["languages"].map((element) => element)),
       resolution: json['resolution'] as String,
       size: json['size'] as int,
       title: json['title'] as String,
+      touchscreen: json['touchscreen'] as bool,
       version: json['version'] as String,
     );
   }
@@ -59,11 +59,11 @@ class MIDlet {
     return <String, dynamic> {
       'brand': brand,
       'file': file,
-      'isTouchscreen': isTouchscreen,
       'languages': languages,
       'resolution': resolution,
       'size': size,
       'title': title,
+      'touchscreen': touchscreen,
       'version': version,
     };
   }

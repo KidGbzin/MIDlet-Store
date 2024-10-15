@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image/image.dart' as image;
 import 'package:provider/provider.dart';
 
 import '../../../core/entities/game_entity.dart';
@@ -19,8 +20,12 @@ import '../../../external/services/github_service.dart';
 import '../../../source/interfaces/bucket_interface.dart';
 import '../../../source/interfaces/database_interface.dart';
 
+import '../../shared/extensions/messenger_widget.dart';
+
 import '../../shared/factories/buttons_factory.dart';
 import '../../shared/factories/dialogs_factory.dart';
+
+import '../../shared/factories/modals/modals_factory.dart';
 import '../../shared/widgets/handler_widget.dart';
 import '../../shared/widgets/section_widget.dart';
 import '../../shared/widgets/thumbnail_widget.dart';

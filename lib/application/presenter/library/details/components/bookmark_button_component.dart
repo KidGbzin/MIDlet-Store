@@ -14,21 +14,26 @@ class _Bookmark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<bool>(
+      valueListenable: controller.isFavorite,
       builder: (BuildContext context, bool isFavorite, Widget? _) {
-        late final IconData icon;
-        if (isFavorite) {
-          icon = Icons.bookmark_rounded;
-        }
-        else {
-          icon = Icons.bookmark_border_rounded;
-        }
+        final IconData icon = isFavorite ? Icons.bookmark_rounded : Icons.bookmark_border_rounded;
+        final String title = controller.game.title.replaceAll(' - ', ': ');
+        final String message = isFavorite
+          ? '$title has been removed from the favorites.'
+          : '$title has been added to the favorites.';
+
         return Button(
           icon: icon,
-          onTap: controller.toggleBookmarkStatus,
+          onTap: () {
+            final Messenger messenger = Messenger(
+              message: message,
+            );
+            ScaffoldMessenger.of(context).showSnackBar(messenger);
+            controller.toggleBookmarkStatus();
+          },
         );
       },
-      valueListenable: controller.isFavorite,
     );
   }
 }

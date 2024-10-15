@@ -5,8 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../application/core/enumerations/palette_enumeration.dart';
 
 import '../application/presenter/library/details/details_handler.dart';
+import '../application/presenter/library/home/home_handler.dart';
 import '../application/presenter/library/launcher/launcher_handler.dart';
 import '../application/presenter/library/search/search_handler.dart';
+
+import '../application/core/enumerations/typographies_enumeration.dart';
 
 class Application extends StatelessWidget {
 
@@ -62,6 +65,12 @@ class Application extends StatelessWidget {
         },
       ),
       GoRoute(
+        path: '/home',
+        builder: (BuildContext context, GoRouterState state) {
+          return const Home();
+        },
+      ),
+      GoRoute(
         path: '/search',
         builder: (BuildContext context, GoRouterState state) {
           return const Search();
@@ -89,15 +98,33 @@ class Application extends StatelessWidget {
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: Palette.background.color,
       elevation: 0,
-      shape: const BeveledRectangleBorder(),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15),
+        ),
+      ),
       surfaceTintColor: Palette.background.color,
     ),
+    highlightColor: Palette.elements.color.withOpacity(0.10),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: <TargetPlatform, PageTransitionsBuilder> {
         TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
       },
     ),
     scaffoldBackgroundColor: Palette.background.color,
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Palette.foreground.color,
+      insetPadding: EdgeInsets.zero,
+    ),
+    splashColor: Palette.elements.color.withOpacity(0.10),
+    tabBarTheme: TabBarTheme(
+      dividerColor: Palette.divider.color,
+      dividerHeight: 1,
+      indicatorColor: Palette.primary.color,
+      labelStyle: Typographies.numbers(Palette.elements).style,
+      overlayColor: WidgetStatePropertyAll(Palette.primary.color.withOpacity(0.10)),
+      unselectedLabelStyle: Typographies.numbers(Palette.disabled).style,
+    ),
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: Palette.primary.color,
       selectionColor: Palette.primary.color.withOpacity(0.50),

@@ -10,7 +10,7 @@ class Game {
     required this.release,
     required this.tags,
     required this.title,
-    required this.vendor,
+    required this.publisher,
   });
 
   /// A brief piece of information about the game.
@@ -32,7 +32,7 @@ class Game {
   final String title;
 
   /// Is the name of the company that released the game.
-  final String vendor;
+  final String publisher;
 
   /// Convert a JSON into a [Game] object.
   /// 
@@ -45,7 +45,7 @@ class Game {
       release: object['release'] as int,
       tags: List<String>.from(object["tags"].map((element) => element)),
       title: object['title'] as String,
-      vendor: object['vendor'] as String,
+      publisher: object['vendor'] as String,
     );
   }
 
@@ -60,7 +60,7 @@ class Game {
       'release': release,
       'tags': tags,
       'title': title,
-      'vendor': vendor,
+      'vendor': publisher,
     };
   }
 }

@@ -20,13 +20,9 @@ class _GameLister extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => context.push('/details/${games[index].title}'),
-          child: _GameTile(
-            controller: controller,
-            game: games[index],
-          ),
+        return _GameTile(
+          controller: controller,
+          game: games[index],
         );
       },
       itemCount: games.length,

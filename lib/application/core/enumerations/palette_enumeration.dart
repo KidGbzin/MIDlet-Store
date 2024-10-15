@@ -14,6 +14,9 @@ enum Palette {
   /// The [Color] used for dividers and borders.
   divider(Color(0xff2a2a32)),
 
+  /// The [Color] used for disbled texts or icons.
+  disabled(Color(0xFF757575)),
+
   /// The [Color] used for UI elements such as icons and texts.
   elements(Color(0xffe4e5e9)),
 

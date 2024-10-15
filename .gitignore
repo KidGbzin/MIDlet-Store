@@ -42,3 +42,4 @@ app.*.map.json
 # Visual Studio settings related:
 .vscode/
 .VSCodeCounter
+devtools_options.yaml

@@ -42,6 +42,8 @@ class Section extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
             child: Text(
               title.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: Typographies.headline(Palette.elements).style,
             ),
           ),

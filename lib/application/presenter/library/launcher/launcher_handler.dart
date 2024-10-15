@@ -10,7 +10,6 @@ import '../../../core/enumerations/logger_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
 
 import '../../../external/interfaces/android_interface.dart';
-
 import '../../../external/services/github_service.dart';
 
 import '../../../source/interfaces/database_interface.dart';
@@ -18,7 +17,6 @@ import '../../../source/interfaces/database_interface.dart';
 import '../../shared/widgets/handler_widget.dart';
 
 part '../launcher/views/launcher_view.dart';
-
 part '../launcher/launcher_controller.dart';
 
 

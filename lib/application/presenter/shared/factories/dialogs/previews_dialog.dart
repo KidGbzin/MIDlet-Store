@@ -4,9 +4,12 @@ part of '../dialogs_factory.dart';
 class _Previews extends StatefulWidget {
 
   const _Previews({
+    required this.aspectRatio,
     required this.initialPage,
     required this.previews,
   });
+
+  final double aspectRatio;
 
   /// The initial page of the list.
   ///
@@ -44,13 +47,14 @@ class _PreviewsState extends State<_Previews> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: (MediaQuery.sizeOf(context).width - 90) / 0.75,
+      height: (MediaQuery.sizeOf(context).width - 90) / widget.aspectRatio,
       child: PageView.builder(
         controller: _pageController,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.fromLTRB(45, 0, 45, 0),
             child: Thumbnail(
+              aspectRatio: widget.aspectRatio,
               image: MemoryImage(widget.previews[index]),
               filterQuality: FilterQuality.none,
             ),

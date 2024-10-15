@@ -29,6 +29,14 @@ class Typographies {
     ));
   }
 
+  factory Typographies.numbers(Palette palette) {
+    return Typographies._internal(GoogleFonts.lekton(
+      color: palette.color,
+      fontSize: 13.5,
+      fontWeight: FontWeight.w500,
+    ));
+  }
+
   factory Typographies.headline(Palette palette) {
     return Typographies._internal(GoogleFonts.rajdhani(
       color: palette.color,

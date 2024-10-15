@@ -16,14 +16,10 @@ class _SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<_SearchBar> {
   late final FocusNode _focusNode;
-  late final TextEditingController _textController;
-
   late OverlayEntry _overlay;
 
   @override
   void initState() {
-    _textController = TextEditingController();
-  
     _focusNode = FocusNode()..addListener(() {
       if (_focusNode.hasFocus) {
         _overlay = _createOverlay();
@@ -40,7 +36,6 @@ class _SearchBarState extends State<_SearchBar> {
   @override
   void dispose() {
     _focusNode.dispose();
-    _textController.dispose();
 
     super.dispose();
   }
@@ -58,7 +53,7 @@ class _SearchBarState extends State<_SearchBar> {
         children: <Widget> [
           Expanded(
             child: TextField(
-              controller: _textController,
+              controller: widget.controller.textController,
               cursorHeight: 20,
               cursorOpacityAnimates: true,
               cursorRadius: const Radius.circular(100),

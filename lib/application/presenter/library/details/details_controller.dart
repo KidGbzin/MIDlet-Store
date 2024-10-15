@@ -51,8 +51,7 @@ class _Controller {
   ///
   /// Exceptions to be handled:
   /// - `PlatformException`: Thrown by the [Activity] service, typically when no suitable activity is available.
-  Future<void> installMIDlet() async {
-    final MIDlet midlet = game.main;
+  Future<void> installMIDlet(MIDlet midlet) async {
 
     /// Set a minimum load time for a better UX.
     List<dynamic> futures = await Future.wait([

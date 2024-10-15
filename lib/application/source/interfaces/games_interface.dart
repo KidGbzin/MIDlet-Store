@@ -16,14 +16,17 @@ abstract class IGames {
   /// Closes the connection to the games collection.
   void close();
   
-  /// Retrieves games by a category tag.
-  List<Game> fromCategory(String tag);
-
   /// Retrieves a game by its index in the collection.
   Game fromIndex(int index);
 
   /// Retrieves a game by its title.
   Game fromTitle(String title);
+
+  /// Retrieves games by its publisher.
+  List<Game> fromPublisher(String publisher);
+
+  /// Retrieves games by a category tags.
+  List<Game> fromTags(List<String> tags);
 
   /// Gets the number of games in the collection.
   int get length;

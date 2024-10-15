@@ -65,6 +65,7 @@ class Dialogs extends StatelessWidget {
 
   /// A [Dialog] that shows a scrollable list of previews.
   factory Dialogs.previews({
+    required double aspectRatio,
     required int initialPage,
     required List<Uint8List> previews,
   }) {
@@ -72,6 +73,7 @@ class Dialogs extends StatelessWidget {
       backgroundColor: Palette.transparent.color,
       width: double.infinity,
       child: _Previews(
+        aspectRatio: aspectRatio,
         initialPage: initialPage,
         previews: previews,
       ),

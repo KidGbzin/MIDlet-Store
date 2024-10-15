@@ -22,18 +22,8 @@ class Tags extends StatelessWidget {
       alignment: WrapAlignment.start,
       spacing: 5,
       runSpacing: 5,
-      children: _getTags(),
+      children: tags.map(_tag).toList(),
     );
-  }
-
-  /// Transform the [tags] list into a list of [_tag] widget. 
-  List<Widget> _getTags() {
-    final List<Widget> temporary = <Widget> [];
-    for (String index in tags) {
-      final Widget tag = _tag(index);
-      temporary.add(tag);
-    }
-    return temporary;
   }
 
   /// Build a label [Widget] using the tag name. 
@@ -41,20 +31,16 @@ class Tags extends StatelessWidget {
     return FittedBox(
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Palette.primary.color.withOpacity(0.33),
-            width: 1,
-          ),
           borderRadius: BorderRadius.circular(10),
-          color: Palette.primary.color.withOpacity(0.10),
+          color: Palette.foreground.color,
         ),
         height: 27.5,
-        padding: const EdgeInsets.fromLTRB(7.5, 0, 7.5, 1),
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 1),
         child: Align(
           alignment: Alignment.center,
           child: Text(
             tag,
-            style: Typographies.tags(Palette.accent).style,
+            style: Typographies.tags(Palette.elements).style,
           ),
         ),
       ),

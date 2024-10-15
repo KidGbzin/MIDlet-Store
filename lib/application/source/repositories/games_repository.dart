@@ -41,11 +41,23 @@ class Games implements IGames {
   }
 
   @override
-  List<Game> fromCategory(String tag) {
+  List<Game> fromPublisher(String publisher) {
     final List<Game> temporary = <Game> [];
     for (int index = 0; index < _box.length; index++) {
       final Game game = _box[index]!;
-      if (game.tags.contains(tag)) {
+      if (publisher == game.publisher) {
+        temporary.add(game);
+      }
+    }
+    return temporary;
+  }
+
+  @override
+  List<Game> fromTags(List<String> tags) {
+    final List<Game> temporary = <Game> [];
+    for (int index = 0; index < _box.length; index++) {
+      final Game game = _box[index]!;
+      if (tags.every((String tag) => game.tags.contains(tag))) {
         temporary.add(game);
       }
     }

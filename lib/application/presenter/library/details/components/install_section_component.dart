@@ -28,10 +28,13 @@ class _Install extends StatelessWidget {
             Expanded(
               child: Button.withTitle(
                 onTap: () {
-                  showDialog(
+                  showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) {
-                      return Dialogs.placeholder();
+                      return Modals.midlets(
+                        installMIDlet: controller.installMIDlet,
+                        midlets: controller.game.midlets,
+                      );
                     }
                   );
                 },
@@ -52,7 +55,7 @@ class _Install extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return Dialogs.installMIDlet(
-                        installMIDlet: controller.installMIDlet(),
+                        installMIDlet: controller.installMIDlet(controller.game.main),
                       );
                     }
                   );

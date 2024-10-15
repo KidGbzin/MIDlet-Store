@@ -6,16 +6,17 @@ import '../../../core/enumerations/palette_enumeration.dart';
 class Thumbnail extends StatelessWidget {
 
   const Thumbnail({
+    this.aspectRatio,
     this.border,
     this.borderRadius,
-    required this.image,
     this.filterQuality,
+    required this.image,
+    this.onTap,
     super.key,
   });
 
-  /// The border of the image.
-  /// 
-  /// If this parameter is not specified, a default value of [BoxBorder] is used.
+  final double? aspectRatio;
+
   final BoxBorder? border;
 
   /// The border radius of the [Container].
@@ -23,34 +24,58 @@ class Thumbnail extends StatelessWidget {
   /// If this parameter is not specified, a default value of [BorderRadius] is used.
   final BorderRadius? borderRadius;
 
-  /// The [ImageProvider] to be shown.
-  final ImageProvider<Object> image;
-
   /// The quality filter of the image.
   /// 
   /// If this parameter is not specified, defaults to [FilterQuality.none].
   final FilterQuality? filterQuality;
 
+  /// The [ImageProvider] used to display the image.
+  ///
+  /// This can be any image provider.
+  final ImageProvider<Object> image;
+
+  /// The callback function to be called when the widget is tapped.
+  final void Function()? onTap;
+
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 0.75,
-      child: Container(
-        decoration: BoxDecoration(
-          border: border ?? Border.all(
-            color: Palette.transparent.color,
-            width: 1,
-          ),
-          borderRadius: borderRadius ?? BorderRadius.circular(15),
-          boxShadow: kElevationToShadow[3],
-          color: Palette.foreground.color,
-          image: DecorationImage(
-            filterQuality: filterQuality ?? FilterQuality.high,
-            fit: BoxFit.contain,
-            image: image,
-          ),
-        ),
+    return InkWell(
+      borderRadius: borderRadius ?? BorderRadius.circular(15),
+      onTap: onTap,
+      child: AspectRatio(
+        aspectRatio: aspectRatio ?? 0.75,
+        child: _decoration(),
       ),
     );
+  }
+
+  /// Renders an image using a [BoxDecoration].
+  ///
+  /// This method serves as a workaround for an issue with [Ink] not displaying correctly in certain situations.
+  /// Specifically, the issue was observed in the [Search] view when using [Ink] within a [FutureBuilder], where the [Thumbnail] would not render properly.
+  /// 
+  /// The bug does not occur when using a [Container].
+  Widget _decoration() {
+    final BoxDecoration decoration = BoxDecoration(
+      border: border,
+      borderRadius: borderRadius ?? BorderRadius.circular(15),
+      boxShadow: kElevationToShadow[3],
+      color: Palette.foreground.color,
+      image: DecorationImage(
+        filterQuality: filterQuality ?? FilterQuality.high,
+        fit: BoxFit.contain,
+        image: image,
+      ),
+    );
+    if (onTap != null) {
+      return Ink(
+        decoration: decoration,
+      );
+    }
+    else {
+      return Container(
+        decoration: decoration,
+      );
+    }
   }
 }

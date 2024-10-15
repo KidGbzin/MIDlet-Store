@@ -19,86 +19,84 @@ class _Preview extends StatefulWidget {
 class _PreviewState extends State<_Preview> {
 
   @override
+  void initState() {
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Section(
-      description: 'The game\'s characteristics and previews may vary according to the model of your phone.',
-      title: 'Previews',
-      child: Container(
-        height: (MediaQuery.of(context).size.width - 60) / 3 / 0.75,
-        margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-        width: double.infinity,
-        child: FutureBuilder(
-          builder: (BuildContext context, AsyncSnapshot<List<Uint8List>> snapshot) {
-            if (snapshot.hasData) {
-              final List<Uint8List> previews = snapshot.data!;
-              return _previews(previews);
-            }
-            else if (snapshot.hasError) {
-              if (snapshot.error is ResponseException) {
-                final ResponseException exception = snapshot.error as ResponseException;
-                Logger.error.print(
-                  label: 'Details | Component • Previews Section',
-                  message: exception.message,
-                );
-              }
-              return Icon(
-                Icons.broken_image_rounded,
-                color: Palette.grey.color,
-              );
-            }
-            else {
-              return Icon(
-                Icons.downloading_rounded,
-                color: Palette.elements.color,
-              );
-            }
-          },
-          future: widget.controller.previews,
-        ),
-      ),
+    return FutureBuilder(
+      future: widget.controller.previews,
+      builder: (BuildContext context, AsyncSnapshot<List<Uint8List>> snapshot) {
+        if (snapshot.hasData) {
+          final List<Uint8List> previews = snapshot.data!;
+          return Section(
+            description: 'The game\'s characteristics and previews may vary according to the model of your phone.',
+            title: 'Previews',
+            child: _previews(previews),
+          );
+        }
+        else if (snapshot.hasError) {
+          return const SizedBox.shrink();
+        }
+        else {
+          return const SizedBox.shrink();
+        }
+      }
     );
   }
 
   Widget _previews(List<Uint8List> previews) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget> [
-        _dialog(
-          index: 0,
-          previews: previews,
-        ),
-        _dialog(
-          index: 1,
-          previews: previews,
-        ),
-        _dialog(
-          index: 2,
-          previews: previews,
-        ),
-      ],
+    final image.Image? frame = image.decodeImage(previews.first);
+    final double aspectRatio = frame!.width / frame.height;
+    return Container(
+      height: (MediaQuery.of(context).size.width - 60) / 3 / aspectRatio,
+      margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget> [
+          _thumbnail(
+            aspectRatio: aspectRatio,
+            index: 0,
+            previews: previews,
+          ),
+          _thumbnail(
+            aspectRatio: aspectRatio,
+            index: 1,
+            previews: previews,
+          ),
+          _thumbnail(
+            aspectRatio: aspectRatio,
+            index: 2,
+            previews: previews,
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _dialog({
+  Widget _thumbnail({
+    required double aspectRatio,
     required int index,
     required List<Uint8List> previews,
   }) {
-    return GestureDetector(
+    return Thumbnail(
+      aspectRatio: aspectRatio,
+      image: MemoryImage(previews[index]),
       onTap: () {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return Dialogs.previews(
+              aspectRatio: aspectRatio,
               initialPage: index,
               previews: previews,
             );
           },
         );
       },
-      child: Thumbnail(
-        image: MemoryImage(previews[index]),
-      ),
     );
   }
 }

@@ -24,7 +24,7 @@ class _Controller {
       await database.initialize();
 
       if (context.mounted) {
-        context.pushReplacement('/search');
+        context.pushReplacement('/home');
       }
 
       progress.value = Progress.finished;
