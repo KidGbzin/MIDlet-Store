@@ -19,12 +19,6 @@ class _Category extends StatefulWidget {
 class _CategoryState extends State<_Category> with AutomaticKeepAliveClientMixin {
 
   @override
-  void initState() {
-
-    super.initState();
-  }
-
-  @override
   bool get wantKeepAlive => true;
 
   @override
