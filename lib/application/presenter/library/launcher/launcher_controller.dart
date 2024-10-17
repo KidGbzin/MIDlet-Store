@@ -4,62 +4,80 @@ part of 'launcher_handler.dart';
 class _Controller {
 
   _Controller({
+    required this.authentication,
     required this.database,
   });
 
   /// The database service for data operations.
-  late final IDatabase database;
+  final IDatabase database;
 
-  final ValueNotifier<String> message = ValueNotifier("");
+  final IAuthentication authentication;
 
-  /// The [progress] listenable.
-  /// 
-  /// Used in the [Launcher] handler, it represents the current state of the view when initialized.
-  final ValueNotifier<Progress> progress = ValueNotifier(Progress.loading);
+  late final String message;
+  late final ValueNotifier<Progress> progress = ValueNotifier<Progress>(Progress.loading);
 
-  Future<void> initialize(BuildContext context) async {
+  Future<void> login(BuildContext context) async {
     try {
-      GoogleFonts.rajdhani();
-      await GoogleFonts.pendingFonts();
-      await database.initialize();
+      await authentication.login();
 
       if (context.mounted) {
         context.pushReplacement('/home');
       }
+    }
+    catch (_) {
+      final Messenger messenger = Messenger(
+        message: 'Oops, we couldn\'t sign you in with your Google account. Please try again.',
+      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(messenger);
+      }
+    }
+  }
 
-      progress.value = Progress.finished;
+  Future<void> initialize(BuildContext context) async {
+    final GoogleSignInAccount? account;
+
+    try {
+      GoogleFonts.rajdhani();
+      await GoogleFonts.pendingFonts();
+      await database.initialize();
+      account = await authentication.currentAccount();
+
+      if (account != null && context.mounted) {
+        context.pushReplacement('/home');
+      }
+      else {
+        progress.value = Progress.finished;
+      }
     }
     on ClientException catch (error) {
+      progress.value = Progress.error;
       Logger.error.print(
         label: 'Launcher | Controller',
         message: '$error',
       );
-      message.value = 'The server could not be reached.\nPlease check your internet connection or try again later.';
-      progress.value = Progress.error;
+      message = 'The server could not be reached.\nPlease check your internet connection or try again later.';
     }
     on ResponseException catch (error) {
+      progress.value = Progress.error;
       if (error.statusCode == HttpStatus.notFound) {
-        message.value = 'Sorry, the server is offline!\nPlease try again later.';
+        message = 'Sorry, the server is offline!\nPlease try again later.';
       }
       else {
-        message.value = 'The server returned ${error.statusCode}.\nPlease try again later.';
+        message = 'The server returned ${error.statusCode}.\nPlease try again later.';
       }
-      progress.value = Progress.error;
     }
     catch (error, stackTrace) {
+      progress.value = Progress.error;
       Logger.error.print(
         label: 'Launcher | Controller',
         message: '$error',
         stackTrace: stackTrace,
       );
-      message.value = 'Internal error!';
-      progress.value = Progress.error;
+      message = 'Internal error!';
     }
   }
 
-  /// Discards the resources used by the controller.
-  /// 
-  /// This method should be called when the controller is no longer needed to free up resources.
   void dispose() {
     progress.dispose();
   }

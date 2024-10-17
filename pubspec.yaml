@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   go_router: ^14.2.1
   google_fonts: ^6.2.1
+  google_sign_in: ^6.2.1
   hive: ^4.0.0-dev.2
   http: ^1.2.1
   image: ^4.2.0
