@@ -13,6 +13,8 @@ enum Progress {
   /// It means that the controller could not complete its task.
   error,
 
+  loginRequest,
+
   /// The state that represents everything is finished and ready to be used.
   /// 
   /// It means the the view is ready to be shown.
