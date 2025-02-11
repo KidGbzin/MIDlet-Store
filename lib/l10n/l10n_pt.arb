@@ -1,0 +1,208 @@
+{   
+    "@@author": "KidGbzin",
+    "@@locale": "pt",
+
+    "buttonPlay": "JOGAR",
+    "@buttonPlay": {},
+
+    "buttonCommingSoon": "EM BREVE",
+    "@buttonCommingSoon": {},
+
+    "buttonLoginWithGoogle": "ENTRAR COM O GOOGLE",
+    "@buttonLoginWithGoogle": {},
+
+    "buttonReadyToInstall": "PRONTO PARA A INSTALAÇÃO",
+    "@buttonReadyToInstall": {},
+
+    "buttonSubmitRating": "ENVIAR AVALIAÇÃO",
+    "@buttonSubmitRating": {},
+
+    "buttonUpdateAvailable": "ATUALIZAÇÂO DISPONÍVEL",
+    "@buttonUpdateAvailable": {},
+
+    "buttonUpdateRating": "ATUALIZAR AVALIAÇÃO",
+    "@buttonUpdateRating": {},
+
+    "label3DVersion": "Versão 3D",
+    "@label3DVersion": {},
+
+    "labelAchievements": "Conquistas",
+    "@labelAchievements": {},
+
+    "labelCensored": "Versão Censurada",
+    "@labelCensored": {},
+
+    "labelDownloads": "Downloads",
+    "@labelDownloads": {},
+
+    "labelLandscape": "Orientação Paisagem",
+    "@labelLandscape": {},
+
+    "labelMultiplayerBluetooth": "Multiplayer Bluetooth",
+    "@labelMultiplayerBluetooth": {},
+
+    "labelMultiplayerLocal": "Multiplayer Local",
+    "@labelMultiplayerLocal": {},
+
+    "labelMultiplayerOnline": "Online",
+    "@labelMultiplayerOnline": {},
+
+    "labelMultiscreen": "Multitelas",
+    "@labelMultiscreen": {},
+
+    "labelPublisher": "Publicadora",
+    "@labelPublisher": {},
+    
+    "labelRelease": "Lançamento",
+    "@labelRelease": {},
+
+    "labelSize": "Tamanho",
+    "@labelSize": {},
+
+    "labelTouchscreen": "Tela sensível ao toque",
+    "@labelTouchscreen": {},
+
+    "labelVersion": "Versão",
+    "@labelVersion": {},
+
+    "launcherErrorMessage01": "Ocorreu um erro, impedindo a inicialização do aplicativo.",
+    "@launcherErrorMessage01": {},
+
+    "launcherErrorMessage02": "Falha na conexão com o servidor, tente novamente mais tarde.",
+    "@launcherErrorMessage02": {},
+
+    "launcherLoadingMessage01": "Conectando ao banco de dados, aguarde...",
+    "@launcherLoadingMessage01": {},
+
+    "launcherLoadingMessage02": "Baixando arquivos necessários, aguarde...",
+    "@launcherLoadingMessage02": {},
+
+    "launcherLoadingMessage03": "Autenticando com o Supabase, aguarde...",
+    "@launcherLoadingMessage03": {},
+
+    "launcherLoadingMessage04": "Autenticando com o Google, aguarde...",
+    "@launcherLoadingMessage04": {},
+
+    "sectionAbout": "SOBRE",
+    "@sectionAbout": {},
+
+    "sectionCategoryFilters": "CATEGORIAS",
+    "@sectionCategoryFilters": {},
+
+    "sectionCategoryFiltersDescription": "Refine sua busca selecionando entre diversas categorias.",
+    "@sectionCategoryFiltersDescription": {},
+
+    "sectionEmulatorNotFound": "ALGO DEU ERRADO",
+    "@sectionEmulatorNotFound": {},
+
+    "sectionEmulatorNotFoundDescription": "Nenhum emulador disponível foi encontrado no seu dispositivo. Certifique-se de que há um emulador instalado.",
+    "@sectionEmulatorNotFoundDescription": {},
+
+    "sectionEmulatorNotFoundText01": "Você também pode instalar o emulador J2ME Loader em uma das opções abaixo.",
+    "@sectionEmulatorNotFoundText01": {},
+
+    "sectionEmulatorNotFoundText02": "Quando houver um emulador instalado, ele será iniciado automaticamente da próxima vez.",
+    "@sectionEmulatorNotFoundText02": {},
+
+    "sectionInstallation": "INSTALAÇÂO",
+    "@sectionInstallation": {},
+
+    "sectionInstallationDescription": "Ao clicar em \"Jogar\", o menu de instalação de MIDlets será aberto, exibindo informações relevantes sobre a versão do jogo que será instalada no seu emulador. O emulador será iniciado automaticamente após a instalação.\n\nEm breve, várias versões de um mesmo jogo estarão disponíveis para seleção.",
+    "@sectionInstallationDescription": {},
+
+    "sectionPreviews": "PRÉVIAS",
+    "@sectionPreviews": {},
+
+    "sectionPreviewsDescription": "As características e prévias do jogo podem variar conforme o modelo do seu telefone.",
+    "@sectionPreviewsDescription": {},
+
+    "sectionPreviewsError": "Este jogo não possui prévias disponíveis.",
+    "@sectionPreviewsError": {},
+
+    "sectionPublisherFilters": "PUBLICADORAS",
+    "@sectionPublisherFilters": {},
+
+    "sectionPublisherFiltersDescription": "Descubra jogos filtrando por diferentes publicadoras.",
+    "@sectionPublisherFiltersDescription": {},
+
+    "sectionPublisherDescription": "Descubra mais jogos da _ que você pode gostar.",
+    "@sectionPublisherDescription": {},
+
+    "sectionReadyToInstall": "PRONTO PARA INSTALAR",
+    "@sectionReadyToInstall": {},
+
+    "sectionReadyToInstallDescription": "O jogo foi baixado e está pronto para ser instalado no emulador.",
+    "@sectionReadyToInstallDescription": {},
+
+    "sectionRelatedGames": "RECOMENDADO PARA VOCÊ",
+    "@sectionRelatedGames": {},
+
+    "sectionRelatedGamesDescription": "Se você gostou de _, pode gostar também destes outros jogos.",
+    "@sectionRelatedGamesDescription": {},
+
+    "sectionUserRating": "SUA AVALIAÇÃO",
+    "@sectionUserRating": {},
+
+    "sectionUserRatingDescriptionRated": "Você ainda não avaliou este jogo. Compartilhe sua opinião dando uma nota!",
+    "@sectionUserRatingDescriptionRated": {},
+
+    "sectionUserRatingDescriptionNotRated": "Parece que você já avaliou este jogo. Deseja atualizar sua avaliação?",
+    "@sectionUserRatingDescriptionNotRated": {},
+
+    "tag3D": "3D",
+    "@tag3D": {},
+
+    "tagAction": "Ação",
+    "@tagAction": {},
+
+    "tagAdventure": "Aventura",
+    "@tagAdventure": {},
+
+    "tagCasual": "Casual",
+    "@tagCasual": {},
+
+    "tagFighting": "Luta",
+    "@tagFighting": {},
+
+    "tagFootball": "Futebol",
+    "@tagFootball": {},
+
+    "tagHackAndSlash": "Hack 'n' Slash",
+    "@tagHackAndSlash": {},
+
+    "tagMetroidvania": "Metroidvania",
+    "@tagMetroidvania": {},
+
+    "tagOpenWorld": "Mundo Aberto",
+    "@tagOpenWorld": {},
+
+    "tagPlatformer": "Plataforma",
+    "@tagPlatformer": {},
+
+    "tagPointAndClick": "Point 'n' Click",
+    "@tagPointAndClick": {},
+
+    "tagPuzzle": "Quebra-Cabeça",
+    "@tagPuzzle": {},
+
+    "tagRacing": "Corrida",
+    "@tagRacing": {},
+
+    "tagShooter": "Tiro",
+    "@tagShooter": {},
+
+    "tagSports": "Esportes",
+    "@tagSports": {},
+
+    "tagStealth": "Furtividade",
+    "@tagStealth": {},
+
+    "tagSurvivalHorror": "Survival Horror",
+    "@tagSurvivalHorror": {},
+
+    "tagTerror": "Terror",
+    "@tagTerror": {},
+
+    "tagTowerDefense": "Tower Defense",
+    "@tagTowerDefense": {}
+}
