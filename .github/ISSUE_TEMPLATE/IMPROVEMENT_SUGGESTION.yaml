@@ -1,0 +1,34 @@
+name: Improvement Suggestion
+description: Suggest ways to improve the user experience or functionality of the project.
+title: 🚸 Hey, this feature could be better.
+labels: ["🚸 User Experience"]
+assignees:
+  - KidGbzin
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to submit an improvement suggestion. We truly value your feedback and will work hard to enhance the project. ❤️
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before submitting, please confirm the following to ensure your suggestion is relevant and up-to-date.
+      options:
+        - label: "I am using the latest version of the project."
+          required: true
+        - label: "I have searched the issue tracker and this improvement has not been suggested yet."
+          required: true
+
+  - type: textarea
+    id: improvement-description
+    attributes:
+      label: What improvement would you like to see?
+      description: |
+        Please provide a clear and detailed explanation of the improvement you're suggesting:
+        - How would you improve the feature or experience?
+        - Why do you believe this improvement would benefit users or the project?
+        - What specific changes or additions would you recommend?
+      placeholder: "Describe your improvement suggestion here."
+    validations:
+      required: true
