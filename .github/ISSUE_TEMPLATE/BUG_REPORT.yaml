@@ -1,0 +1,45 @@
+name: Bug Report
+description: Report an issue or unexpected behavior in the project.
+title: 🐞 Hey, I found a bug.
+labels: ["🐞 Bug"]
+assignees:
+  - KidGbzin
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report this issue. We'll work on fixing it as soon as possible. ❤️
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before submitting, please confirm the following to ensure your report is relevant and up-to-date.
+      options:
+        - label: "I am using the latest version of the project."
+          required: true
+        - label: "I have searched the issue tracker and this bug has not been reported yet."
+          required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What went wrong?
+      description: |
+        Provide a clear and detailed explanation of the issue.
+        - What were you trying to do?
+        - What actually happened?
+        - What did you expect to happen instead?
+      placeholder: Describe the problem here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Any images or videos to help us solve the problem?"
+      description: |
+        If possible, please provide screenshots or videos that can help us identify the issue:
+        - Error messages;
+        - Broken views or UI elements;
+        - Any other visuals that may assist in tracking the problem.
+      placeholder: Drag and drop images or videos here, or paste them directly.
