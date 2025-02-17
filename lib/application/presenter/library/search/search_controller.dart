@@ -55,9 +55,13 @@ class _Controller {
     try {
       _allGames = List.unmodifiable(hive.games.all());
 
-      if (publisherState.value != null) currentlyActiveGameList = ValueNotifier(_allGames.where((game) => game.publisher == publisherState.value).toList());
-
-      currentlyActiveGameList = ValueNotifier(_allGames);
+      if (publisherState.value == null) {
+        currentlyActiveGameList = ValueNotifier(_allGames);
+      }
+      else {
+        currentlyActiveGameList = ValueNotifier(_allGames.where((game) => game.publisher == publisherState.value).toList());
+      }
+      
       gemeSuggestionsList = ValueNotifier(hive.recentGames.all());
     }
     catch (error, stackTrace) {
