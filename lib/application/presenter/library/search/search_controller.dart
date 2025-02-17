@@ -213,8 +213,21 @@ class _Controller {
   
   // BUCKET 🧩: ================================================================================================================================================================= //
 
-  /// Get a [Future] reference of a thumbnail from the [bucket].
-  /// 
-  /// This reference should be used on a [FutureBuilder].
-  Future<File> getCover(String title) => bucket.cover(title);
+  /// Retrieves a [Future] that resolves to a thumbnail [File] for a given game title.
+  ///
+  /// This method fetches the cover image file from the bucket storage using the provided [title].
+  Future<File?> getCover(String title) {
+    try {
+      return bucket.cover(title);
+    }
+    catch (error, stackTrace) {
+      Logger.error.print(
+        message: "$error",
+        label: "Search Controller | Cover",
+        stackTrace: stackTrace,
+      );
+
+      return Future.value(null);
+    }
+  }
 }
