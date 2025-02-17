@@ -199,9 +199,15 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
     return ValueListenableBuilder(
       valueListenable: widget.controller.starsCount,
       builder: (BuildContext context, Map<String, int> starsCount, Widget? _) {
+        final int totalRatings = (starsCount["5"]! + starsCount["4"]! + starsCount["3"]! + starsCount["2"]! + starsCount["1"]!);
+        
         return Column(
           children: <Widget> [
-            for (int index = 5; index >= 1; index --) _buildStarTileBar(index, starsCount["$index"]!),
+            for (int index = 5; index >= 1; index --) _buildStarTileBar(
+              stars: index,
+              starRatingCount: starsCount["$index"]!,
+              totalRatingsCount: totalRatings,
+            ),
           ],
         );
       },
@@ -210,12 +216,14 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
 
   /// Builds a single rating bar for the given star value.
   ///
-  /// The [stars] value represents the star rating (1-5), and [count] is the number of votes for that rating.
+  /// The [stars] value represents the star rating (1-5), and [starRatingCount] is the number of votes for that rating.
   /// The bar width represents the percentage of votes for that rating.
-  Widget _buildStarTileBar(int stars, int count) {
-    final double percentage = widget.controller.totalRatings.value > 0
-      ? count / widget.controller.totalRatings.value
-      : 0;
+  Widget _buildStarTileBar({
+    required int stars,
+    required int starRatingCount,
+    required int totalRatingsCount,
+  }) {
+    final double percentage = starRatingCount / totalRatingsCount;
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -231,7 +239,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
                 child: Stack(
                   children: <Widget> [
                     _buildBackgroundStarTile(),
-                    _buildForegroundStarTile(constraints.maxWidth, percentage),
+                    _buildForegroundStarTile(percentage),
                   ],
                 ),
               ),
@@ -258,22 +266,26 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
   /// Builds the foreground of the rating bar showing the percentage.
   ///
   /// The width of the foreground bar is calculated based on the percentage of ratings for the corresponding star value.
-  Widget _buildForegroundStarTile(double maxWidth, double percentage) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        height: 10,
-        width: maxWidth * percentage,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          gradient: LinearGradient(
-            colors: <Color>[
-              ColorEnumeration.primary.value,
-              ColorEnumeration.accent.value,
-            ],
+  Widget _buildForegroundStarTile(double percentage) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+            height: 10,
+            width: constraints.maxWidth * percentage,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              gradient: LinearGradient(
+                colors: <Color> [
+                  ColorEnumeration.primary.value,
+                  ColorEnumeration.accent.value,
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 }
