@@ -109,7 +109,10 @@ class _ApplicationState extends State<Application> {
       GoRoute(
         path: '/search',
         builder: (BuildContext context, GoRouterState state) {
-          return const Search();
+          final String? publisher = state.extra as String?;
+          return Search(
+            publisher: publisher,
+          );
         },
       ),
     ],

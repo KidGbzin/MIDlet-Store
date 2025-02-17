@@ -42,14 +42,20 @@ class _Controller {
   ///
   /// This notifier is used to track and update the list of games that should be shown in the UI.
   /// It can be modified when applying filters or updating the list of games, and any changes will automatically trigger UI updates.
-  late final ValueNotifier<List<Game>> currentlyActiveGameList;
+  late ValueNotifier<List<Game>> currentlyActiveGameList;
 
   /// Initializes the controller and loads the necessary data for games and suggestions.
   ///
   /// This method sets up the controller by loading all games from the database and initializes the notifiers for the game list and recent suggestions.
-  Future<void> initialize() async {
+  Future<void> initialize({
+    required String? publisher,
+  }) async {
+    publisherState = ValueNotifier(publisher);
+
     try {
       _allGames = List.unmodifiable(hive.games.all());
+
+      if (publisherState.value != null) currentlyActiveGameList = ValueNotifier(_allGames.where((game) => game.publisher == publisherState.value).toList());
 
       currentlyActiveGameList = ValueNotifier(_allGames);
       gemeSuggestionsList = ValueNotifier(hive.recentGames.all());
@@ -82,7 +88,7 @@ class _Controller {
   /// This [ValueNotifier] holds the selected publisher filter.
   /// It is updated when a user selects a specific publisher to filter the list of games.
   /// If no publisher filter is applied, its value will be `null`.
-  final ValueNotifier<String?> publisherState = ValueNotifier(null);
+  late final ValueNotifier<String?> publisherState;
 
   /// The current tags applied to the filter.
   ///
