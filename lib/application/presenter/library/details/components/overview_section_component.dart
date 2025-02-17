@@ -79,42 +79,52 @@ class _OverviewSectionState extends State<_OverviewSection> {
   /// Displays the publisher information for the game.
   ///
   /// This section includes the publisher's logo (as an asset) and the publisher's name.
+  /// When tapped, it navigates to the search page with the publisher's name as a search query.
   Widget _buildPublisherLabel() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget> [
-        Expanded(
-          child: Image.asset(
-            'assets/publishers/${widget.controller.game.publisher}.png',
-            errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-              Logger.error.print(
-                label: 'Details | Overview\'s Publisher Image',
-                message: '$error',
-                stackTrace: stackTrace,
-              );
-              return Icon(
-                Icons.broken_image_rounded,
-                color: ColorEnumeration.grey.value,
-              );
-            },
-          ),
-        ),
-        Container(
-          height: 38,
-          margin: const EdgeInsets.fromLTRB(0, 7.5, 0, 0),
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              widget.controller.game.publisher,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+    return InkWell(
+      borderRadius: kBorderRadius,
+      onTap: () {
+        context.push(
+          '/search',
+          extra: widget.controller.game.publisher,
+        );
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 7.5,
+        children: <Widget> [
+          Expanded(
+            child: Image.asset(
+              'assets/publishers/${widget.controller.game.publisher}.png',
+              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                Logger.error.print(
+                  label: 'Details | Overview\'s Publisher Image',
+                  message: '$error',
+                  stackTrace: stackTrace,
+                );
+                return Icon(
+                  Icons.broken_image_rounded,
+                  color: ColorEnumeration.grey.value,
+                );
+              },
             ),
           ),
-        ),
-      ],
+          Ink(
+            height: 38,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                widget.controller.game.publisher,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

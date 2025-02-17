@@ -91,21 +91,26 @@ class _ListTileState extends State<_ListTile> {
         extra: widget.game,
       ),
       child: FutureBuilder(
-        future: widget.controller.getGameData(widget.game),
-        builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        future: Future.wait([
+          widget.controller.getCover(widget.game.title),
+          widget.controller.getGameData(widget.game),
+        ]),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           double averageRating = 0.0;
+          File? cover;
           int downloads = 0;
 
           if (snapshot.hasData) {
-            averageRating = snapshot.data!["Average-Rating"];
-            downloads = snapshot.data!["Downloads"];
+            averageRating = snapshot.data![1]["Average-Rating"];
+            cover = snapshot.data![0];
+            downloads = snapshot.data![1]["Downloads"];
           }
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget> [
               Padding(
-                padding: const EdgeInsets.fromLTRB(15 - 1, 25, 15, 0), // The headline font is a pixel off.
+                padding: const EdgeInsets.fromLTRB(15, 25, 15, 0), // The headline font is a pixel off.
                 child: Text(
                   widget.game.title.replaceFirst(' -', ':').toUpperCase(),
                   maxLines: 1,
@@ -126,7 +131,7 @@ class _ListTileState extends State<_ListTile> {
                   spacing: 15,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget> [
-                    _buildLeadingInformation(averageRating),
+                    _buildLeadingInformation(cover, averageRating),
                     Expanded(
                       child: _buildGameDetails(downloads),
                     ),
@@ -149,14 +154,31 @@ class _ListTileState extends State<_ListTile> {
     );
   }
 
-  /// Builds a thumbnail widget displaying the cover image of the given game.  
+  /// Builds a leading information section for the given game.  
+  ///
+  /// This widget presents two key pieces of information about the game:
+  /// - **Cover**: The cover image of the game, or a fallback icon if the image is unavailable.
+  /// - **Average Rating**: The average rating of the game, represented as a row of stars.
   ///
   /// This widget asynchronously loads and displays the game's cover image.  
   /// If the image is successfully retrieved, it is shown inside a [ThumbnailWidget] widget.  
   /// If an error occurs or the image is unavailable, a fallback icon is displayed.
-  ///
-  /// Additionally, the game's average rating is fetched asynchronously and displayed using the [RatingStarsWidget] widget.
-  Widget _buildLeadingInformation(double averageRating) {
+  Widget _buildLeadingInformation(File? cover, double averageRating) {
+    late final Widget thumbnail;
+
+    if (cover != null) {
+      thumbnail = ThumbnailWidget(
+        image: FileImage(cover),
+      );
+    }
+
+    else {
+      thumbnail = HugeIcon(
+        icon: HugeIcons.strokeRoundedImage01,
+        color: ColorEnumeration.grey.value,
+        size: 18,
+      );
+    }
     return Column(
       spacing: 7.5,
       children: <Widget> [
@@ -164,38 +186,7 @@ class _ListTileState extends State<_ListTile> {
           height: 142.5,
           child: AspectRatio(
             aspectRatio: 0.75,
-            child: FutureBuilder<File>(
-              future: widget.controller.getCover(widget.game.title),
-              builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
-                late final Widget child;
-                
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    child = ThumbnailWidget(
-                      image: FileImage(snapshot.data!),
-                    );
-                  }
-                  else if (snapshot.hasError) {
-                    Logger.error.print(
-                      label: 'Search | Game Tile\'s Cover',
-                      message: '${snapshot.error}',
-                      stackTrace: snapshot.stackTrace,
-                    );
-                    child = HugeIcon(
-                      icon: HugeIcons.strokeRoundedSettingError03,
-                      color: ColorEnumeration.grey.value,
-                    );
-                  }
-                }
-                else {
-                  child = LoadingWidget();
-                }
-                return AnimatedSwitcher(
-                  duration: Durations.extralong4,
-                  child: child,
-                );
-              },
-            ),
+            child: thumbnail,
           ),
         ),
         RatingStarsWidget(
