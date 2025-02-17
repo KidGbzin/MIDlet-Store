@@ -41,7 +41,12 @@ part '../search/search_controller.dart';
 /// It integrates with external services for data retrieval and caching.
 class Search extends StatefulWidget {
 
-  const Search({super.key});
+  const Search({
+    this.publisher,
+    super.key,
+  });
+
+  final String? publisher;
 
   @override
   State<Search> createState() => _SearchViewState();
@@ -68,11 +73,15 @@ class _SearchViewState extends State<Search> {
       context,
       listen: false,
     );
+
     controller = _Controller(
       bucket: bucket,
       database: database,
       hive: hive,
-    )..initialize();
+    );
+    controller.initialize(
+      publisher: widget.publisher,
+    );
   
     super.initState();
   }

@@ -12,10 +12,12 @@ import 'package:image/image.dart' as image;
 
 import 'package:provider/provider.dart';
 
+import '../../../../globals.dart';
+
 import '../../../core/entities/game_data_entity.dart';
 import '../../../core/entities/game_entity.dart';
-
 import '../../../core/entities/midlet_entity.dart';
+
 import '../../../core/enumerations/logger_enumeration.dart';
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
@@ -26,6 +28,7 @@ import '../../../repositories/hive_repository.dart';
 import '../../../repositories/database_repository.dart';
 
 import '../../../services/activity_service.dart';
+
 import '../../widgets/button_widget.dart';
 import '../../widgets/dialog_widget.dart';
 import '../../widgets/loading_widget.dart';
