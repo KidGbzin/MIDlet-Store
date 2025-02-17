@@ -42,16 +42,26 @@ class _Controller {
   ///
   /// This notifier is used to track and update the list of games that should be shown in the UI.
   /// It can be modified when applying filters or updating the list of games, and any changes will automatically trigger UI updates.
-  late final ValueNotifier<List<Game>> currentlyActiveGameList;
+  late ValueNotifier<List<Game>> currentlyActiveGameList;
 
   /// Initializes the controller and loads the necessary data for games and suggestions.
   ///
   /// This method sets up the controller by loading all games from the database and initializes the notifiers for the game list and recent suggestions.
-  Future<void> initialize() async {
+  Future<void> initialize({
+    required String? publisher,
+  }) async {
+    publisherState = ValueNotifier(publisher);
+
     try {
       _allGames = List.unmodifiable(hive.games.all());
 
-      currentlyActiveGameList = ValueNotifier(_allGames);
+      if (publisherState.value == null) {
+        currentlyActiveGameList = ValueNotifier(_allGames);
+      }
+      else {
+        currentlyActiveGameList = ValueNotifier(_allGames.where((game) => game.publisher == publisherState.value).toList());
+      }
+      
       gemeSuggestionsList = ValueNotifier(hive.recentGames.all());
     }
     catch (error, stackTrace) {
@@ -82,7 +92,7 @@ class _Controller {
   /// This [ValueNotifier] holds the selected publisher filter.
   /// It is updated when a user selects a specific publisher to filter the list of games.
   /// If no publisher filter is applied, its value will be `null`.
-  final ValueNotifier<String?> publisherState = ValueNotifier(null);
+  late final ValueNotifier<String?> publisherState;
 
   /// The current tags applied to the filter.
   ///
@@ -213,8 +223,21 @@ class _Controller {
   
   // BUCKET 🧩: ================================================================================================================================================================= //
 
-  /// Get a [Future] reference of a thumbnail from the [bucket].
-  /// 
-  /// This reference should be used on a [FutureBuilder].
-  Future<File> getCover(String title) => bucket.cover(title);
+  /// Retrieves a [Future] that resolves to a thumbnail [File] for a given game title.
+  ///
+  /// This method fetches the cover image file from the bucket storage using the provided [title].
+  Future<File?> getCover(String title) {
+    try {
+      return bucket.cover(title);
+    }
+    catch (error, stackTrace) {
+      Logger.error.print(
+        message: "$error",
+        label: "Search Controller | Cover",
+        stackTrace: stackTrace,
+      );
+
+      return Future.value(null);
+    }
+  }
 }

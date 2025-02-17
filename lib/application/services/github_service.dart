@@ -42,7 +42,7 @@ class GitHubService {
   /// - `ClientException`: Thrown by the [`http`](https://pub.dev/packages/http) package, usually when there is no connection available.
   Future<Uint8List?> get(String source) async {
     http.Response response = await client.get(
-      Uri.parse('https://raw.githubusercontent.com/KidGbzin/J2ME/bucket/files/$source'),
+      Uri.parse('https://raw.githubusercontent.com/KidGbzin/MIDlet-Store-Bucket/master/files/$source'),
       headers: _headers,
     );
     if (response.statusCode == HttpStatus.ok) {
@@ -101,7 +101,7 @@ class GitHubService {
   /// - `ClientException`: Thrown by the [`http`](https://pub.dev/packages/http) package, usually when there is no connection available.
   Future<DateTime?> getLastUpdatedDate() async {
     http.Response response = await client.get(
-      Uri.parse("https://api.github.com/repos/KidGbzin/J2ME/contents/files/DATABASE.json"),
+      Uri.parse("https://api.github.com/repos/KidGbzin/MIDlet-Store-Bucket/contents/files/DATABASE.json"),
       headers: _headers,
     );
 

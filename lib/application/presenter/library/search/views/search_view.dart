@@ -38,9 +38,8 @@ class __SearchState extends State<_SearchView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: <Widget> [
-            ButtonWidget.icon(
-              icon: HugeIcons.strokeRoundedArrowLeft01,
-              onTap: context.pop,
+            SizedBox.square(
+              dimension: 40,
             ),
             Expanded(
               child: Padding(
