@@ -5,9 +5,6 @@ import 'package:flutter_gen/gen_l10n/l10n_localizations.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../globals.dart';
-
-import '../../../core/enumerations/l10n_enumeration.dart';
 import '../../../core/enumerations/logger_enumeration.dart';
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
@@ -23,7 +20,6 @@ import '../../../repositories/hive_repository.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/loading_widget.dart';
 
-part '../launcher/components/locale_section_component.dart';
 part '../launcher/components/login_section_component.dart';
 
 part '../launcher/views/launcher_view.dart';
