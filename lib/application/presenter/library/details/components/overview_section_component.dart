@@ -44,7 +44,7 @@ class _OverviewSectionState extends State<_OverviewSection> {
           ),
           Expanded(
             child: ValueListenableBuilder(
-              valueListenable: widget.controller.averageRating,
+              valueListenable: widget.controller.averageRatingState,
               builder: (BuildContext context, double averageRating, Widget? _) {
                 return _buildRatingLabel(averageRating);
               },
