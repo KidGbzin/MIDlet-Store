@@ -129,11 +129,6 @@ class BoxSettings implements IBox {
   /// Preventing unintended modifications or access outside its intended scope.
   final Box<dynamic> _box;
 
-  /// The key for storing and retrieving the locale setting.
-  /// 
-  /// This key corresponds to the current user's locale, used for language and region preferences.
-  final String _locale = "LOCALE";
-
   /// The key for storing and retrieving the last updated timestamp.
   ///
   /// This key holds the timestamp indicating the last time the settings were updated.
@@ -145,11 +140,6 @@ class BoxSettings implements IBox {
   @override
   void close() => _box.close();
 
-  /// Retrieves the stored locale setting, which represents the user's preferred language/region.
-  /// 
-  /// Returns `null` if the locale setting does not exist in storage.
-  String? get locale => _box.get(_locale);
-
   /// Retrieves the stored last updated timestamp as a [DateTime] object.
   /// 
   /// The timestamp represents the last time the settings were updated. If the timestamp cannot be parsed, it returns `null`.
@@ -158,11 +148,6 @@ class BoxSettings implements IBox {
     return DateTime.tryParse(dateTime ?? "");
   }
 
-  /// Stores or updates the user's locale setting.
-  /// 
-  /// This function allows the user to set or change the locale for language/region preferences in the application.
-  void setLocale(String code) => _box.put(_locale, code);
-
   /// Stores or updates the last updated timestamp in storage.
   /// 
   /// This function records the timestamp indicating when the settings were last updated.
@@ -170,7 +155,7 @@ class BoxSettings implements IBox {
   void setLastUpdated(String lastUpdated) => _box.put(_lastUpdated, lastUpdated);
 }
 
-// CACHED REQUESTS BOX 🧩:======================================================================================================================================================= //
+// CACHED REQUESTS BOX 🧩: ====================================================================================================================================================== //
 
 /// A storage box for caching game request data retrieved from Supabase.
 ///

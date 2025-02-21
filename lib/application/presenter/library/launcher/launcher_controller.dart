@@ -48,15 +48,10 @@ class _Controller {
     try {
       await hive.initialize();
 
-      final String? userLocale = hive.settings.locale;
-
       final bool isOutdated = await gitHub.isVersionOutdated();
 
       if (isOutdated) {
         progressState.value = ProgressEnumeration.isOutdated;
-      }
-      else if (userLocale == null) {
-        progressState.value = ProgressEnumeration.localeRequest;
       }
       else {
         await fetchAndAutheticateUser();
@@ -77,9 +72,6 @@ class _Controller {
   ///
   /// This function is used to open the GitHub releases page for the MIDlet Store.
   Future<void> goToReleases() async => await activityService.openMidletStoreReleases();
-
-  /// Sets the application's locale and persists the selection in Hive.
-  void setLocale(Locale locale) => hive.settings.setLocale(locale.countryCode!); 
 
   /// Handles the authentication flow by attempting silent Google sign-in and logging the user into Supabase.
   ///
