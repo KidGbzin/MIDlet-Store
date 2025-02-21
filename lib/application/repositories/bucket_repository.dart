@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:archive/archive.dart';
 
 import '../core/entities/midlet_entity.dart';
+
 import '../services/android_service.dart';
 import '../services/github_service.dart';
 
@@ -21,6 +22,36 @@ class BucketRepository {
 
   /// The service responsible for interacting with the GitHub API.
   final GitHubService gitHub;
+
+  /// Retrieves the audio theme for a game identified by the [title].
+  /// 
+  /// This method first checks if the audio theme file already exists locally in the `Audios` directory.
+  /// If the file is found, it returns it directly.
+  /// If not, it fetches the audio theme from the GitHub repository and caches it locally in the `Audios` folder for future use.
+  ///
+  /// Throws:
+  /// - `Exception`: If the audio theme cannot be retrieved either locally or from GitHub.
+  Future<File> audio(String title) async {
+    const String folder = 'Audios';
+    final String document = '$title.rtx';
+    File file = await android.read(
+      folder: folder,
+      document: document,
+    );
+    final bool exists = await file.exists();
+    if (!exists) {
+      final Uint8List? bytes = await gitHub.get('$folder/$document');
+
+      if (bytes == null) throw Exception("Unable to retrieve the \"$title\" audio theme.");
+
+      file = await android.write(
+        bytes: bytes,
+        document: document,
+        folder: folder,
+      );
+    }
+    return file;
+  }
 
   /// Retrieves the cover image for a game identified by the [title].
   /// 

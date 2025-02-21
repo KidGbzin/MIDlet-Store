@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   archive: ^4.0.2
+  audioplayers: ^6.2.0
   cupertino_icons: ^1.0.8
   equatable: ^2.0.7
   flutter:
