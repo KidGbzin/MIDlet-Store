@@ -50,8 +50,8 @@ class _PublisherModalState extends State<_PublisherModal> {
         ),
       ],
       child: Section(
-        description: AppLocalizations.of(context)!.sectionPublisherFiltersDescription,
-        title: AppLocalizations.of(context)!.sectionPublisherFilters,
+        description: AppLocalizations.of(context)!.sectionFilterPublisherDescription,
+        title: AppLocalizations.of(context)!.sectionFilterPublisher,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
           child: GridView(

@@ -23,6 +23,15 @@
     "buttonUpdateRating": "UPDATE RATING",
     "@buttonUpdateRating": {},
 
+    "chipFilterByCategories": "Categories",
+    "@chipFilterByCategories": {},
+
+    "chipFilterByPublisher": "Publisher",
+    "@chipFilterByPublisher": {},
+
+    "chipFilterByReleaseYear": "Release Year",
+    "@chipFilterByReleaseYear": {},
+
     "label3DVersion": "3D Version",
     "@label3DVersion": {},
 
@@ -86,12 +95,6 @@
     "sectionAbout": "ABOUT",
     "@sectionAbout": {},
 
-    "sectionCategoryFilters": "CATEGORIES",
-    "@sectionCategoryFilters": {},
-
-    "sectionCategoryFiltersDescription": "Refine your search by selecting from various category tags.",
-    "@sectionCategoryFiltersDescription": {},
-
     "sectionInstallation": "INSTALLATION",
     "@sectionInstallation": {},
 
@@ -110,6 +113,24 @@
     "sectionEmulatorNotFoundText02": "When there is an emulator installed, it will start automatically next time.",
     "@sectionEmulatorNotFoundText02": {},
 
+    "sectionFilterCategories": "FILTER BY CATEGORIES",
+    "@sectionFilterCategories": {},
+
+    "sectionFilterCategoriesDescription": "Refine your search by selecting from various category tags.",
+    "@sectionFilterCategoriesDescription": {},
+
+    "sectionFilterPublisher": "FILTER BY PUBLISHER",
+    "@sectionFilterPublisher": {},
+
+    "sectionFilterPublisherDescription": "Filter your search by selecting a specific publisher.",
+    "@sectionFilterPublisherDescription": {},
+
+    "sectionFilterReleaseYear": "FILTER BY RELEASE YEAR",
+    "@sectionFilterReleaseYear": {},
+
+    "sectionFilterReleaseYearDescription": "Filter your search by selecting a specific release year.",
+    "@sectionFilterReleaseYearDescription": {},
+
     "sectionPreviews": "PREVIEWS",
     "@sectionPreviews": {},
 
@@ -118,12 +139,6 @@
 
     "sectionPreviewsError": "This game doesn't have any previews available.",
     "@sectionPreviewsError": {},
-
-    "sectionPublisherFilters": "PUBLISHERS",
-    "@sectionPublisherFilters": {},
-
-    "sectionPublisherFiltersDescription": "Discover games by filtering through different publishers.",
-    "@sectionPublisherFiltersDescription": {},
 
     "sectionPublisherDescription": "Discover more games from _ that you might enjoy.",
     "@sectionPublisherDescription": {},

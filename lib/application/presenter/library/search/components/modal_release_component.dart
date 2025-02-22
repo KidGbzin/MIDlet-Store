@@ -1,14 +1,12 @@
 part of '../search_handler.dart';
 
-/// A modal widget that displays a list of categories to filter by.
+/// A modal widget that displays a list of years to filter by.
 ///
-/// This widget is composed of a list of tiles, each representing a category.
-/// The selected categories are then used to filter the list of games.
-///
-/// The [controller] is responsible for managing the state of the search bar and the filters.
-class _CategoriesModal extends StatefulWidget {
+/// This widget is composed of a list of tiles, each representing a year.
+/// The selected year is then used to filter the list of games.
+class _ReleaseModal extends StatefulWidget {
 
-  const _CategoriesModal({
+  const _ReleaseModal({
     required this.controller,
   });
 
@@ -18,15 +16,15 @@ class _CategoriesModal extends StatefulWidget {
   final _Controller controller;
 
   @override
-  State<_CategoriesModal> createState() => _CategoriesModalState();
+  State<_ReleaseModal> createState() => _ReleaseModalState();
 }
 
-class _CategoriesModalState extends State<_CategoriesModal> {
-  late final List<String> _initialState;
+class _ReleaseModalState extends State<_ReleaseModal> {
+  late final int? _initialState;
 
   @override
   void initState() {
-    _initialState = widget.controller.selectedTagsState.value;
+    _initialState = widget.controller.selectedReleaseYearState.value;
 
     super.initState();
   }
@@ -40,7 +38,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.selectedTagsState.value = _initialState;
+            widget.controller.selectedReleaseYearState.value = _initialState;
             context.pop();
           },
         ),
@@ -53,52 +51,38 @@ class _CategoriesModalState extends State<_CategoriesModal> {
         ),
       ],
       child: Section(
-        description: AppLocalizations.of(context)!.sectionFilterCategoriesDescription,
-        title: AppLocalizations.of(context)!.sectionFilterCategories,
+        description: AppLocalizations.of(context)!.sectionFilterReleaseYearDescription,
+        title: AppLocalizations.of(context)!.sectionFilterReleaseYear,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
           child: Wrap(
             runSpacing: 7.5,
             spacing: 7.5,
-            children: TagEnumeration.values.map(_tile).toList(),
+            children: widget.controller.getReleaseYears().map(_tile).toList(),
           ),
         ),
       ),
     );
   }
 
-  /// Builds a tile for each [tag] that can be selected or deselected.
-  ///
-  /// When tapped, the tile toggles the tag's selection state in the [widget.controller.selectedTagsState].
-  /// The tile displays the tag's icon and name.
-  Widget _tile(TagEnumeration tag) {
-    final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.selectedTagsState.value.contains(tag.code));
-
+  Widget _tile(int releaseYear) {
     return InkWell(
       borderRadius: kBorderRadius,
       onTap: () {
-        final List<String> temporary = <String> [];
 
-        temporary.addAll(widget.controller.selectedTagsState.value);
-
-        if (temporary.contains(tag.code)) {
-          temporary.remove(tag.code);
-        }
-        else {
-          temporary.add(tag.code);
-        }
-
-        widget.controller.selectedTagsState.value = temporary;
-        isSelected.value = !isSelected.value;
+        // Toggle the year selection on tap.
+        widget.controller.selectedReleaseYearState.value == releaseYear
+          ? widget.controller.selectedReleaseYearState.value = null
+          : widget.controller.selectedReleaseYearState.value = releaseYear;
       },
       child: ValueListenableBuilder(
-        valueListenable: isSelected,
-        builder: (BuildContext context, bool isSelected, Widget? _) {
+        valueListenable: widget.controller.selectedReleaseYearState,
+        builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
           return FittedBox(
             child: Ink(
               decoration: BoxDecoration(
                 borderRadius: kBorderRadius,
-                color: isSelected
+                color: selectedReleaseYear == releaseYear
                   ? ColorEnumeration.primary.value.withAlpha(190)
                   : ColorEnumeration.foreground.value,
               ),
@@ -108,14 +92,14 @@ class _CategoriesModalState extends State<_CategoriesModal> {
                 spacing: 7.5,
                 children: <Widget> [
                   Icon(
-                    tag.icon,
+                    HugeIcons.strokeRoundedCalendar01,
                     color: ColorEnumeration.grey.value,
                     size: 18,
                   ),
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      tag.fromLocale(AppLocalizations.of(context)!),
+                      releaseYear.toString(),
                       style: TypographyEnumeration.body(ColorEnumeration.grey).style,
                     ),
                   ),
