@@ -116,7 +116,7 @@
     "sectionFilterCategories": "FILTER BY CATEGORIES",
     "@sectionFilterCategories": {},
 
-    "sectionFilterCategoriesDescription": "Refine your search by selecting from various category tags.",
+    "sectionFilterCategoriesDescription": "Refine your search by selecting up to three category tags.",
     "@sectionFilterCategoriesDescription": {},
 
     "sectionFilterPublisher": "FILTER BY PUBLISHER",
