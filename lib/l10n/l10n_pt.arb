@@ -23,6 +23,15 @@
     "buttonUpdateRating": "ATUALIZAR AVALIAÇÃO",
     "@buttonUpdateRating": {},
 
+    "chipFilterByCategories": "Categorias",
+    "@chipFilterByCategories": {},
+
+    "chipFilterByPublisher": "Publicadora",
+    "@chipFilterByPublisher": {},
+
+    "chipFilterByReleaseYear": "Ano de Lançamento",
+    "@chipFilterByReleaseYear": {},
+
     "label3DVersion": "Versão 3D",
     "@label3DVersion": {},
 
@@ -86,12 +95,6 @@
     "sectionAbout": "SOBRE",
     "@sectionAbout": {},
 
-    "sectionCategoryFilters": "CATEGORIAS",
-    "@sectionCategoryFilters": {},
-
-    "sectionCategoryFiltersDescription": "Refine sua busca selecionando entre diversas categorias.",
-    "@sectionCategoryFiltersDescription": {},
-
     "sectionEmulatorNotFound": "ALGO DEU ERRADO",
     "@sectionEmulatorNotFound": {},
 
@@ -103,6 +106,24 @@
 
     "sectionEmulatorNotFoundText02": "Quando houver um emulador instalado, ele será iniciado automaticamente da próxima vez.",
     "@sectionEmulatorNotFoundText02": {},
+
+    "sectionFilterCategories": "FILTRAR POR CATEGORIAS",
+    "@sectionFilterCategories": {},
+
+    "sectionFilterCategoriesDescription": "Filtre sua pesquisa selecionando de diversas categorias.",
+    "@sectionFilterCategoriesDescription": {},
+
+    "sectionFilterPublisher": "FILTRAR POR PUBLICADORA",
+    "@sectionFilterPublisher": {},
+
+    "sectionFilterPublisherDescription": "Filtre sua pesquisa selecionando uma publicadora específica.",
+    "@sectionFilterPublisherDescription": {},
+
+    "sectionFilterReleaseYear": "FILTRAR POR ANO DE LANÇAMENTO",
+    "@sectionFilterReleaseYear": {},
+
+    "sectionFilterReleaseYearDescription": "Filtre sua pesquisa selecionando um ano de lançamento especifico.",
+    "@sectionFilterReleaseYearDescription": {},
 
     "sectionInstallation": "INSTALAÇÂO",
     "@sectionInstallation": {},
@@ -118,12 +139,6 @@
 
     "sectionPreviewsError": "Este jogo não possui prévias disponíveis.",
     "@sectionPreviewsError": {},
-
-    "sectionPublisherFilters": "PUBLICADORAS",
-    "@sectionPublisherFilters": {},
-
-    "sectionPublisherFiltersDescription": "Descubra jogos filtrando por diferentes publicadoras.",
-    "@sectionPublisherFiltersDescription": {},
 
     "sectionPublisherDescription": "Descubra mais jogos da _ que você pode gostar.",
     "@sectionPublisherDescription": {},
