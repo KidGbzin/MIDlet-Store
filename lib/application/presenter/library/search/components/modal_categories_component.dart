@@ -71,25 +71,26 @@ class _CategoriesModalState extends State<_CategoriesModal> {
   ///
   /// When tapped, the tile toggles the tag's selection state in the [widget.controller.selectedTagsState].
   /// The tile displays the tag's icon and name.
+  /// 
+  /// The tile also displays a visual indicator when the tag is selected.
   Widget _tile(TagEnumeration tag) {
     final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.selectedTagsState.value.contains(tag.code));
 
     return InkWell(
       borderRadius: kBorderRadius,
       onTap: () {
-        final List<String> temporary = <String> [];
-
-        temporary.addAll(widget.controller.selectedTagsState.value);
+        final List<String> temporary = widget.controller.selectedTagsState.value;
 
         if (temporary.contains(tag.code)) {
           temporary.remove(tag.code);
+          isSelected.value = !isSelected.value;
         }
-        else {
+        else if (temporary.length < 3) {
           temporary.add(tag.code);
+          isSelected.value = !isSelected.value;
         }
-
-        widget.controller.selectedTagsState.value = temporary;
-        isSelected.value = !isSelected.value;
+        
+        widget.controller.selectedTagsState.value = List.from(temporary);
       },
       child: ValueListenableBuilder(
         valueListenable: isSelected,
