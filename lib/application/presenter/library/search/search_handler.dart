@@ -30,6 +30,7 @@ part '../search/components/filter_button_component.dart';
 part '../search/components/list_view_component.dart';
 part '../search/components/modal_categories_component.dart';
 part '../search/components/modal_publisher_component.dart';
+part '../search/components/modal_release_component.dart';
 part '../search/components/search_bar_component.dart';
 part '../search/components/suggestion_overlay_component.dart';
 

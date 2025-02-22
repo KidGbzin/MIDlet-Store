@@ -15,8 +15,11 @@ class _SearchView extends StatefulWidget {
 class _SearchState extends State<_SearchView> {
   late ScaffoldMessengerState snackbar;
 
+  late final AppLocalizations localizations;
+
   @override
   void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
     snackbar = ScaffoldMessenger.of(context);
 
     super.didChangeDependencies();
@@ -53,7 +56,7 @@ class _SearchState extends State<_SearchView> {
             SizedBox.square(
               dimension: 40,
               child: ValueListenableBuilder(
-                valueListenable: widget.controller.activeGameListState,
+                valueListenable: widget.controller.gameListState,
                 builder: (BuildContext context, List<Game> games, Widget? _) {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -87,9 +90,9 @@ class _SearchState extends State<_SearchView> {
                   valueListenable: widget.controller.selectedTagsState,
                   builder: (BuildContext context, List<String> selectedTags, Widget? _) {
                     return _FilterButton(
-                      color: selectedTags.isEmpty ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value,
+                      color: selectedTags.isEmpty ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
                       icon: HugeIcons.strokeRoundedArrowDown01,
-                      title: "Categories",
+                      title: localizations.chipFilterByCategories,
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
@@ -107,14 +110,34 @@ class _SearchState extends State<_SearchView> {
                   valueListenable: widget.controller.selectedPublisherState,
                   builder: (BuildContext context, String? selectedPublisher, Widget? _) {
                     return _FilterButton(
-                      color: selectedPublisher == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value,
+                      color: selectedPublisher == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
                       icon: HugeIcons.strokeRoundedArrowDown01,
-                      title: "Publisher",
+                      title: localizations.chipFilterByPublisher,
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
                           builder: (BuildContext context) {
                             return _PublisherModal(
+                              controller: widget.controller,
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },   
+                ),
+                ValueListenableBuilder(
+                  valueListenable: widget.controller.selectedReleaseYearState,
+                  builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
+                    return _FilterButton(
+                      color: selectedReleaseYear == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
+                      icon: HugeIcons.strokeRoundedArrowDown01,
+                      title: localizations.chipFilterByReleaseYear,
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return _ReleaseModal(
                               controller: widget.controller,
                             );
                           },
@@ -133,7 +156,7 @@ class _SearchState extends State<_SearchView> {
           ),
           Expanded(
             child: ValueListenableBuilder(
-              valueListenable: widget.controller.activeGameListState,
+              valueListenable: widget.controller.gameListState,
               builder: (BuildContext context, List<Game> currentlyActiveGameList, Widget? _) {
                 return _ListView(
                   controller: widget.controller,
