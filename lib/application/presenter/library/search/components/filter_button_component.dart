@@ -31,7 +31,7 @@ class _FilterButton extends StatelessWidget {
               borderRadius: kBorderRadius,
               color: color,
             ),
-            height: 35,
+            height: 30,
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
               spacing: 7.5,
