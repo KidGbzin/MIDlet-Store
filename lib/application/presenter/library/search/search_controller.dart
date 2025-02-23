@@ -87,24 +87,71 @@ class _Controller {
 
   // FILTERS 🧩: ================================================================================================================================================================ //
 
+  /// Retrieves a list of all unique tags from the local game collection, along with their occurrence count.
+  ///
+  /// This function iterates through the local game collection and retrieves a list of all unique tags.
+  /// Each tag is then paired with its occurrence count, which is the number of times the tag appears in the collection.
+  /// The list is sorted in descending order by occurrence count.
+  ///
+  /// Returns a [List] of tuples, where each tuple contains:
+  ///   1. A [TagEnumeration] representing the tag.
+  ///   2. A [String] containing the localized name of the tag.
+  ///   3. An [int] containing the occurrence count of the tag.
+  List<(TagEnumeration, String, int)> getCategories(AppLocalizations localizations) {
+    final List<(TagEnumeration, String, int)> categories = <(TagEnumeration, String, int)> [];
+    final Map<String, int> table = <String, int>{};
+  
+    for (int index = 0; index < hive.games.length; index++) {
+      final List<String> tags = hive.games.fromIndex(index).tags;
+  
+      for (int tagIndex = 0; tagIndex < tags.length; tagIndex++) {
+        final String tag = tags[tagIndex];
+  
+        if (!table.containsKey(tag)) {
+          table[tag] = 1;
+        } else {
+          table[tag] = table[tag]! + 1;
+        }
+      }
+    }
+  
+    categories.addAll(
+      table.entries.map((entry) {
+        final TagEnumeration tag = TagEnumeration.fromCode(entry.key);
+        return (tag, tag.fromLocale(localizations), entry.value);
+      }),
+    );
+  
+    categories.sort((x, y) => x.$2.compareTo(y.$2));
+  
+    return categories;
+  }
+
   /// Retrieves a list of all unique game publishers from the local game collection.
   ///
   /// This function iterates through the local game collection and retrieves a list of all unique publishers.
   /// The list is then returned, which can be used to populate a list of publishers for the user to select from.
   ///
   /// Returns a [List] of strings, where each string represents a unique publisher.
-  List<String> getPublishers() {
-    final List<String> publishers = [];
+  Map<String, int> getPublishers() {
+    final Map<String, int> publishers = <String, int> {};
 
     for (int index = 0; index < hive.games.length; index ++) {
       final String publisher = hive.games.fromIndex(index).publisher;
 
-      if (!publishers.contains(publisher)) {
-        publishers.add(publisher);
+      if (!publishers.containsKey(publisher)) {
+        publishers[publisher] = 1;
+      }
+      else {
+        publishers[publisher] = publishers[publisher]! + 1;
       }
     }
   
-    return publishers;
+    final List<MapEntry<String, int>> publishersSorted = publishers.entries.toList();
+
+    publishersSorted.sort((MapEntry<String, int> x, MapEntry<String, int> y) => y.value.compareTo(x.value));
+
+    return Map.fromEntries(publishersSorted);
   }
 
   /// Retrieves a list of all unique release years from the local game collection.
@@ -113,18 +160,23 @@ class _Controller {
   /// The list is then returned, which can be used to populate a list of release years for the user to select from.
   ///
   /// Returns a [List] of integers, where each integer represents a unique release year.
-  List<int> getReleaseYears() {
-    final List<int> years = [];
+  Map<int, int> getReleaseYears() {
+    final Map<int, int> years = <int, int> {};
 
     for (int index = 0; index < hive.games.length; index ++) {
       final int year = hive.games.fromIndex(index).release;
 
-      if (!years.contains(year)) {
-        years.add(year);
+      if (!years.containsKey(year)) {
+        years[year] = 1;
+      }
+      else {
+        years[year] = years[year]! + 1;
       }
     }
-  
-    return years;
+
+    final List<MapEntry<int, int>> yearsSorted = years.entries.toList()..sort((x, y) => x.key.compareTo(y.key));
+
+    return Map.fromEntries(yearsSorted);
   }
   
   /// The current release year filter that is actively applied.
