@@ -42,7 +42,7 @@ class _Controller {
   ///
   /// This notifier is used to track and update the list of games that should be shown in the UI.
   /// It can be modified when applying filters or updating the list of games, and any changes will automatically trigger UI updates.
-  late ValueNotifier<List<Game>> currentlyActiveGameList;
+  late ValueNotifier<List<Game>> gameListState;
 
   /// Initializes the controller and loads the necessary data for games and suggestions.
   ///
@@ -50,16 +50,16 @@ class _Controller {
   Future<void> initialize({
     required String? publisher,
   }) async {
-    publisherState = ValueNotifier(publisher);
+    selectedPublisherState = ValueNotifier(publisher);
 
     try {
       _allGames = List.unmodifiable(hive.games.all());
 
-      if (publisherState.value == null) {
-        currentlyActiveGameList = ValueNotifier(_allGames);
+      if (selectedPublisherState.value == null) {
+        gameListState = ValueNotifier(_allGames);
       }
       else {
-        currentlyActiveGameList = ValueNotifier(_allGames.where((game) => game.publisher == publisherState.value).toList());
+        gameListState = ValueNotifier(_allGames.where((game) => game.publisher == selectedPublisherState.value).toList());
       }
       
       gemeSuggestionsList = ValueNotifier(hive.recentGames.all());
@@ -78,42 +78,141 @@ class _Controller {
   /// This method is called to release the resources and memory allocated by the controller when it is no longer needed.
   /// It disposes of all [ValueNotifier] instances and controllers that the controller is using to avoid memory leaks.
   void dispose() {
-    currentlyActiveGameList.dispose();
+    gameListState.dispose();
     gemeSuggestionsList.dispose();
-    publisherState.dispose();
-    tagsState.dispose();
+    selectedPublisherState.dispose();
+    selectedTagsState.dispose();
     textController.dispose();
   }
 
   // FILTERS 🧩: ================================================================================================================================================================ //
+
+  /// Retrieves a list of all unique tags from the local game collection, along with their occurrence count.
+  ///
+  /// This function iterates through the local game collection and retrieves a list of all unique tags.
+  /// Each tag is then paired with its occurrence count, which is the number of times the tag appears in the collection.
+  /// The list is sorted in descending order by occurrence count.
+  ///
+  /// Returns a [List] of tuples, where each tuple contains:
+  ///   1. A [TagEnumeration] representing the tag.
+  ///   2. A [String] containing the localized name of the tag.
+  ///   3. An [int] containing the occurrence count of the tag.
+  List<(TagEnumeration, String, int)> getCategories(AppLocalizations localizations) {
+    final List<(TagEnumeration, String, int)> categories = <(TagEnumeration, String, int)> [];
+    final Map<String, int> table = <String, int>{};
+  
+    for (int index = 0; index < hive.games.length; index++) {
+      final List<String> tags = hive.games.fromIndex(index).tags;
+  
+      for (int tagIndex = 0; tagIndex < tags.length; tagIndex++) {
+        final String tag = tags[tagIndex];
+  
+        if (!table.containsKey(tag)) {
+          table[tag] = 1;
+        } else {
+          table[tag] = table[tag]! + 1;
+        }
+      }
+    }
+  
+    categories.addAll(
+      table.entries.map((entry) {
+        final TagEnumeration tag = TagEnumeration.fromCode(entry.key);
+        return (tag, tag.fromLocale(localizations), entry.value);
+      }),
+    );
+  
+    categories.sort((x, y) => x.$2.compareTo(y.$2));
+  
+    return categories;
+  }
+
+  /// Retrieves a list of all unique game publishers from the local game collection.
+  ///
+  /// This function iterates through the local game collection and retrieves a list of all unique publishers.
+  /// The list is then returned, which can be used to populate a list of publishers for the user to select from.
+  ///
+  /// Returns a [List] of strings, where each string represents a unique publisher.
+  Map<String, int> getPublishers() {
+    final Map<String, int> publishers = <String, int> {};
+
+    for (int index = 0; index < hive.games.length; index ++) {
+      final String publisher = hive.games.fromIndex(index).publisher;
+
+      if (!publishers.containsKey(publisher)) {
+        publishers[publisher] = 1;
+      }
+      else {
+        publishers[publisher] = publishers[publisher]! + 1;
+      }
+    }
+  
+    final List<MapEntry<String, int>> publishersSorted = publishers.entries.toList();
+
+    publishersSorted.sort((MapEntry<String, int> x, MapEntry<String, int> y) => y.value.compareTo(x.value));
+
+    return Map.fromEntries(publishersSorted);
+  }
+
+  /// Retrieves a list of all unique release years from the local game collection.
+  ///
+  /// This function iterates through the local game collection and retrieves a list of all unique release years.
+  /// The list is then returned, which can be used to populate a list of release years for the user to select from.
+  ///
+  /// Returns a [List] of integers, where each integer represents a unique release year.
+  Map<int, int> getReleaseYears() {
+    final Map<int, int> years = <int, int> {};
+
+    for (int index = 0; index < hive.games.length; index ++) {
+      final int year = hive.games.fromIndex(index).release;
+
+      if (!years.containsKey(year)) {
+        years[year] = 1;
+      }
+      else {
+        years[year] = years[year]! + 1;
+      }
+    }
+
+    final List<MapEntry<int, int>> yearsSorted = years.entries.toList()..sort((x, y) => x.key.compareTo(y.key));
+
+    return Map.fromEntries(yearsSorted);
+  }
+  
+  /// The current release year filter that is actively applied.
+  ///
+  /// This [ValueNotifier] holds the selected release year filter.
+  /// It is updated when a user selects a specific year to filter the list of games.
+  /// If no release year filter is applied, its value will be `null`.
+  late final ValueNotifier<int?> selectedReleaseYearState = ValueNotifier(null);
 
   /// The current publisher filter that is actively applied.
   ///
   /// This [ValueNotifier] holds the selected publisher filter.
   /// It is updated when a user selects a specific publisher to filter the list of games.
   /// If no publisher filter is applied, its value will be `null`.
-  late final ValueNotifier<String?> publisherState;
+  late final ValueNotifier<String?> selectedPublisherState;
 
   /// The current tags applied to the filter.
   ///
   /// This [ValueNotifier] holds the list of active tags that the user has selected to filter the games by.
   /// Each item in the list represents a tag that is currently active in the filter.
-  final ValueNotifier<List<String>> tagsState = ValueNotifier(<String> []);
+  final ValueNotifier<List<String>> selectedTagsState = ValueNotifier(<String> []);
 
   /// Applies the currently active filters to the list of games.
   ///
-  /// This method filters the [_allGames] list based on the active publisher and tag filters, and updates the [currentlyActiveGameList] to reflect the filtered list.
+  /// This method filters the [_allGames] list based on the active publisher and tag filters, and updates the [gameListState] to reflect the filtered list.
   /// It is typically used after the user finishes selecting filters in the [ModalWidget] widget.
+  /// If no filters are applied, the list is reset to its original, unfiltered state.
   void applyFilters() {
     textController.clear();
-    currentlyActiveGameList.value = _allGames.where((element) {
-      final bool matchesPublisher = publisherState.value == null ||  
-                                    element.publisher == publisherState.value;
 
-      final bool matchesTags = tagsState.value.isEmpty ||
-                               tagsState.value.every((tag) => element.tags.contains(tag));
+    gameListState.value = _allGames.where((element) {
+      final bool matchesPublisher = selectedPublisherState.value == null || element.publisher == selectedPublisherState.value;
+      final bool matchesReleaseYear = selectedReleaseYearState.value == null || element.release == selectedReleaseYearState.value;
+      final bool matchesTags = selectedTagsState.value.isEmpty || selectedTagsState.value.every((tag) => element.tags.contains(tag));
 
-      return matchesPublisher && matchesTags;
+      return matchesPublisher && matchesTags && matchesReleaseYear;
     }).toList();
   }
 
@@ -121,9 +220,9 @@ class _Controller {
   ///
   /// This method resets the state of the game list and its filters, returning the list to its unfiltered state.
   void clearFilters() {
-    currentlyActiveGameList.value = _allGames;
-    publisherState.value = null;
-    tagsState.value.clear();
+    gameListState.value = _allGames;
+    selectedPublisherState.value = null;
+    selectedTagsState.value.clear();
     textController.clear();
   }
 
@@ -156,7 +255,7 @@ class _Controller {
   void applySearch(String query) {
     query = query.toLowerCase();
   
-    currentlyActiveGameList.value = _allGames.where((element) {
+    gameListState.value = _allGames.where((element) {
       final String title = element.title.toLowerCase();
       final String release = element.release.toString();
       final String vendor = element.publisher.toLowerCase();
