@@ -77,6 +77,7 @@ class _ApplicationState extends State<Application> {
           supportedLocales: <Locale> [
             L10nEnumeration.english.locale,
             L10nEnumeration.brazilianPortuguese.locale,
+            L10nEnumeration.bahasaIndonesia.locale,
           ],
           theme: _theme,
         );
