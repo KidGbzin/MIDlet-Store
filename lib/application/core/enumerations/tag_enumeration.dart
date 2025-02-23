@@ -2,114 +2,135 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n_localizations.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-/// A enumeration of all game tags present in the application.
+/// An enumeration of all game tags present in the application.
 enum TagEnumeration {
-  threeD(
-    icon: HugeIcons.strokeRoundedThreeDView,
-    code: '3D',
-  ),
   action(
+    code: 'Action',
     icon: HugeIcons.strokeRoundedEnergy,
-    code: 'ACT',
   ),
   adventure(
+    code: 'Adventurer',
     icon: HugeIcons.strokeRoundedDiscoverCircle,
-    code: 'ADV',
+  ),
+  breakout(
+    code: 'Breakout',
+    icon: HugeIcons.strokeRoundedBlockGame,
   ),
   casual(
+    code: 'Casual',
     icon: HugeIcons.strokeRoundedPacman02,
-    code: 'CAS',
   ),
-  football(
-    icon: HugeIcons.strokeRoundedFootballPitch,
-    code: 'FOO',
+  error(
+    code: '???',
+    icon: HugeIcons.strokeRoundedUnavailable,
   ),
   fighting(
+    code: 'Fighting',
     icon: HugeIcons.strokeRoundedBoxingGlove01,
-    code: 'FIG',
+  ),
+  football(
+    code: 'Football',
+    icon: HugeIcons.strokeRoundedFootballPitch,
   ),
   openWorld(
+    code: 'Open World',
     icon: HugeIcons.strokeRoundedLocation04,
-    code: 'OPW',
   ),
   platformer(
-    code: 'PLA',
+    code: 'Platformer',
     icon: HugeIcons.strokeRoundedSuperMario,
   ),
   pointAndClick(
+    code: "Point 'n' Click",
     icon: HugeIcons.strokeRoundedTouch02,
-    code: 'P&C',
   ),
   puzzle(
+    code: 'Puzzle',
     icon: HugeIcons.strokeRoundedPuzzle,
-    code: 'PUZ',
   ),
   racing(
+    code: 'Racing',
     icon: HugeIcons.strokeRoundedCar02,
-    code: 'RAC',
   ),
   shooter(
+    code: 'Shooter',
     icon: HugeIcons.strokeRoundedTarget03,
-    code: 'SHO',
   ),
   sports(
-    icon: HugeIcons.strokeRoundedFootball,
-    code: 'SPO',
+    code: 'Sports',
+    icon: HugeIcons.strokeRoundedWhistle,
   ),
   stealth(
+    code: 'Stealth',
     icon: HugeIcons.strokeRoundedEar,
-    code: 'STE',
   ),
   survivalHorror(
+    code: 'Survival Horror',
     icon: HugeIcons.strokeRoundedDna,
-    code: 'SUH',
   ),
   terror(
+    code: 'Terror',
     icon: HugeIcons.strokeRoundedDanger,
-    code: 'TER',
+  ),
+  threeD(
+    code: '3D',
+    icon: HugeIcons.strokeRoundedThreeDView,
   ),
   towerDefense(
+    code: 'Tower Defense',
     icon: HugeIcons.strokeRoundedCastle01,
-    code: 'TWD',
   );
 
+  /// Creates a [TagEnumeration] with the given properties.
   const TagEnumeration({
-    required this.icon,
     required this.code,
+    required this.icon,
   });
 
   /// The tag's icon.
-  /// 
+  ///
   /// This icon is used on labels.
   final IconData icon;
 
-  /// The tag's name.
+  /// The tag's code.
+  ///
+  /// The code is the tag's name in English.
   final String code;
+
+  /// Returns a [TagEnumeration] based on the provided [code].
+  ///
+  /// If [code] does not match any tag, returns [TagEnumeration.error].
+  static TagEnumeration fromCode(String code) {
+    try {
+      return TagEnumeration.values.firstWhere((element) => element.code == code);
+    } catch (_) {
+      return TagEnumeration.error;
+    }
+  }
 
   /// Translates a list of tag codes into their respective localized strings.
   ///
   /// If a tag code does not have a localized name, the function returns a string with three question marks.
   static List<String> fromList(AppLocalizations localizations, List<String> tags) {
     final Map<String, String> table = <String, String> {
-      "3D": localizations.tag3D,
-      "ACT": localizations.tagAction,
-      "ADV": localizations.tagAdventure,
-      "CAS": localizations.tagCasual,
-      "FIG": localizations.tagFighting,
-      "FOO": localizations.tagFootball,
-      "H&S": localizations.tagHackAndSlash,
-      "MET": localizations.tagMetroidvania,
-      "OPW": localizations.tagOpenWorld,
-      "PLA": localizations.tagPlatformer,
-      "P&C": localizations.tagPointAndClick,
-      "PUZ": localizations.tagPuzzle,
-      "RAC": localizations.tagRacing,
-      "SHO": localizations.tagShooter,
-      "SPO": localizations.tagSports,
-      "STE": localizations.tagStealth,
-      "SUH": localizations.tagSurvivalHorror,
-      "TER": localizations.tagTerror,
-      "TWD": localizations.tagTowerDefense,
+      TagEnumeration.action.code: localizations.tagAction,
+      TagEnumeration.adventure.code: localizations.tagAdventure,
+      TagEnumeration.casual.code: localizations.tagCasual,
+      TagEnumeration.error.code: "???",
+      TagEnumeration.fighting.code: localizations.tagFighting,
+      TagEnumeration.football.code: localizations.tagFootball,
+      TagEnumeration.openWorld.code: localizations.tagOpenWorld,
+      TagEnumeration.platformer.code: localizations.tagPlatformer,
+      TagEnumeration.pointAndClick.code: localizations.tagPointAndClick,
+      TagEnumeration.puzzle.code: localizations.tagPuzzle,
+      TagEnumeration.racing.code: localizations.tagRacing,
+      TagEnumeration.shooter.code: localizations.tagShooter,
+      TagEnumeration.sports.code: localizations.tagSports,
+      TagEnumeration.stealth.code: localizations.tagStealth,
+      TagEnumeration.survivalHorror.code: localizations.tagSurvivalHorror,
+      TagEnumeration.terror.code: localizations.tagTerror,
+      TagEnumeration.threeD.code: localizations.tag3D,
+      TagEnumeration.towerDefense.code: localizations.tagTowerDefense,
     };
 
     return tags.map((tag) => table[tag] ?? "???").toList();
@@ -117,31 +138,28 @@ enum TagEnumeration {
 
   /// Translates a tag code into its respective localized string.
   ///
-  /// If a tag code does not have a localized name, then function returns a strig with three question marks.
+  /// If a tag code does not have a localized name, the function returns a string with three question marks.
   String fromLocale(AppLocalizations localizations) {
     final Map<String, String> table = <String, String> {
-      "3D": localizations.tag3D,
-      "ACT": localizations.tagAction,
-      "ADV": localizations.tagAdventure,
-      "CAS": localizations.tagCasual,
-      "FIG": localizations.tagFighting,
-      "FOO": localizations.tagFootball,
-      "H&S": localizations.tagHackAndSlash,
-      "MET": localizations.tagMetroidvania,
-      "OPW": localizations.tagOpenWorld,
-      "PLA": localizations.tagPlatformer,
-      "P&C": localizations.tagPointAndClick,
-      "PUZ": localizations.tagPuzzle,
-      "RAC": localizations.tagRacing,
-      "SHO": localizations.tagShooter,
-      "SPO": localizations.tagSports,
-      "STE": localizations.tagStealth,
-      "SUH": localizations.tagSurvivalHorror,
-      "TER": localizations.tagTerror,
-      "TWD": localizations.tagTowerDefense,
+      TagEnumeration.action.code: localizations.tagAction,
+      TagEnumeration.adventure.code: localizations.tagAdventure,
+      TagEnumeration.casual.code: localizations.tagCasual,
+      TagEnumeration.fighting.code: localizations.tagFighting,
+      TagEnumeration.football.code: localizations.tagFootball,
+      TagEnumeration.openWorld.code: localizations.tagOpenWorld,
+      TagEnumeration.platformer.code: localizations.tagPlatformer,
+      TagEnumeration.pointAndClick.code: localizations.tagPointAndClick,
+      TagEnumeration.puzzle.code: localizations.tagPuzzle,
+      TagEnumeration.racing.code: localizations.tagRacing,
+      TagEnumeration.shooter.code: localizations.tagShooter,
+      TagEnumeration.sports.code: localizations.tagSports,
+      TagEnumeration.stealth.code: localizations.tagStealth,
+      TagEnumeration.survivalHorror.code: localizations.tagSurvivalHorror,
+      TagEnumeration.terror.code: localizations.tagTerror,
+      TagEnumeration.threeD.code: localizations.tag3D,
+      TagEnumeration.towerDefense.code: localizations.tagTowerDefense,
     };
 
     return table[code] ?? "???";
   }
 }
-

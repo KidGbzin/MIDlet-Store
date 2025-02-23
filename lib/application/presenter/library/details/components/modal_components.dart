@@ -15,11 +15,11 @@ class _SubmitRatingModal extends StatefulWidget {
 class _SubmitRatingModalState extends State<_SubmitRatingModal> {
   late final ValueNotifier<num> _currentRating;
 
-  bool _isReadyToSubmit(num currentRating) => (currentRating != 0 && currentRating != widget.controller.myRating.value);
+  bool _isReadyToSubmit(num currentRating) => (currentRating != 0 && currentRating != widget.controller.myRatingState.value);
 
   @override
   void initState() {
-    _currentRating = ValueNotifier<num>(widget.controller.myRating.value);
+    _currentRating = ValueNotifier<num>(widget.controller.myRatingState.value);
 
     super.initState();
   }
@@ -51,7 +51,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
               children: <Widget> [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                  child: _buildLeadingRatingInformation(widget.controller.totalRatings.value),
+                  child: _buildLeadingRatingInformation(widget.controller.totalRatingsState.value),
                 ),
                 Expanded(
                   child: _buildRatingBarsGraph(),
@@ -73,7 +73,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
 
   Widget _buildRatingSection() {
     return Section(
-      description: widget.controller.myRating.value == 0
+      description: widget.controller.myRatingState.value == 0
         ? AppLocalizations.of(context)!.sectionUserRatingDescriptionNotRated
         : AppLocalizations.of(context)!.sectionUserRatingDescriptionRated,
       
@@ -83,7 +83,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
         child: Align(
           alignment: Alignment.center,
           child: ValueListenableBuilder<int>(
-            valueListenable: widget.controller.myRating,
+            valueListenable: widget.controller.myRatingState,
             builder: (BuildContext context, int userRating, Widget? _) {
               return RatingBar(
                 initialRating: userRating.toDouble(),
@@ -147,7 +147,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 2.5, 0, 0),
                   child: Text(
-                    widget.controller.myRating.value == 0
+                    widget.controller.myRatingState.value == 0
                       ? AppLocalizations.of(context)!.buttonSubmitRating
                       : AppLocalizations.of(context)!.buttonUpdateRating,
                     
@@ -167,7 +167,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
   /// This widget shows the average rating of the game along with a star rating widget and the total number of ratings.
   /// If the average rating is zero, it displays a dash (`-`).
   Widget _buildLeadingRatingInformation(int total) {
-    final double averageRating = widget.controller.averageRating.value;
+    final double averageRating = widget.controller.averageRatingState.value;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -185,7 +185,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
           ),
         ),
         Text(
-          '${widget.controller.totalRatings.value}',
+          '${widget.controller.totalRatingsState.value}',
           style: TypographyEnumeration.body(ColorEnumeration.grey).style,
         ),
       ],
@@ -197,7 +197,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
   /// This method listens for changes in the stars count and updates the graph accordingly.
   Widget _buildRatingBarsGraph() {
     return ValueListenableBuilder(
-      valueListenable: widget.controller.starsCount,
+      valueListenable: widget.controller.starsCountState,
       builder: (BuildContext context, Map<String, int> starsCount, Widget? _) {
         final int totalRatings = (starsCount["5"]! + starsCount["4"]! + starsCount["3"]! + starsCount["2"]! + starsCount["1"]!);
         

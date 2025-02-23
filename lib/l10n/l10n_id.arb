@@ -1,0 +1,226 @@
+{
+    "@@author": "KidGbzin",
+    "@@locale": "id",
+
+    "buttonPlay": "MAIN",
+    "@buttonPlay": {},
+
+    "buttonCommingSoon": "SEGERA HADIR",
+    "@buttonCommingSoon": {},
+
+    "buttonLoginWithGoogle": "MASUK DENGAN GOOGLE",
+    "@buttonLoginWithGoogle": {},
+
+    "buttonReadyToInstall": "SIAP UNTUK DIPASANG",
+    "@buttonReadyToInstall": {},
+
+    "buttonSubmitRating": "KIRIM PENILAIAN",
+    "@buttonSubmitRating": {},
+
+    "buttonUpdateAvailable": "PEMBARUAN TERSEDIA",
+    "@buttonUpdateAvailable": {},
+
+    "buttonUpdateRating": "PERBARUI PENILAIAN",
+    "@buttonUpdateRating": {},
+
+    "chipFilterByCategories": "Kategori",
+    "@chipFilterByCategories": {},
+
+    "chipFilterByPublisher": "Penerbit",
+    "@chipFilterByPublisher": {},
+
+    "chipFilterByReleaseYear": "Tahun Rilis",
+    "@chipFilterByReleaseYear": {},
+
+    "label3DVersion": "Versi 3D",
+    "@label3DVersion": {},
+
+    "labelAchievements": "Pencapaian",
+    "@labelAchievements": {},
+
+    "labelCensored": "Versi Disensor",
+    "@labelCensored": {},
+
+    "labelDownloads": "Unduhan",
+    "@labelDownloads": {},
+
+    "labelLandscape": "Orientasi Lanskap",
+    "@labelLandscape": {},
+
+    "labelMultiplayerBluetooth": "Multipemain Bluetooth",
+    "@labelMultiplayerBluetooth": {},
+
+    "labelMultiplayerLocal": "Multipemain Lokal",
+    "@labelMultiplayerLocal": {},
+
+    "labelMultiplayerOnline": "Daring",
+    "@labelMultiplayerOnline": {},
+
+    "labelMultiscreen": "Multilayar",
+    "@labelMultiscreen": {},
+
+    "labelPublisher": "Penerbit",
+    "@labelPublisher": {},
+    
+    "labelRelease": "Rilis",
+    "@labelRelease": {},
+
+    "labelSize": "Ukuran",
+    "@labelSize": {},
+
+    "labelTouchscreen": "Layar Sentuh",
+    "@labelTouchscreen": {},
+
+    "labelVersion": "Versi",
+    "@labelVersion": {},
+
+    "launcherErrorMessage01": "Terjadi kesalahan yang mencegah aplikasi berjalan.",
+    "@launcherErrorMessage01": {},
+
+    "launcherErrorMessage02": "Gagal terhubung ke server, coba lagi nanti.",
+    "@launcherErrorMessage02": {},
+
+    "launcherLoadingMessage01": "Menghubungkan ke database, harap tunggu...",
+    "@launcherLoadingMessage01": {},
+
+    "launcherLoadingMessage02": "Mengunduh file yang diperlukan, harap tunggu...",
+    "@launcherLoadingMessage02": {},
+
+    "launcherLoadingMessage03": "Mengautentikasi dengan Supabase, harap tunggu...",
+    "@launcherLoadingMessage03": {},
+
+    "launcherLoadingMessage04": "Mengautentikasi dengan Google, harap tunggu...",
+    "@launcherLoadingMessage04": {},
+
+    "sectionAbout": "TENTANG",
+    "@sectionAbout": {},
+
+    "sectionInstallation": "INSTALASI",
+    "@sectionInstallation": {},
+
+    "sectionInstallationDescription": "Ketika Anda menekan \"Main\", menu instalasi MIDlet akan terbuka, menampilkan informasi tentang versi gim yang akan dipasang di emulator Anda. Emulator akan diluncurkan secara otomatis setelah instalasi.\n\nSegera, beberapa versi dari gim yang sama akan tersedia untuk dipilih.",
+    "@sectionInstallationDescription": {},
+
+    "sectionEmulatorNotFound": "TERJADI KESALAHAN",
+    "@sectionEmulatorNotFound": {},
+
+    "sectionEmulatorNotFoundDescription": "Tidak ada emulator yang tersedia di perangkat Anda. Pastikan perangkat Anda memiliki emulator yang terpasang.",
+    "@sectionEmulatorNotFoundDescription": {},
+
+    "sectionEmulatorNotFoundText01": "Anda juga dapat menginstal emulator J2ME Loader dari salah satu opsi di bawah ini.",
+    "@sectionEmulatorNotFoundText01": {},
+
+    "sectionEmulatorNotFoundText02": "Ketika ada emulator yang terpasang, emulator akan mulai secara otomatis di waktu berikutnya.",
+    "@sectionEmulatorNotFoundText02": {},
+
+    "sectionFilterCategories": "FILTER BERDASARKAN KATEGORI",
+    "@sectionFilterCategories": {},
+
+    "sectionFilterCategoriesDescription": "Sempurnakan pencarian Anda dengan memilih hingga tiga tag kategori.",
+    "@sectionFilterCategoriesDescription": {},
+
+    "sectionFilterPublisher": "FILTER BERDASARKAN PENERBIT",
+    "@sectionFilterPublisher": {},
+
+    "sectionFilterPublisherDescription": "Filter pencarian Anda dengan memilih penerbit tertentu.",
+    "@sectionFilterPublisherDescription": {},
+
+    "sectionFilterReleaseYear": "FILTER BERDASARKAN TAHUN RILIS",
+    "@sectionFilterReleaseYear": {},
+
+    "sectionFilterReleaseYearDescription": "Filter pencarian Anda dengan memilih tahun rilis tertentu.",
+    "@sectionFilterReleaseYearDescription": {},
+
+    "sectionPreviews": "PRATINJAU",
+    "@sectionPreviews": {},
+
+    "sectionPreviewsDescription": "Karakteristik dan pratinjau gim dapat bervariasi sesuai dengan model ponsel Anda.",
+    "@sectionPreviewsDescription": {},
+
+    "sectionPreviewsError": "Gim ini tidak memiliki pratinjau yang tersedia.",
+    "@sectionPreviewsError": {},
+
+    "sectionPublisherDescription": "Temukan lebih banyak gim dari _ yang mungkin Anda sukai.",
+    "@sectionPublisherDescription": {},
+
+    "sectionReadyToInstall": "SIAP UNTUK DIPASANG",
+    "@sectionReadyToInstall": {},
+
+    "sectionReadyToInstallDescription": "Gim telah selesai diunduh dan siap untuk dipasang di emulator.",
+    "@sectionReadyToInstallDescription": {},
+
+    "sectionRelatedGames": "REKOMENDASI UNTUK ANDA",
+    "@sectionRelatedGames": {},
+
+    "sectionRelatedGamesDescription": "Jika Anda menikmati _, Anda mungkin juga akan menikmati gim-gim lainnya ini.",
+    "@sectionRelatedGamesDescription": {},
+
+    "sectionUserRating": "PENILAIAN ANDA",
+    "@sectionUserRating": {},
+
+    "sectionUserRatingDescriptionRated": "Anda belum memberikan penilaian untuk gim ini. Bagikan pendapat Anda dengan memberikan penilaian!",
+    "@sectionUserRatingDescriptionRated": {},
+
+    "sectionUserRatingDescriptionNotRated": "Sepertinya Anda sudah memberikan penilaian untuk gim ini. Apakah Anda ingin memperbarui penilaian Anda?",
+    "@sectionUserRatingDescriptionNotRated": {},
+
+    "tag3D": "3D",
+    "@tag3D": {},
+
+    "tagAction": "Aksi",
+    "@tagAction": {},
+
+    "tagAdventure": "Petualangan",
+    "@tagAdventure": {},
+
+    "tagBreakout": "Breakout",
+    "@tagBreakout": {},
+
+    "tagCasual": "Santai",
+    "@tagCasual": {},
+
+    "tagFighting": "Pertarungan",
+    "@tagFighting": {},
+
+    "tagFootball": "Sepak Bola",
+    "@tagFootball": {},
+
+    "tagHackAndSlash": "Hack 'n' Slash",
+    "@tagHackAndSlash": {},
+
+    "tagMetroidvania": "Metroidvania",
+    "@tagMetroidvania": {},
+
+    "tagOpenWorld": "Dunia Terbuka",
+    "@tagOpenWorld": {},
+
+    "tagPlatformer": "Platformer",
+    "@tagPlatformer": {},
+
+    "tagPointAndClick": "Point 'n' Click",
+    "@tagPointAndClick": {},
+
+    "tagPuzzle": "Teka-Teki",
+    "@tagPuzzle": {},
+
+    "tagRacing": "Balapan",
+    "@tagRacing": {},
+
+    "tagShooter": "Penembak",
+    "@tagShooter": {},
+
+    "tagSports": "Olahraga",
+    "@tagSports": {},
+
+    "tagStealth": "Sembunyi-sembunyi",
+    "@tagStealth": {},
+
+    "tagSurvivalHorror": "Horror Bertahan Hidup",
+    "@tagSurvivalHorror": {},
+
+    "tagTerror": "Teror",
+    "@tagTerror": {},
+
+    "tagTowerDefense": "Pertahanan Menara",
+    "@tagTowerDefense": {}
+}

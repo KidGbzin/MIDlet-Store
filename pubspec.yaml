@@ -2,13 +2,14 @@ name: midlet_store
 description: "MIDlet Store is a free and open-source Android platform dedicated to Java J2ME games."
 publish_to: 'none'
 
-version: 1.0.1+2
+version: 1.1.0+3
 
 environment:
   sdk: ^3.5.3
 
 dependencies:
   archive: ^4.0.2
+  audioplayers: ^6.2.0
   cupertino_icons: ^1.0.8
   equatable: ^2.0.7
   flutter:

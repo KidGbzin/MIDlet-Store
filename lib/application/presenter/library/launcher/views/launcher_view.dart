@@ -51,11 +51,6 @@ class _LauncherViewState extends State<_LauncherView> {
                       ),
                     );
                   }
-                  else if (progress == ProgressEnumeration.localeRequest) {
-                    child = _LocaleView(
-                      controller: widget.controller,
-                    );
-                  }
                   else if (progress == ProgressEnumeration.loginRequest) {
                     child = _LoginSection(
                       controller: widget.controller,

@@ -14,6 +14,7 @@ class _DetailsView extends StatefulWidget {
 
 class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver {
   late ScaffoldMessengerState snackbar;
+
   late final String gameTitle;
   late final AppLocalizations localizations;
 
@@ -23,6 +24,21 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
     gameTitle = widget.controller.game.title.replaceFirst(' -', ':');
 
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // If the application returns to resume state, then resume de music player.
+    if (state == AppLifecycleState.resumed) {
+      widget.controller.resumeAudio();
+    }
+
+    // If the application is not in the main view, then stops the music player.
+    else {
+      widget.controller.pauseAudio();
+    }
+
+    super.didChangeAppLifecycleState(state);
   }
 
   @override

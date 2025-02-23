@@ -44,6 +44,7 @@ class _Controller {
   /// If an error occurs during initialization, it logs the error and its stack trace.
   Future<void> initialize() async {
     try {
+      playAudio();
       fetchThumbnail();
       _updateGameData();
       isFavoriteState = ValueNotifier(hive.favorites.contains(game));
@@ -63,20 +64,70 @@ class _Controller {
   /// This method should be called when the controller is no longer needed to free up resources and prevent memory leaks.
   /// It disposes of all [ValueNotifier] instances that the controller is using.
   void dispose() {
+    _player.dispose();
+  
+    averageRatingState.dispose();
     isFavoriteState.dispose();
-
-    averageRating.dispose();
-    totalRatings.dispose();
-    starsCount.dispose();
-    myRating.dispose();
+    myRatingState.dispose();
+    starsCountState.dispose();
+    thumbnailState.dispose();
+    totalRatingsState.dispose();
   }
+
+  // AUDIO PLAYER 🧩: =========================================================================================================================================================== //
+  
+  /// The audio player used to manage and play the game's theme audio.
+  ///
+  /// This instance leverages the [`audioplayers`](https://pub.dev/packages/audioplayers) package to handle audio functionalities like play, pause, and stop.
+  /// It provides a convenient way to control the playback of the game's theme music, such as playing, pausing, and stopping.
+  final AudioPlayer _player = AudioPlayer();
+
+  /// Plays the game's theme audio.
+  /// 
+  /// Attempts to load the audio from the bucket and play it.
+  /// If the audio cannot be loaded for any reason, it does nothing.
+  Future<void> playAudio() async {
+    try {
+      final File file = await _audio;
+      await _player.setSource(DeviceFileSource(file.path));
+      await _player.resume();
+    }
+    catch (_) {}
+  }
+
+  /// Resumes the game's theme audio if it was paused.
+  /// 
+  /// Does nothing if the audio is not paused.
+  void resumeAudio() => _player.resume();
+
+  /// Stops the game's theme audio if it is playing.
+  /// 
+  /// Does nothing if the audio is not playing.
+  void pauseAudio() => _player.stop();
 
   // BUCKET 🧩: ================================================================================================================================================================= //
 
+  /// A [ValueNotifier] that tracks the state of the thumbnail.
+  ///
+  /// This notifier is used to display the thumbnail image associated with the current game.
+  /// The value of this notifier is updated whenever the thumbnail image is fetched from the bucket.
+  /// If the thumbnail image is not available, the value is set to [null].
+  /// 
+  /// The [_Cover] component listens to this notifier to update the UI accordingly.
+  final ValueNotifier<File?> thumbnailState = ValueNotifier<File?>(null);
+
+  /// Retrieves a [Future] that resolves to a [File] containing the audio file associated with the current game.
+  ///
+  /// This getter fetches the audio file associated with the current game from the storage bucket.
+  /// The audio file is returned as a [File] object, which can be used to play the audio.
+  Future<File> get _audio => bucket.audio(game.title);
+
   /// Retrieves a [Future] that resolves to a [List] of [Uint8List] objects representing preview images from the bucket.
   ///
-  /// This getter fetches a list of preview images associated with the current game from the storage bucket. 
+  /// This getter fetches a list of preview images associated with the current game from the storage bucket.
   /// The images are returned as a list of [Uint8List] objects, which can be used to display the previews in the UI.
+  /// 
+  /// The [Uint8List] objects contain the image data in the PNG format.
   Future<List<Uint8List>> get previews => bucket.previews(game.title);
 
   /// Retrieves a [Future] that resolves to a [File] representing the thumbnail image from the bucket.
@@ -85,8 +136,13 @@ class _Controller {
   /// The image is returned as a [File] object, which can be used to display the thumbnail in the UI.
   Future<File> thumbnail(String title) => bucket.cover(title);
 
-  ValueNotifier<File?> thumbnailState = ValueNotifier<File?>(null);
-
+  /// Fetches the thumbnail image associated with the current game from the bucket and updates the state of the thumbnail.
+  ///
+  /// This method fetches the thumbnail image associated with the current game from the storage bucket.
+  /// The image is stored as a [File] object, which is used to update the state of the [thumbnailState].
+  /// If the thumbnail image is not available, the [thumbnailState] is set to [null].
+  /// 
+  /// The [_Cover] component listens to the [thumbnailState] to update the UI accordingly.
   Future<void> fetchThumbnail() async {
     thumbnailState.value = await bucket.cover(game.title);
   }
@@ -186,26 +242,26 @@ class _Controller {
   ///
   /// This [ValueNotifier] holds the average rating of the game as a [double]. 
   /// It is initialized to `0` by default, indicating that no ratings have been submitted yet.
-  final ValueNotifier<double> averageRating = ValueNotifier(0);
+  final ValueNotifier<double> averageRatingState = ValueNotifier(0);
 
   /// Tracks the user's rating for the current game.
   ///
   /// This [ValueNotifier] holds the user's rating as an integer. 
   /// If no rating has been provided by the user, the default value is `0`.
-  final ValueNotifier<int> myRating = ValueNotifier(0);
+  final ValueNotifier<int> myRatingState = ValueNotifier(0);
 
   /// Tracks the total number of ratings for the current game.
   ///
   /// This [ValueNotifier] holds the total count of user ratings submitted for the game. 
   /// It is initialized to `0` by default, representing no ratings.
-  final ValueNotifier<int> totalRatings = ValueNotifier(0);
+  final ValueNotifier<int> totalRatingsState = ValueNotifier(0);
 
   /// A [ValueNotifier] containing a [Map] that tracks the count of ratings for each star level.
   ///
   /// The [Map] keys represent the star levels (from 1 to 5).
   /// The values represent the count of ratings for each corresponding star.
   /// All counts are initialized to `0` by default.
-  final ValueNotifier<Map<String, int>> starsCount = ValueNotifier(<String, int> {
+  final ValueNotifier<Map<String, int>> starsCountState = ValueNotifier(<String, int> {
     "5": 0,
     "4": 0,
     "3": 0,
@@ -227,7 +283,7 @@ class _Controller {
     // Fetch and update average rating.
     try {
       data.averageRating ??= await database.getAverageRatingByGame(game);
-      averageRating.value = data.averageRating!;
+      averageRatingState.value = data.averageRating!;
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -241,7 +297,7 @@ class _Controller {
     // Fetch and update user rating.
     try {
       data.myRating ??= await database.getUserRatingForGame(game);
-      myRating.value = data.myRating!;
+      myRatingState.value = data.myRating!;
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -255,7 +311,7 @@ class _Controller {
     // Fetch and update total ratings count.
     try {
       data.totalRatings ??= await database.getGameRatingsCount(game);
-      totalRatings.value = data.totalRatings!;
+      totalRatingsState.value = data.totalRatings!;
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -269,7 +325,7 @@ class _Controller {
     // Fetch and update individual star count.
     try {
       data.stars ??= await database.getGameRatingsByStarsCount(game);
-      starsCount.value = data.stars!;
+      starsCountState.value = data.stars!;
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -301,7 +357,7 @@ class _Controller {
 
     try {
       await database.upsertGameRating(game, rating);
-      myRating.value = rating;
+      myRatingState.value = rating;
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -315,7 +371,7 @@ class _Controller {
     // Fetch and update total ratings count.
     try {
       data.totalRatings = await database.getGameRatingsCount(game);
-      totalRatings.value = data.totalRatings!;
+      totalRatingsState.value = data.totalRatings!;
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -329,7 +385,7 @@ class _Controller {
     // Fetch and update average rating.
     try {
       data.averageRating = await database.getAverageRatingByGame(game);
-      averageRating.value = data.averageRating!;
+      averageRatingState.value = data.averageRating!;
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -343,7 +399,7 @@ class _Controller {
     // Fetch and update individual star count.
     try {
       data.stars = await database.getGameRatingsByStarsCount(game);
-      starsCount.value = data.stars!;
+      starsCountState.value = data.stars!;
     }
     catch (error, stackTrace) {
       Logger.error.print(
