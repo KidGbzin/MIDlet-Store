@@ -50,22 +50,38 @@ class _ReleaseModalState extends State<_ReleaseModal> {
           },
         ),
       ],
-      child: Section(
-        description: AppLocalizations.of(context)!.sectionFilterReleaseYearDescription,
-        title: AppLocalizations.of(context)!.sectionFilterReleaseYear,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-          child: Wrap(
-            runSpacing: 7.5,
-            spacing: 7.5,
-            children: widget.controller.getReleaseYears().map(_tile).toList(),
+      child: SingleChildScrollView(
+        child: Section(
+          description: AppLocalizations.of(context)!.sectionFilterReleaseYearDescription,
+          title: AppLocalizations.of(context)!.sectionFilterReleaseYear,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+            child: GridView(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 7.5,
+                crossAxisSpacing: 7.5,
+                childAspectRatio: 1.25,
+              ),
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: widget.controller.getReleaseYears().entries.map(_tile).toList(),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _tile(int releaseYear) {
+  /// Builds a tile for each year that can be selected or deselected.
+  ///
+  /// The tile displays the year and the number of games released in that year.
+  /// When tapped, the tile toggles the year's selection state in the [widget.controller.selectedReleaseYearState].
+  /// The tile also displays a visual indicator when the year is selected.
+  Widget _tile(MapEntry<int, int> entry) {
+    final int releaseYear = entry.key;
+    final int count = entry.value;
+  
     return InkWell(
       borderRadius: kBorderRadius,
       onTap: () {
@@ -78,33 +94,34 @@ class _ReleaseModalState extends State<_ReleaseModal> {
       child: ValueListenableBuilder(
         valueListenable: widget.controller.selectedReleaseYearState,
         builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
-          return FittedBox(
-            child: Ink(
-              decoration: BoxDecoration(
-                borderRadius: kBorderRadius,
-                color: selectedReleaseYear == releaseYear
-                  ? ColorEnumeration.primary.value.withAlpha(190)
-                  : ColorEnumeration.foreground.value,
-              ),
-              height: 30,
-              padding: const EdgeInsets.fromLTRB(12.5, 0, 12.5, 0),
-              child: Row(
-                spacing: 7.5,
-                children: <Widget> [
-                  Icon(
-                    HugeIcons.strokeRoundedCalendar01,
-                    color: ColorEnumeration.grey.value,
-                    size: 18,
+          return Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: selectedReleaseYear == releaseYear
+                ? ColorEnumeration.primary.value.withAlpha(190)
+                : ColorEnumeration.foreground.value,
+            ),
+            
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 7.5,
+              children: <Widget> [
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "$releaseYear",
+                    style: TypographyEnumeration.rating(ColorEnumeration.grey).style,
                   ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      releaseYear.toString(),
-                      style: TypographyEnumeration.body(ColorEnumeration.grey).style,
-                    ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Releases: $count",
+                    style: TypographyEnumeration.body(ColorEnumeration.grey).style,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },

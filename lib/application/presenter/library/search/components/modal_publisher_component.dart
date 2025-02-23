@@ -49,21 +49,23 @@ class _PublisherModalState extends State<_PublisherModal> {
           },
         ),
       ],
-      child: Section(
-        description: AppLocalizations.of(context)!.sectionFilterPublisherDescription,
-        title: AppLocalizations.of(context)!.sectionFilterPublisher,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-          child: GridView(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 7.5,
-              crossAxisSpacing: 7.5,
-              childAspectRatio: 1.25,
+      child: SingleChildScrollView(
+        child: Section(
+          description: AppLocalizations.of(context)!.sectionFilterPublisherDescription,
+          title: AppLocalizations.of(context)!.sectionFilterPublisher,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+            child: GridView(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 7.5,
+                crossAxisSpacing: 7.5,
+                childAspectRatio: 1.25,
+              ),
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: widget.controller.getPublishers().entries.map(_tile).toList(),
             ),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            children: widget.controller.getPublishers().map(_tile).toList(),
           ),
         ),
       ),
@@ -73,49 +75,69 @@ class _PublisherModalState extends State<_PublisherModal> {
   /// Builds a tile for each publisher with a toggle state.
   ///
   /// The tile displays the publisher's logo and changes color when selected.
-  Widget _tile(String publisher) {
-    return InkWell(
-      borderRadius: kBorderRadius,
-      onTap: () {
+  Widget _tile(MapEntry<String, int> entry) {
+    final String publisher = entry.key;
 
-        // Toggle the publisher selection on tap.
-        widget.controller.selectedPublisherState.value == publisher
-          ? widget.controller.selectedPublisherState.value = null
-          : widget.controller.selectedPublisherState.value = publisher;
-      },
-      child: ValueListenableBuilder(
-        valueListenable: widget.controller.selectedPublisherState,
-        builder: (BuildContext context, String? isSelected, Widget? _) {
-          return AspectRatio(
-            aspectRatio: 1.25,
-            child: Ink(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: isSelected == publisher
-                  ? ColorEnumeration.primary.value.withAlpha(190)
-                  : ColorEnumeration.foreground.value,
-              ),
-              padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
-              child: Image.asset(
-                'assets/publishers/$publisher.png',
-                filterQuality: FilterQuality.high,
-                errorBuilder: (BuildContext context, Object error, StackTrace? _) {
-                  return Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      publisher,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TypographyEnumeration.body(ColorEnumeration.grey).style,
-                      textAlign: TextAlign.center,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return InkWell(
+          borderRadius: kBorderRadius,
+          onTap: () {
+        
+            // Toggle the publisher selection on tap.
+            widget.controller.selectedPublisherState.value == publisher
+              ? widget.controller.selectedPublisherState.value = null
+              : widget.controller.selectedPublisherState.value = publisher;
+          },
+          child: ValueListenableBuilder(
+            valueListenable: widget.controller.selectedPublisherState,
+            builder: (BuildContext context, String? isSelected, Widget? _) {
+              return Ink(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: isSelected == publisher
+                    ? ColorEnumeration.primary.value.withAlpha(190)
+                    : ColorEnumeration.foreground.value,
+                ),
+                
+                child: Column(
+                  children: <Widget> [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                        child: Image.asset(
+                          'assets/publishers/$publisher.png',
+                          filterQuality: FilterQuality.high,
+                          errorBuilder: (BuildContext context, Object error, StackTrace? _) {
+                            return Icon(
+                              HugeIcons.strokeRoundedImage02,
+                              color: ColorEnumeration.grey.value,
+                              size: 18,
+                            );
+                          },
+                        ),
+                      ),
                     ),
-                  );
-                },
-              ),
-            ),
-          );
-        },
-      ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 7.5, 15, 15),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          publisher,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      }
     );
   }
 }

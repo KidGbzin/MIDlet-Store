@@ -23,12 +23,22 @@ class _CategoriesModal extends StatefulWidget {
 
 class _CategoriesModalState extends State<_CategoriesModal> {
   late final List<String> _initialState;
+  late final AppLocalizations localizations;
 
   @override
   void initState() {
     _initialState = widget.controller.selectedTagsState.value;
+    
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
+    
+
+    super.didChangeDependencies();
   }
 
 
@@ -52,15 +62,17 @@ class _CategoriesModalState extends State<_CategoriesModal> {
           },
         ),
       ],
-      child: Section(
-        description: AppLocalizations.of(context)!.sectionFilterCategoriesDescription,
-        title: AppLocalizations.of(context)!.sectionFilterCategories,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-          child: Wrap(
-            runSpacing: 7.5,
-            spacing: 7.5,
-            children: TagEnumeration.values.map(_tile).toList(),
+      child: SingleChildScrollView(
+        child: Section(
+          description: localizations.sectionFilterCategoriesDescription,
+          title: localizations.sectionFilterCategories,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+            child: Wrap(
+              runSpacing: 7.5,
+              spacing: 7.5,
+              children: widget.controller.getCategories(localizations).map(_tile).toList(),
+            ),
           ),
         ),
       ),
@@ -73,7 +85,11 @@ class _CategoriesModalState extends State<_CategoriesModal> {
   /// The tile displays the tag's icon and name.
   /// 
   /// The tile also displays a visual indicator when the tag is selected.
-  Widget _tile(TagEnumeration tag) {
+  Widget _tile((TagEnumeration, String, int) record) {
+    final TagEnumeration tag = record.$1;
+    final String name = record.$2;
+    final int count = record.$3;
+
     final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.selectedTagsState.value.contains(tag.code));
 
     return InkWell(
@@ -116,7 +132,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      tag.fromLocale(AppLocalizations.of(context)!),
+                      "$name • $count",
                       style: TypographyEnumeration.body(ColorEnumeration.grey).style,
                     ),
                   ),
