@@ -173,6 +173,9 @@
     "tagAdventure": "Adventure",
     "@tagAdventure": {},
 
+    "tagBreakout": "Breakout",
+    "@tagBreakout": {},
+
     "tagCasual": "Casual",
     "@tagCasual": {},
 

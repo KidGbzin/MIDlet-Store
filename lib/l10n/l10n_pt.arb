@@ -173,6 +173,9 @@
     "tagAdventure": "Aventura",
     "@tagAdventure": {},
 
+    "tagBreakout": "Quebra-Blocos",
+    "@tagBreakout": {},
+
     "tagCasual": "Casual",
     "@tagCasual": {},
 
