@@ -85,6 +85,7 @@ class _SearchState extends State<_SearchView> {
               alignment: WrapAlignment.start,
               crossAxisAlignment: WrapCrossAlignment.start,
               spacing: 7.5,
+              runSpacing: 7.5,
               children: <Widget> [
                 ValueListenableBuilder(
                   valueListenable: widget.controller.selectedTagsState,
