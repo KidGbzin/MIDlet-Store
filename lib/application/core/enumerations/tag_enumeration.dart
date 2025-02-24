@@ -9,7 +9,7 @@ enum TagEnumeration {
     icon: HugeIcons.strokeRoundedEnergy,
   ),
   adventure(
-    code: 'Adventurer',
+    code: 'Adventure',
     icon: HugeIcons.strokeRoundedDiscoverCircle,
   ),
   breakout(
@@ -115,6 +115,7 @@ enum TagEnumeration {
     final Map<String, String> table = <String, String> {
       TagEnumeration.action.code: localizations.tagAction,
       TagEnumeration.adventure.code: localizations.tagAdventure,
+      TagEnumeration.breakout.code: localizations.tagBreakout,
       TagEnumeration.casual.code: localizations.tagCasual,
       TagEnumeration.error.code: "???",
       TagEnumeration.fighting.code: localizations.tagFighting,
@@ -143,6 +144,7 @@ enum TagEnumeration {
     final Map<String, String> table = <String, String> {
       TagEnumeration.action.code: localizations.tagAction,
       TagEnumeration.adventure.code: localizations.tagAdventure,
+      TagEnumeration.breakout.code: localizations.tagBreakout,
       TagEnumeration.casual.code: localizations.tagCasual,
       TagEnumeration.fighting.code: localizations.tagFighting,
       TagEnumeration.football.code: localizations.tagFootball,
