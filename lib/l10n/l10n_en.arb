@@ -158,10 +158,10 @@
     "sectionUserRating": "YOUR RATING",
     "@sectionUserRating": {},
 
-    "sectionUserRatingDescriptionRated": "You haven't rated this game yet. Share your opinion by giving it a rating!",
+    "sectionUserRatingDescriptionRated": "Looks like you've already rated this game. Would you like to update your rating?",
     "@sectionUserRatingDescriptionRated": {},
 
-    "sectionUserRatingDescriptionNotRated": "Looks like you've already rated this game. Would you like to update your rating?",
+    "sectionUserRatingDescriptionNotRated": "You haven't rated this game yet. Share your opinion by giving it a rating!",
     "@sectionUserRatingDescriptionNotRated": {},
 
     "tag3D": "3D",

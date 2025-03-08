@@ -158,10 +158,10 @@
     "sectionUserRating": "SUA AVALIAÇÃO",
     "@sectionUserRating": {},
 
-    "sectionUserRatingDescriptionRated": "Você ainda não avaliou este jogo. Compartilhe sua opinião dando uma nota!",
+    "sectionUserRatingDescriptionRated": "Parece que você já avaliou este jogo. Deseja atualizar sua avaliação?",
     "@sectionUserRatingDescriptionRated": {},
 
-    "sectionUserRatingDescriptionNotRated": "Parece que você já avaliou este jogo. Deseja atualizar sua avaliação?",
+    "sectionUserRatingDescriptionNotRated": "Você ainda não avaliou este jogo. Compartilhe sua opinião dando uma nota!",
     "@sectionUserRatingDescriptionNotRated": {},
 
     "tag3D": "3D",

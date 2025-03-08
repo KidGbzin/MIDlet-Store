@@ -158,10 +158,10 @@
     "sectionUserRating": "PENILAIAN ANDA",
     "@sectionUserRating": {},
 
-    "sectionUserRatingDescriptionRated": "Anda belum memberikan penilaian untuk gim ini. Bagikan pendapat Anda dengan memberikan penilaian!",
+    "sectionUserRatingDescriptionRated": "Sepertinya Anda sudah memberikan penilaian untuk gim ini. Apakah Anda ingin memperbarui penilaian Anda?",
     "@sectionUserRatingDescriptionRated": {},
 
-    "sectionUserRatingDescriptionNotRated": "Sepertinya Anda sudah memberikan penilaian untuk gim ini. Apakah Anda ingin memperbarui penilaian Anda?",
+    "sectionUserRatingDescriptionNotRated": "Anda belum memberikan penilaian untuk gim ini. Bagikan pendapat Anda dengan memberikan penilaian!",
     "@sectionUserRatingDescriptionNotRated": {},
 
     "tag3D": "3D",
