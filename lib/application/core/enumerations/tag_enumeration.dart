@@ -4,88 +4,29 @@ import 'package:hugeicons/hugeicons.dart';
 
 /// An enumeration of all game tags present in the application.
 enum TagEnumeration {
-  action(
-    code: 'Action',
-    icon: HugeIcons.strokeRoundedEnergy,
-  ),
-  adventure(
-    code: 'Adventure',
-    icon: HugeIcons.strokeRoundedDiscoverCircle,
-  ),
-  breakout(
-    code: 'Breakout',
-    icon: HugeIcons.strokeRoundedBlockGame,
-  ),
-  casual(
-    code: 'Casual',
-    icon: HugeIcons.strokeRoundedPacman02,
-  ),
-  error(
-    code: '???',
-    icon: HugeIcons.strokeRoundedUnavailable,
-  ),
-  fighting(
-    code: 'Fighting',
-    icon: HugeIcons.strokeRoundedBoxingGlove01,
-  ),
-  football(
-    code: 'Football',
-    icon: HugeIcons.strokeRoundedFootballPitch,
-  ),
-  openWorld(
-    code: 'Open World',
-    icon: HugeIcons.strokeRoundedLocation04,
-  ),
-  platformer(
-    code: 'Platformer',
-    icon: HugeIcons.strokeRoundedSuperMario,
-  ),
-  pointAndClick(
-    code: "Point 'n' Click",
-    icon: HugeIcons.strokeRoundedTouch02,
-  ),
-  puzzle(
-    code: 'Puzzle',
-    icon: HugeIcons.strokeRoundedPuzzle,
-  ),
-  racing(
-    code: 'Racing',
-    icon: HugeIcons.strokeRoundedCar02,
-  ),
-  shooter(
-    code: 'Shooter',
-    icon: HugeIcons.strokeRoundedTarget03,
-  ),
-  sports(
-    code: 'Sports',
-    icon: HugeIcons.strokeRoundedWhistle,
-  ),
-  stealth(
-    code: 'Stealth',
-    icon: HugeIcons.strokeRoundedEar,
-  ),
-  survivalHorror(
-    code: 'Survival Horror',
-    icon: HugeIcons.strokeRoundedDna,
-  ),
-  terror(
-    code: 'Terror',
-    icon: HugeIcons.strokeRoundedDanger,
-  ),
-  threeD(
-    code: '3D',
-    icon: HugeIcons.strokeRoundedThreeDView,
-  ),
-  towerDefense(
-    code: 'Tower Defense',
-    icon: HugeIcons.strokeRoundedCastle01,
-  );
+  action('Action', HugeIcons.strokeRoundedEnergy),
+  adventure('Adventure', HugeIcons.strokeRoundedDiscoverCircle),
+  breakout('Breakout', HugeIcons.strokeRoundedBlockGame),
+  casual('Casual', HugeIcons.strokeRoundedPacman02),
+  driving('Driving', HugeIcons.strokeRoundedSteering),
+  extremeSports('Extreme Sports', HugeIcons.strokeRoundedFlyingHuman),
+  error('???', HugeIcons.strokeRoundedUnavailable),
+  fighting('Fighting', HugeIcons.strokeRoundedBoxingGlove01),
+  football('Football', HugeIcons.strokeRoundedFootballPitch),
+  openWorld('Open World', HugeIcons.strokeRoundedLocation04),
+  platformer('Platformer', HugeIcons.strokeRoundedSuperMario),
+  pointAndClick("Point 'n' Click", HugeIcons.strokeRoundedTouch02),
+  puzzle('Puzzle', HugeIcons.strokeRoundedPuzzle),
+  racing('Racing', HugeIcons.strokeRoundedRacingFlag),
+  shooter('Shooter', HugeIcons.strokeRoundedTarget03),
+  sports('Sports', HugeIcons.strokeRoundedWhistle),
+  stealth('Stealth', HugeIcons.strokeRoundedEar),
+  survivalHorror('Survival Horror', HugeIcons.strokeRoundedDna),
+  terror('Terror', HugeIcons.strokeRoundedDanger),
+  threeD('3D', HugeIcons.strokeRoundedThreeDView),
+  towerDefense('Tower Defense', HugeIcons.strokeRoundedCastle01);
 
-  /// Creates a [TagEnumeration] with the given properties.
-  const TagEnumeration({
-    required this.code,
-    required this.icon,
-  });
+  const TagEnumeration(this.code, this.icon);
 
   /// The tag's icon.
   ///
@@ -103,7 +44,8 @@ enum TagEnumeration {
   static TagEnumeration fromCode(String code) {
     try {
       return TagEnumeration.values.firstWhere((element) => element.code == code);
-    } catch (_) {
+    }
+    catch (_) {
       return TagEnumeration.error;
     }
   }
@@ -117,6 +59,8 @@ enum TagEnumeration {
       TagEnumeration.adventure.code: localizations.tagAdventure,
       TagEnumeration.breakout.code: localizations.tagBreakout,
       TagEnumeration.casual.code: localizations.tagCasual,
+      TagEnumeration.driving.code: localizations.tagDriving,
+      TagEnumeration.extremeSports.code: localizations.tagExtremeSports,
       TagEnumeration.error.code: "???",
       TagEnumeration.fighting.code: localizations.tagFighting,
       TagEnumeration.football.code: localizations.tagFootball,
@@ -146,6 +90,8 @@ enum TagEnumeration {
       TagEnumeration.adventure.code: localizations.tagAdventure,
       TagEnumeration.breakout.code: localizations.tagBreakout,
       TagEnumeration.casual.code: localizations.tagCasual,
+      TagEnumeration.driving.code: localizations.tagDriving,
+      TagEnumeration.extremeSports.code: localizations.tagExtremeSports,
       TagEnumeration.fighting.code: localizations.tagFighting,
       TagEnumeration.football.code: localizations.tagFootball,
       TagEnumeration.openWorld.code: localizations.tagOpenWorld,

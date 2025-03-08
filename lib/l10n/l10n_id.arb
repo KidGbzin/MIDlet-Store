@@ -179,6 +179,12 @@
     "tagCasual": "Santai",
     "@tagCasual": {},
 
+    "tagDriving": "Mengemudi",
+    "@tagDriving": {},
+
+    "tagExtremeSports": "Olahraga Ekstrem",
+    "@tagExtremeSports": {},
+
     "tagFighting": "Pertarungan",
     "@tagFighting": {},
 
