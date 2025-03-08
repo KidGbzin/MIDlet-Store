@@ -114,12 +114,23 @@ class _ReleaseModalState extends State<_ReleaseModal> {
                     style: TypographyEnumeration.rating(ColorEnumeration.grey).style,
                   ),
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Releases: $count",
-                    style: TypographyEnumeration.body(ColorEnumeration.grey).style,
-                  ),
+                Row(
+                  spacing: 7.5,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget> [
+                    Icon(
+                      HugeIcons.strokeRoundedGameController03,
+                      color: ColorEnumeration.grey.value,
+                      size: 18,
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "$count",
+                        style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

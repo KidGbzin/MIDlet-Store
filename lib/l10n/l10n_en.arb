@@ -179,6 +179,12 @@
     "tagCasual": "Casual",
     "@tagCasual": {},
 
+    "tagDriving": "Driving",
+    "@tagDriving": {},
+
+    "tagExtremeSports": "Extreme Sports",
+    "@tagExtremeSports": {},
+
     "tagFighting": "Fighting",
     "@tagFighting": {},
 
