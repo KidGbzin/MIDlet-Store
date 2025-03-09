@@ -71,9 +71,7 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
               onTap: context.pop,
             ),
             const Spacer(),
-            _BookmarkButton(
-              controller: widget.controller,
-            ),
+            _BookmarkButton(widget.controller),
           ],
         ),
       ),
@@ -104,14 +102,14 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
           _RelatedGamesSection(
             collection: widget.controller.getTopPublisherGames(),
             controller: widget.controller,
-            description: localizations.sectionPublisherDescription.replaceFirst('_', widget.controller.game.publisher),
+            description: localizations.sectionPublisherDescription.replaceFirst('\$1', widget.controller.game.publisher),
             title: widget.controller.game.publisher,
           ),
           _divider(),
           _RelatedGamesSection(
             collection: widget.controller.getTopRelatedGames(),
             controller: widget.controller,
-            description: localizations.sectionRelatedGamesDescription.replaceFirst('_', gameTitle),
+            description: localizations.sectionRelatedGamesDescription.replaceFirst('\$1', gameTitle),
             title: localizations.sectionRelatedGames,
           ),
         ],

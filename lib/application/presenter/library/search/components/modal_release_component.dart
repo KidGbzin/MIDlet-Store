@@ -21,12 +21,20 @@ class _ReleaseModal extends StatefulWidget {
 
 class _ReleaseModalState extends State<_ReleaseModal> {
   late final int? _initialState;
+  late final AppLocalizations localizations;
 
   @override
   void initState() {
     _initialState = widget.controller.selectedReleaseYearState.value;
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
+
+    super.didChangeDependencies();
   }
 
 
@@ -45,15 +53,15 @@ class _ReleaseModalState extends State<_ReleaseModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedTick02,
           onTap: () {
-            widget.controller.applyFilters();
+            widget.controller.applyFilters(context, localizations);
             context.pop();
           },
         ),
       ],
       child: SingleChildScrollView(
         child: Section(
-          description: AppLocalizations.of(context)!.sectionFilterReleaseYearDescription,
-          title: AppLocalizations.of(context)!.sectionFilterReleaseYear,
+          description: localizations.sectionFilterReleaseYearDescription,
+          title: localizations.sectionFilterReleaseYear,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: GridView(

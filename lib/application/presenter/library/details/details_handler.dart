@@ -24,6 +24,7 @@ import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
+import '../../../core/extensions/messenger_extension.dart';
 import '../../../repositories/bucket_repository.dart';
 import '../../../repositories/hive_repository.dart';
 import '../../../repositories/database_repository.dart';
