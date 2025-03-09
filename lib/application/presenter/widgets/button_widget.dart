@@ -4,6 +4,8 @@ import '../../../globals.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 
+// BUTTON WIDGET 🧩: ============================================================================================================================================================ //
+
 /// A button widget that can be used to create different types of buttons.
 ///
 /// The [ButtonWidget] widget is a wrapper around the [InkWell] widget and provides some default styling and behaviors for creating buttons.
@@ -68,7 +70,7 @@ class ButtonWidget extends StatelessWidget {
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.5),
+            borderRadius: kBorderRadius,
             color: color ?? ColorEnumeration.primary.value,
           ),
           height: 45,
@@ -89,7 +91,5 @@ class ButtonWidget extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return child;
-  }
+  Widget build(BuildContext context) => child;
 }
