@@ -238,11 +238,21 @@ class _Controller {
   /// Clears all active filters applied to the games list.
   ///
   /// This method resets the state of the game list and its filters, returning the list to its unfiltered state.
-  void clearFilters() {
+  void clearFilters(BuildContext context, AppLocalizations localizations, bool showMessage) {
     gameListState.value = _allGames;
     selectedPublisherState.value = null;
     selectedTagsState.value.clear();
+    selectedReleaseYearState.value = null;
     textController.clear();
+
+    if (showMessage) {
+      final String message = localizations.messageFiltersCleared.replaceAllMapped(RegExp(r'\$1'), (match) => hive.games.length.toString());
+
+      ScaffoldMessenger.of(context).showSnackBar(Messenger(
+        message: message,
+        icon: HugeIcons.strokeRoundedFilterRemove,
+      ));
+    }
   }
 
   // SEARCH 🧩: ================================================================================================================================================================= //

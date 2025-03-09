@@ -52,27 +52,12 @@ class _SearchState extends State<_SearchView> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(15),
-                child: _SearchBar(
-                  controller: widget.controller,
-                ),
+                child: _SearchBar(widget.controller),
               ),
             ),
-            SizedBox.square(
-              dimension: 40,
-              child: ValueListenableBuilder(
-                valueListenable: widget.controller.gameListState,
-                builder: (BuildContext context, List<Game> games, Widget? _) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget> [
-                      Text(
-                        games.length.toString(),
-                        style: TypographyEnumeration.body(ColorEnumeration.elements).style,
-                      ),
-                    ],
-                  );
-                },
-              ),
+            ButtonWidget.icon(
+              icon: HugeIcons.strokeRoundedFilterRemove,
+              onTap: () => widget.controller.clearFilters(context, localizations, true),
             ),
           ],
         ),
