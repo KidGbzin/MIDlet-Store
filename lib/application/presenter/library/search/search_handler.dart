@@ -16,6 +16,8 @@ import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/tag_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
+import '../../../core/extensions/messenger_extension.dart';
+
 import '../../../repositories/bucket_repository.dart';
 import '../../../repositories/database_repository.dart';
 import '../../../repositories/hive_repository.dart';
@@ -37,6 +39,8 @@ part '../search/components/suggestion_overlay_component.dart';
 part '../search/views/search_view.dart';
 
 part '../search/search_controller.dart';
+
+// SEARCH HANDLER 🧩: =========================================================================================================================================================== //
 
 /// The application's search view.
 ///
@@ -90,9 +94,5 @@ class _SearchViewState extends State<Search> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return _SearchView(
-      controller: controller,
-    );
-  }
+  Widget build(BuildContext context) => _SearchView(controller);
 }

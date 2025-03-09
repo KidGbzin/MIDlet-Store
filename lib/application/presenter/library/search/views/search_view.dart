@@ -1,11 +1,15 @@
 part of '../search_handler.dart';
 
+// SEARCH VIEW 🧩: ============================================================================================================================================================== //
+
+/// The stateful widget that represents the search view.
+/// 
+/// This widget is responsible for displaying the search interface and handling user interactions.
 class _SearchView extends StatefulWidget {
 
-  const _SearchView({
-    required this.controller,
-  });
+  const _SearchView(this.controller);
 
+  /// The controller associated with the view.
   final _Controller controller;
 
   @override
@@ -13,9 +17,9 @@ class _SearchView extends StatefulWidget {
 }
 
 class _SearchState extends State<_SearchView> {
-  late ScaffoldMessengerState snackbar;
-
   late final AppLocalizations localizations;
+
+  late ScaffoldMessengerState snackbar;
 
   @override
   void didChangeDependencies() {

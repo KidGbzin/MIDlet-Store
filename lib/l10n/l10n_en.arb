@@ -92,6 +92,21 @@
     "launcherLoadingMessage04": "Authenticating with Google, please wait...",
     "@launcherLoadingMessage04": {},
 
+    "messageFiltersCleared": "Filters cleared, showing all $1 games.",
+    "@messageFiltersCleared": {},
+  
+    "messageFiltersApplied": "Filters applied, showing $1 out of $2 games.",
+    "@messageFiltersApplied": {},
+
+    "messageFiltersEmpty": "No filters applied, showing all $1 games.",
+    "@messageFiltersEmpty": {},
+  
+    "messageFavoritesAdded": "You added $1 to your favorites list.",
+    "@messageFavoritesAdded": {},
+  
+    "messageFavoritesRemoved": "You removed $1 from your favorites list.",
+    "@messageFavoritesRemoved": {},
+
     "sectionAbout": "ABOUT",
     "@sectionAbout": {},
 
@@ -140,7 +155,7 @@
     "sectionPreviewsError": "This game doesn't have any previews available.",
     "@sectionPreviewsError": {},
 
-    "sectionPublisherDescription": "Discover more games from _ that you might enjoy.",
+    "sectionPublisherDescription": "Discover more games from $1 that you might enjoy.",
     "@sectionPublisherDescription": {},
 
     "sectionReadyToInstall": "READY TO INSTALL",
@@ -152,7 +167,7 @@
     "sectionRelatedGames": "RECOMMENDED FOR YOU",
     "@sectionRelatedGames": {},
 
-    "sectionRelatedGamesDescription": "If you enjoyed _, you might also enjoy these other games.",
+    "sectionRelatedGamesDescription": "If you enjoyed $1, you might also enjoy these other games.",
     "@sectionRelatedGamesDescription": {},
 
     "sectionUserRating": "YOUR RATING",

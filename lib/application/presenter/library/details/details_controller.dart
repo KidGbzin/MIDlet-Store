@@ -154,19 +154,33 @@ class _Controller {
   /// This notifier is used in the [_BookmarkButton] component to indicate whether the game has been marked as a favorite.
   late final ValueNotifier<bool> isFavoriteState;
 
-  /// Toggles the bookmark status of the current game.
+  /// Toggles the bookmark status of the current game and updates the UI.
   ///
-  /// This function switches the game's status between favorite and non-favorite. 
-  /// If the game is currently marked as a favorite, it will be removed from the favorites cache. 
+  /// This function switches the game's status between favorite and non-favorite.
+  /// If the game is currently marked as a favorite, it will be removed from the favorites cache.
   /// If it is not marked as a favorite, it will be added to the favorites cache.
-  void toggleBookmarkStatus() {
+  /// Additionally, a message is displayed to the user indicating the change in the game's status.
+  void toggleBookmarkStatus(BuildContext context, AppLocalizations localizations) {
+    late final String message;
+    final String title = game.title.replaceFirst(' -', ':');
+
     if (isFavoriteState.value) {
       hive.favorites.remove(game);
+      message = localizations.messageFavoritesRemoved.replaceFirst('\$1', title);
     }
     else {
       hive.favorites.put(game);
+      message = localizations.messageFavoritesAdded.replaceFirst('\$1', title);
     }
+
     isFavoriteState.value = !isFavoriteState.value;
+
+    final Messenger messenger = Messenger(
+      message: message,
+      icon: HugeIcons.strokeRoundedFavourite,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(messenger);
   }
 
   // RECOMENDATIONS 🧩: ========================================================================================================================================================= //

@@ -92,6 +92,21 @@
     "launcherLoadingMessage04": "Mengautentikasi dengan Google, harap tunggu...",
     "@launcherLoadingMessage04": {},
 
+    "messageFiltersCleared": "Filter dibersihkan, menampilkan semua $1 permainan.",
+    "@messageFiltersCleared": {},
+    
+    "messageFiltersApplied": "Filter diterapkan, menampilkan $1 dari $2 permainan.",
+    "@messageFiltersApplied": {},
+    
+    "messageFavoritesAdded": "Anda menambahkan $1 ke daftar favorit Anda.",
+    "@messageFavoritesAdded": {},
+    
+    "messageFavoritesRemoved": "Anda menghapus $1 dari daftar favorit Anda.",
+    "@messageFavoritesRemoved": {},
+
+    "messageFiltersEmpty": "Tidak ada filter yang diterapkan, menampilkan semua $1 permainan.",
+    "@messageFiltersEmpty": {},
+
     "sectionAbout": "TENTANG",
     "@sectionAbout": {},
 
@@ -140,7 +155,7 @@
     "sectionPreviewsError": "Gim ini tidak memiliki pratinjau yang tersedia.",
     "@sectionPreviewsError": {},
 
-    "sectionPublisherDescription": "Temukan lebih banyak gim dari _ yang mungkin Anda sukai.",
+    "sectionPublisherDescription": "Temukan lebih banyak gim dari $1 yang mungkin Anda sukai.",
     "@sectionPublisherDescription": {},
 
     "sectionReadyToInstall": "SIAP UNTUK DIPASANG",
@@ -152,7 +167,7 @@
     "sectionRelatedGames": "REKOMENDASI UNTUK ANDA",
     "@sectionRelatedGames": {},
 
-    "sectionRelatedGamesDescription": "Jika Anda menikmati _, Anda mungkin juga akan menikmati gim-gim lainnya ini.",
+    "sectionRelatedGamesDescription": "Jika Anda menikmati $1, Anda mungkin juga akan menikmati gim-gim lainnya ini.",
     "@sectionRelatedGamesDescription": {},
 
     "sectionUserRating": "PENILAIAN ANDA",

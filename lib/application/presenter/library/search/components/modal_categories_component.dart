@@ -57,7 +57,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedTick02,
           onTap: () {
-            widget.controller.applyFilters();
+            widget.controller.applyFilters(context, localizations);
             context.pop();
           },
         ),

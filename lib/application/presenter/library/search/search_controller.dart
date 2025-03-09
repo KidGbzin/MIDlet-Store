@@ -87,6 +87,26 @@ class _Controller {
 
   // FILTERS 🧩: ================================================================================================================================================================ //
 
+  /// The current publisher filter that is actively applied.
+  ///
+  /// This [ValueNotifier] holds the selected publisher filter.
+  /// It is updated when a user selects a specific publisher to filter the list of games.
+  /// If no publisher filter is applied, its value will be `null`.
+  late final ValueNotifier<String?> selectedPublisherState;
+
+  /// The current release year filter that is actively applied.
+  ///
+  /// This [ValueNotifier] holds the selected release year filter.
+  /// It is updated when a user selects a specific year to filter the list of games.
+  /// If no release year filter is applied, its value will be `null`.
+  late final ValueNotifier<int?> selectedReleaseYearState = ValueNotifier(null);
+
+  /// The current tags applied to the filter.
+  ///
+  /// This [ValueNotifier] holds the list of active tags that the user has selected to filter the games by.
+  /// Each item in the list represents a tag that is currently active in the filter.
+  final ValueNotifier<List<String>> selectedTagsState = ValueNotifier(<String> []);
+
   /// Retrieves a list of all unique tags from the local game collection, along with their occurrence count.
   ///
   /// This function iterates through the local game collection and retrieves a list of all unique tags.
@@ -103,13 +123,12 @@ class _Controller {
   
     for (int index = 0; index < hive.games.length; index++) {
       final List<String> tags = hive.games.fromIndex(index).tags;
-  
-      for (int tagIndex = 0; tagIndex < tags.length; tagIndex++) {
-        final String tag = tags[tagIndex];
-  
+
+      for (final String tag in tags) {
         if (!table.containsKey(tag)) {
           table[tag] = 1;
-        } else {
+        }
+        else {
           table[tag] = table[tag]! + 1;
         }
       }
@@ -178,42 +197,42 @@ class _Controller {
 
     return Map.fromEntries(yearsSorted);
   }
-  
-  /// The current release year filter that is actively applied.
-  ///
-  /// This [ValueNotifier] holds the selected release year filter.
-  /// It is updated when a user selects a specific year to filter the list of games.
-  /// If no release year filter is applied, its value will be `null`.
-  late final ValueNotifier<int?> selectedReleaseYearState = ValueNotifier(null);
-
-  /// The current publisher filter that is actively applied.
-  ///
-  /// This [ValueNotifier] holds the selected publisher filter.
-  /// It is updated when a user selects a specific publisher to filter the list of games.
-  /// If no publisher filter is applied, its value will be `null`.
-  late final ValueNotifier<String?> selectedPublisherState;
-
-  /// The current tags applied to the filter.
-  ///
-  /// This [ValueNotifier] holds the list of active tags that the user has selected to filter the games by.
-  /// Each item in the list represents a tag that is currently active in the filter.
-  final ValueNotifier<List<String>> selectedTagsState = ValueNotifier(<String> []);
 
   /// Applies the currently active filters to the list of games.
   ///
   /// This method filters the [_allGames] list based on the active publisher and tag filters, and updates the [gameListState] to reflect the filtered list.
   /// It is typically used after the user finishes selecting filters in the [ModalWidget] widget.
   /// If no filters are applied, the list is reset to its original, unfiltered state.
-  void applyFilters() {
+  void applyFilters(BuildContext context, AppLocalizations localizations) {
     textController.clear();
 
-    gameListState.value = _allGames.where((element) {
-      final bool matchesPublisher = selectedPublisherState.value == null || element.publisher == selectedPublisherState.value;
-      final bool matchesReleaseYear = selectedReleaseYearState.value == null || element.release == selectedReleaseYearState.value;
-      final bool matchesTags = selectedTagsState.value.isEmpty || selectedTagsState.value.every((tag) => element.tags.contains(tag));
+    gameListState.value = _allGames.where((game) {
+      final bool matchesPublisher = selectedPublisherState.value == null || game.publisher == selectedPublisherState.value;
+      final bool matchesReleaseYear = selectedReleaseYearState.value == null || game.release == selectedReleaseYearState.value;
+      final bool matchesTags = selectedTagsState.value.isEmpty || selectedTagsState.value.every((tag) => game.tags.contains(tag));
 
       return matchesPublisher && matchesTags && matchesReleaseYear;
     }).toList();
+
+    final String message;
+
+    if (selectedPublisherState.value == null && selectedTagsState.value.isEmpty && selectedReleaseYearState.value == null) {
+      message = localizations.messageFiltersEmpty.replaceFirst('\$1', '${hive.games.length}');
+    }
+
+    else {
+      message = localizations.messageFiltersApplied.replaceAllMapped(RegExp(r'\$1|\$2'), (match) {
+        return <String, String> {
+          "\$1": gameListState.value.length.toString(),
+          "\$2": hive.games.length.toString(),
+        } [match[0]]!;
+      });
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(Messenger(
+      message: message,
+      icon: HugeIcons.strokeRoundedFilter,
+    ));
   }
 
   /// Clears all active filters applied to the games list.
