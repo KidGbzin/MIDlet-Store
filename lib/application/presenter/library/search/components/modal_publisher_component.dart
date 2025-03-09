@@ -19,6 +19,7 @@ class _PublisherModal extends StatefulWidget {
 
 class _PublisherModalState extends State<_PublisherModal> {
   late final String? _initialState;
+  late final AppLocalizations localizations;
 
   /// The state is initialized with the initial value of the selected publisher,
   /// which is used to reset the selected publisher when the user cancels the modal.
@@ -27,6 +28,13 @@ class _PublisherModalState extends State<_PublisherModal> {
     _initialState = widget.controller.selectedPublisherState.value;
   
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
+    
+    super.didChangeDependencies();
   }
 
   @override
@@ -44,7 +52,7 @@ class _PublisherModalState extends State<_PublisherModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedTick02,
           onTap: () {
-            widget.controller.applyFilters();
+            widget.controller.applyFilters(context, localizations);
             context.pop();
           },
         ),
