@@ -42,12 +42,12 @@ class _FilterButton extends StatelessWidget {
     return Material(
       color: ColorEnumeration.transparent.value,
       child: InkWell(
-        borderRadius: kBorderRadius,
+        borderRadius: gBorderRadius,
         onTap: onTap,
         child: FittedBox(
           child: Ink(
             decoration: BoxDecoration(
-              borderRadius: kBorderRadius,
+              borderRadius: gBorderRadius,
               color: color,
             ),
             height: 30,

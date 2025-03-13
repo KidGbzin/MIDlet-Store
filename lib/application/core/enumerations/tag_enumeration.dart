@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n_localizations.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-/// An enumeration of all game tags present in the application.
+import '../../../../l10n/l10n_localizations.dart';
+
+// TAG ENUMERATION 🏷️: ========================================================================================================================================================== //
+
+/// An enumeration representing various game tags used in the application.
+///
+/// Each tag corresponds to a specific category or genre of games, such as action, adventure, or puzzle.
+/// These tags are utilized for organizing and categorizing games, providing users with a better understanding of the game's content.
 enum TagEnumeration {
   action('Action', HugeIcons.strokeRoundedEnergy),
   adventure('Adventure', HugeIcons.strokeRoundedDiscoverCircle),

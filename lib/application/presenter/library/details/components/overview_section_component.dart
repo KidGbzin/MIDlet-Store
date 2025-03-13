@@ -1,14 +1,14 @@
 part of '../details_handler.dart';
 
+// OVERVIEW SECTION 📄: ========================================================================================================================================================= //
+
 /// A section widget displaying the game overview, including the release date, publisher logo, and average rating.
 ///
 /// This widget consists of three main sections: release information, publisher details, and the average rating.
 /// Each section is clickable, with the rating section triggering a modal for submitting ratings.
 class _OverviewSection extends StatefulWidget {
 
-  const _OverviewSection({
-    required this.controller,
-  });
+  const _OverviewSection(this.controller);
 
   /// The controller that manages the game data.
   final _Controller controller;
@@ -25,7 +25,7 @@ class _OverviewSectionState extends State<_OverviewSection> {
       height: 125,
       padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
       child: Row(
-        children: <Widget>[
+        children: <Widget> [
           Expanded(
             child: _buildReleaseLabel(),
           ),
@@ -45,9 +45,7 @@ class _OverviewSectionState extends State<_OverviewSection> {
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: widget.controller.averageRatingState,
-              builder: (BuildContext context, double averageRating, Widget? _) {
-                return _buildRatingLabel(averageRating);
-              },
+              builder: (BuildContext context, double averageRating, Widget? _) =>_buildRatingLabel(averageRating),
             ),
           ),
         ],
@@ -82,11 +80,11 @@ class _OverviewSectionState extends State<_OverviewSection> {
   /// When tapped, it navigates to the search page with the publisher's name as a search query.
   Widget _buildPublisherLabel() {
     return InkWell(
-      borderRadius: kBorderRadius,
+      borderRadius: gBorderRadius,
       onTap: () {
-        context.push(
-          '/search',
-          extra: widget.controller.game.publisher,
+        context.showSearch(
+          publisher: widget.controller.game.publisher,
+          replace: false,
         );
       },
       child: Column(

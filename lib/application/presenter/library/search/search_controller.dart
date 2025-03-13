@@ -229,7 +229,7 @@ class _Controller {
       });
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(Messenger(
+    ScaffoldMessenger.of(context).showSnackBar(MessengerExtension(
       message: message,
       icon: HugeIcons.strokeRoundedFilter,
     ));
@@ -248,7 +248,7 @@ class _Controller {
     if (showMessage) {
       final String message = localizations.messageFiltersCleared.replaceAllMapped(RegExp(r'\$1'), (match) => hive.games.length.toString());
 
-      ScaffoldMessenger.of(context).showSnackBar(Messenger(
+      ScaffoldMessenger.of(context).showSnackBar(MessengerExtension(
         message: message,
         icon: HugeIcons.strokeRoundedFilterRemove,
       ));

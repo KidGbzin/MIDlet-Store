@@ -1,11 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:midlet_store/globals.dart';
+
+import '../../core/configuration/global_configuration.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 
-// DIALOG WIDGET 🧩: ============================================================================================================================================================ //
+// DIALOG WIDGET 💬: ============================================================================================================================================================ //
 
 /// The father of all application dialogs.
 /// 
@@ -47,7 +48,7 @@ class DialogWidget extends StatelessWidget {
         backgroundColor: color ?? ColorEnumeration.background.value,
         insetPadding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: kBorderRadius,
+          borderRadius: gBorderRadius,
         ),
         child: Container(
           constraints: BoxConstraints(

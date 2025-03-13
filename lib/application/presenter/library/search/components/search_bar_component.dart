@@ -61,7 +61,7 @@ class _SearchBarState extends State<_SearchBar> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: kBorderRadius,
+        borderRadius: gBorderRadius,
         color: ColorEnumeration.foreground.value,
       ),
       height: 40,

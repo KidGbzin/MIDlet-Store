@@ -25,7 +25,12 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
+/android/app/.cxx
 /build/
+
+# Localization generated files related:
+/lib/l10n/l10n_localizations.dart
+/lib/l10n/l10n_localizations_*.dart
 
 # Symbolication related:
 app.*.symbols

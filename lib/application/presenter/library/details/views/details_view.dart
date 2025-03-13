@@ -1,11 +1,15 @@
 part of '../details_handler.dart';
 
+// DETAILS VIEW 🧩: ============================================================================================================================================================= //
+
+/// The main view for the game details page.
+/// 
+/// This view displays detailed information about a specific game, including its cover, title, description, and additional data.
 class _DetailsView extends StatefulWidget {
 
-  const _DetailsView({
-    required this.controller,
-  });
+  const _DetailsView(this.controller);
 
+  /// The controller for the game details page.
   final _Controller controller;
 
   @override
@@ -13,10 +17,11 @@ class _DetailsView extends StatefulWidget {
 }
 
 class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver {
-  late ScaffoldMessengerState snackbar;
-
   late final String gameTitle;
   late final AppLocalizations localizations;
+
+  late ScaffoldMessengerState snackbar;
+
 
   @override
   void initState() {
@@ -28,14 +33,11 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // If the application returns to resume state, then resume de music player.
     if (state == AppLifecycleState.resumed) {
-      widget.controller.resumeAudio();
+      widget.controller.resumeAudio(); // If the application returns to resume state, then resume de music player.
     }
-
-    // If the application is not in the main view, then stops the music player.
     else {
-      widget.controller.pauseAudio();
+      widget.controller.pauseAudio(); // If the application is not in the main view, then stops the music player.
     }
 
     super.didChangeAppLifecycleState(state);
@@ -82,30 +84,28 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
           _Cover(
             controller: widget.controller,
           ),
-          _divider(),
-          _OverviewSection(
-            controller: widget.controller,
-          ),
-          _divider(),
+          gDivider,
+          _OverviewSection(widget.controller),
+          gDivider,
           _About(
             description: widget.controller.game.description(Localizations.localeOf(context)),
           ),
-          _divider(),
+          gDivider,
           _InstallationSection(
             controller: widget.controller,
           ),
-          _divider(),
+          gDivider,
           _PreviewsSection(
             controller: widget.controller,
           ),
-          _divider(),
+          gDivider,
           _RelatedGamesSection(
             collection: widget.controller.getTopPublisherGames(),
             controller: widget.controller,
             description: localizations.sectionPublisherDescription.replaceFirst('\$1', widget.controller.game.publisher),
             title: widget.controller.game.publisher,
           ),
-          _divider(),
+          gDivider,
           _RelatedGamesSection(
             collection: widget.controller.getTopRelatedGames(),
             controller: widget.controller,
@@ -114,14 +114,6 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
           ),
         ],
       ),
-    );
-  }
-
-  Widget _divider() {
-    return Divider(
-      color: ColorEnumeration.divider.value,
-      height: 1,
-      thickness: 1,
     );
   }
 }
