@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../globals.dart';
+import '../../core/configuration/global_configuration.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 
@@ -29,11 +29,11 @@ class ButtonWidget extends StatelessWidget {
     return ButtonWidget._(
       onTap: onTap,
       child: InkWell(
-        borderRadius: kBorderRadius,
+        borderRadius: gBorderRadius,
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: kBorderRadius,
+            borderRadius: gBorderRadius,
             color: ColorEnumeration.transparent.value,
           ),
           height: 40,
@@ -66,11 +66,11 @@ class ButtonWidget extends StatelessWidget {
     return ButtonWidget._(
       onTap: onTap,
       child: InkWell(
-        borderRadius: kBorderRadius,
+        borderRadius: gBorderRadius,
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: kBorderRadius,
+            borderRadius: gBorderRadius,
             color: color ?? ColorEnumeration.primary.value,
           ),
           height: 45,

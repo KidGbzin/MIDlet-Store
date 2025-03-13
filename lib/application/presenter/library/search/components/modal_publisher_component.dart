@@ -1,14 +1,14 @@
 part of '../search_handler.dart';
 
+// PUBLISHER MODAL 🏢: ========================================================================================================================================================== //
+
 /// A modal widget that displays a list of publishers to filter by.
 ///
 /// The widget is composed of a list of tiles, each representing a publisher.
 /// The selected publisher is then used to filter the list of games.
 class _PublisherModal extends StatefulWidget {
 
-  const _PublisherModal({
-    required this.controller,
-  });
+  const _PublisherModal(this.controller);
 
   /// The controller that manages the state of the games list.
   final _Controller controller;
@@ -21,8 +21,6 @@ class _PublisherModalState extends State<_PublisherModal> {
   late final String? _initialState;
   late final AppLocalizations localizations;
 
-  /// The state is initialized with the initial value of the selected publisher,
-  /// which is used to reset the selected publisher when the user cancels the modal.
   @override
   void initState() {
     _initialState = widget.controller.selectedPublisherState.value;
@@ -89,7 +87,7 @@ class _PublisherModalState extends State<_PublisherModal> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return InkWell(
-          borderRadius: kBorderRadius,
+          borderRadius: gBorderRadius,
           onTap: () {
         
             // Toggle the publisher selection on tap.
@@ -102,12 +100,11 @@ class _PublisherModalState extends State<_PublisherModal> {
             builder: (BuildContext context, String? isSelected, Widget? _) {
               return Ink(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: gBorderRadius,
                   color: isSelected == publisher
                     ? ColorEnumeration.primary.value.withAlpha(190)
                     : ColorEnumeration.foreground.value,
                 ),
-                
                 child: Column(
                   children: <Widget> [
                     Expanded(

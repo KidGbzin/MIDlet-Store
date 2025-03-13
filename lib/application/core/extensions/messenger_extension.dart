@@ -8,12 +8,12 @@ import '../enumerations/typographies_enumeration.dart';
 
 /// A custom [SnackBar] extension for displaying event messages to the user.
 ///
-/// The [Messenger] provides a structured and visually consistent way to display notifications.
+/// The [MessengerExtension] provides a structured and visually consistent way to display notifications.
 /// This extension is typically used to provide user feedback, such as confirming a successful action or notifying about an error.
 ///
 /// ### Usage example:
 ///
-/// To display a [Messenger] on the [SnackBar], use the following approach:
+/// To display a [MessengerExtension] on the [SnackBar], use the following approach:
 /// ```dart
 /// ScaffoldMessenger.of(context).showSnackBar(
 ///   Messenger(
@@ -22,9 +22,9 @@ import '../enumerations/typographies_enumeration.dart';
 ///   ),
 /// );
 /// ```
-class Messenger extends SnackBar {
+class MessengerExtension extends SnackBar {
 
-  Messenger({
+  MessengerExtension({
     required this.message,
     required this.icon,
     super.key,

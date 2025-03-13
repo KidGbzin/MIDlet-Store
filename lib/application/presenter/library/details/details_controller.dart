@@ -15,6 +15,9 @@ class _Controller {
     required this.hive,
   });
 
+  /// The service responsible for handling Android native activity functions, including opening the emulator activity.
+  ///
+  /// This instance is used to interact with the Android operating system, allowing the application to perform actions such as opening specific activities or services.
   final ActivityService activity;
 
   /// A repository for managing data retrieval and storage within the bucket.
@@ -24,17 +27,17 @@ class _Controller {
 
   /// The service responsible for interacting with the database for data operations.
   ///
-  /// This [SupabaseRepository] instance provides methods for reading, writing, and querying data from the database. 
+  /// This instance provides methods for reading, writing, and querying data from the database. 
   final SupabaseRepository database;
 
   /// The service used for data operations with the local database.
   /// 
-  /// This [HiveRepository] instance handles interactions with the local storage (Hive), providing methods for reading, writing, and querying game data or related information.
+  /// This instance handles interactions with the local storage (Hive), providing methods for reading, writing, and querying game data or related information.
   final HiveRepository hive;
 
   /// The game whose data is to be displayed or manipulated.
   /// 
-  /// This [Game] instance holds all relevant information about the current game, such as title, description, ratings, and associated assets like previews and thumbnails.
+  /// This instance holds all relevant information about the current game, such as title, description, ratings, and associated assets like previews and thumbnails.
   final Game game;
  
   /// Initializes the details controller by setting up favorite status and updating recent games.
@@ -74,7 +77,7 @@ class _Controller {
     totalRatingsState.dispose();
   }
 
-  // AUDIO PLAYER 🧩: =========================================================================================================================================================== //
+  // AUDIO RELATED 🎵: =========================================================================================================================================================== //
   
   /// The audio player used to manage and play the game's theme audio.
   ///
@@ -105,7 +108,7 @@ class _Controller {
   /// Does nothing if the audio is not playing.
   void pauseAudio() => _player.stop();
 
-  // BUCKET 🧩: ================================================================================================================================================================= //
+  // BUCKET REÇATED 🗃️: ========================================================================================================================================================= //
 
   /// A [ValueNotifier] that tracks the state of the thumbnail.
   ///
@@ -147,7 +150,7 @@ class _Controller {
     thumbnailState.value = await bucket.cover(game.title);
   }
 
-  // FAVORITES 🧩: ============================================================================================================================================================== //
+  // FAVORITES RELATED ❤️: ====================================================================================================================================================== //
 
   /// A [ValueNotifier] that tracks the favorite state of the game.
   ///
@@ -175,7 +178,7 @@ class _Controller {
 
     isFavoriteState.value = !isFavoriteState.value;
 
-    final Messenger messenger = Messenger(
+    final MessengerExtension messenger = MessengerExtension(
       message: message,
       icon: HugeIcons.strokeRoundedFavourite,
     );
@@ -183,7 +186,7 @@ class _Controller {
     ScaffoldMessenger.of(context).showSnackBar(messenger);
   }
 
-  // RECOMENDATIONS 🧩: ========================================================================================================================================================= //
+  // RECOMENDATIONS RELATED 🧩: ================================================================================================================================================= //
 
   /// A lazily initialized list of recommended games from the same publisher.
   ///
@@ -250,7 +253,7 @@ class _Controller {
     return record;
   }
 
-  // GAME 🧩: =================================================================================================================================================================== //
+  // GAME RELATED 🎮: =================================================================================================================================================================== //
 
   /// Tracks the current average rating of the game.
   ///

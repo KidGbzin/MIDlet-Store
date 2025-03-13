@@ -1,5 +1,7 @@
 part of '../search_handler.dart';
 
+// CATEGORIES MODAL 🏷️: ========================================================================================================================================================= //
+
 /// A modal widget that displays a list of categories to filter by.
 ///
 /// This widget is composed of a list of tiles, each representing a category.
@@ -8,9 +10,7 @@ part of '../search_handler.dart';
 /// The [controller] is responsible for managing the state of the search bar and the filters.
 class _CategoriesModal extends StatefulWidget {
 
-  const _CategoriesModal({
-    required this.controller,
-  });
+  const _CategoriesModal(this.controller);
 
   /// The controller that manages the state of the game list.
   /// 
@@ -28,7 +28,6 @@ class _CategoriesModalState extends State<_CategoriesModal> {
   @override
   void initState() {
     _initialState = widget.controller.selectedTagsState.value;
-    
 
     super.initState();
   }
@@ -37,10 +36,8 @@ class _CategoriesModalState extends State<_CategoriesModal> {
   void didChangeDependencies() {
     localizations = AppLocalizations.of(context)!;
     
-
     super.didChangeDependencies();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +76,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
     );
   }
 
-  /// Builds a tile for each [tag] that can be selected or deselected.
+  /// Builds a tile for each tag that can be selected or deselected.
   ///
   /// When tapped, the tile toggles the tag's selection state in the [widget.controller.selectedTagsState].
   /// The tile displays the tag's icon and name.
@@ -93,7 +90,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
     final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.selectedTagsState.value.contains(tag.code));
 
     return InkWell(
-      borderRadius: kBorderRadius,
+      borderRadius: gBorderRadius,
       onTap: () {
         final List<String> temporary = widget.controller.selectedTagsState.value;
 
@@ -114,7 +111,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
           return FittedBox(
             child: Ink(
               decoration: BoxDecoration(
-                borderRadius: kBorderRadius,
+                borderRadius: gBorderRadius,
                 color: isSelected
                   ? ColorEnumeration.primary.value.withAlpha(190)
                   : ColorEnumeration.foreground.value,

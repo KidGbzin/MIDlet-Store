@@ -1,14 +1,14 @@
 part of '../search_handler.dart';
 
+// RELEASE MODAL 📅: ============================================================================================================================================================ //
+
 /// A modal widget that displays a list of years to filter by.
 ///
 /// This widget is composed of a list of tiles, each representing a year.
 /// The selected year is then used to filter the list of games.
 class _ReleaseModal extends StatefulWidget {
 
-  const _ReleaseModal({
-    required this.controller,
-  });
+  const _ReleaseModal(this.controller);
 
   /// The controller that manages the state of the game list.
   /// 
@@ -36,7 +36,6 @@ class _ReleaseModalState extends State<_ReleaseModal> {
 
     super.didChangeDependencies();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +90,7 @@ class _ReleaseModalState extends State<_ReleaseModal> {
     final int count = entry.value;
   
     return InkWell(
-      borderRadius: kBorderRadius,
+      borderRadius: gBorderRadius,
       onTap: () {
 
         // Toggle the year selection on tap.

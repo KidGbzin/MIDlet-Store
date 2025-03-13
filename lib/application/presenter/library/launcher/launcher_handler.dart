@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_gen/gen_l10n/l10n_localizations.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../l10n/l10n_localizations.dart';
 
 import '../../../core/enumerations/logger_enumeration.dart';
 import '../../../core/enumerations/palette_enumeration.dart';
