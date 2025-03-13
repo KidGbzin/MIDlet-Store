@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
-import '../application.dart';
-
 import '../application/repositories/bucket_repository.dart';
 import '../application/repositories/database_repository.dart';
 import '../application/repositories/hive_repository.dart';
@@ -15,9 +13,18 @@ import '../application/services/authentication_service.dart';
 import '../application/services/github_service.dart';
 import '../application/services/supabase_service.dart';
 
+import '../application.dart';
+
+// MAIN FUNCTION 🚀: ============================================================================================================================================================ //
+
+/// The main entry point of the application.
+/// 
+/// Initializes all the necessary services and repositories that the application needs to function correctly, and then starts the Flutter framework.
+/// This function is responsible for setting up the application's dependency injection, which includes services and repositories.
+/// All the services and repositories are initialized here, and then the [Application] root widget is started.
 void main() {
 
-  // SERVICE INTANCES 🧩: ======================================================================================================================================================= //
+  // SERVICE INSTANCES 🧩: ====================================================================================================================================================== //
 
   /// Service responsible for handling Android I/O operations.
   ///
@@ -42,7 +49,7 @@ void main() {
   /// Uses method calls to interact with native Kotlin features and can be accessed via Provider injection.
   final ActivityService activityService = ActivityService();
 
-  // REPOSITORY INSTANCES 🧩: =================================================================================================================================================== //
+  // REPOSITORY INSTANCES 🗃️: =================================================================================================================================================== //
 
   /// Repository for managing application files.
   ///
@@ -64,8 +71,6 @@ void main() {
   /// Handles Supabase operations and depends on the Supabase service.
   /// Can be accessed globally via Provider injection.
   final SupabaseRepository supabaseRepository = SupabaseRepository(supabaseService);
-
-  // RUN APPLICATION 🧩: ======================================================================================================================================================== //
 
   /// Starts the application using the Provider for dependency injection.
   /// 
@@ -94,6 +99,6 @@ void main() {
         value: supabaseRepository,
       ),
     ],
-    child: const Application(),
+    child: Application(),
   ));
 }

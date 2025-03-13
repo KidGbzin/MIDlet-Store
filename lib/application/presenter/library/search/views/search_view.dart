@@ -86,11 +86,7 @@ class _SearchState extends State<_SearchView> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) {
-                            return _CategoriesModal(
-                              controller: widget.controller,
-                            );
-                          },
+                          builder: (BuildContext context) => _CategoriesModal(widget.controller),
                         );
                       },
                     );
@@ -106,11 +102,7 @@ class _SearchState extends State<_SearchView> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) {
-                            return _PublisherModal(
-                              controller: widget.controller,
-                            );
-                          },
+                          builder: (BuildContext context) => _PublisherModal(widget.controller),
                         );
                       },
                     );
@@ -126,11 +118,7 @@ class _SearchState extends State<_SearchView> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) {
-                            return _ReleaseModal(
-                              controller: widget.controller,
-                            );
-                          },
+                          builder: (BuildContext context) => _ReleaseModal(widget.controller),
                         );
                       },
                     );
@@ -139,11 +127,7 @@ class _SearchState extends State<_SearchView> {
               ],
             ),
           ),
-          Divider(
-            color: ColorEnumeration.divider.value,
-            height: 1,
-            thickness: 1,
-          ),
+          gDivider,
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: widget.controller.gameListState,

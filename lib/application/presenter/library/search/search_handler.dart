@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../globals.dart';
+import '../../../../l10n/l10n_localizations.dart';
+
+import '../../../core/configuration/global_configuration.dart';
 
 import '../../../core/entities/game_data_entity.dart';
 import '../../../core/entities/game_entity.dart';
@@ -40,7 +41,7 @@ part '../search/views/search_view.dart';
 
 part '../search/search_controller.dart';
 
-// SEARCH HANDLER 🧩: =========================================================================================================================================================== //
+// SEARCH HANDLER 🔍: =========================================================================================================================================================== //
 
 /// The application's search view.
 ///
@@ -53,6 +54,9 @@ class Search extends StatefulWidget {
     super.key,
   });
 
+  /// The publisher to filter by.
+  /// 
+  /// If provided, the search view will display only games from the specified publisher.
   final String? publisher;
 
   @override
