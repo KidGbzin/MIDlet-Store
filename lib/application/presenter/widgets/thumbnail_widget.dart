@@ -4,6 +4,8 @@ import '../../core/configuration/global_configuration.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 
+// THUMBNAIL WIDGET 🖼️: ========================================================================================================================================================= //
+
 /// A widget that displays a thumbnail image with customizable properties.
 ///
 /// The [ThumbnailWidget] widget is used to render an image with an optional border, border radius, and aspect ratio.
@@ -78,15 +80,13 @@ class ThumbnailWidget extends StatelessWidget {
   /// By using a [Container] as a fallback, it prevents unintended overlay effects, such as splash animations from the parent widget, ensuring a consistent appearance.
   Widget _decoration() {
     final BoxDecoration decoration = BoxDecoration(
-      border: border ?? Border.all(
-        color: ColorEnumeration.divider.value,
-        width: 1,
-      ),
+      border: border,
+      boxShadow: kElevationToShadow[3],
       borderRadius: borderRadius ?? gBorderRadius,
       color: ColorEnumeration.foreground.value,
       image: DecorationImage(
         filterQuality: filterQuality ?? FilterQuality.high,
-        fit: BoxFit.contain,
+        fit: BoxFit.cover,
         image: image,
       ),
     );
