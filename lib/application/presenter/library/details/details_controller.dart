@@ -490,7 +490,7 @@ class _Controller {
   /// It updates the [installationState] based on the result of the download operation.
   Future<void> getMIDlet() async {
     try {
-      _midlet = await bucket.midlet(game.defaultMIDlet!);
+      _midlet = await bucket.midlet(game.midlets.firstWhere((midlet) => midlet.isDefault));
 
       installationState.value = ProgressEnumeration.ready;
     }
