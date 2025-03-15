@@ -81,9 +81,7 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
         padding: EdgeInsets.zero,
         physics: const ClampingScrollPhysics(),
         children: <Widget> [
-          _Cover(
-            controller: widget.controller,
-          ),
+          _CoverSection(widget.controller),
           gDivider,
           _OverviewSection(widget.controller),
           gDivider,

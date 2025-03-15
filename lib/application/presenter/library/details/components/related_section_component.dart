@@ -1,5 +1,7 @@
 part of '../details_handler.dart';
 
+// RELATED GAMES SECTION 🎮: ==================================================================================================================================================== //
+
 /// A section widget displaying a collection of related games or games from the same publisher.
 ///
 /// This widget fetches and displays a list of games that are either related to the current game or belong to the same publisher.
@@ -34,6 +36,7 @@ class _RelatedGamesSection extends StatefulWidget {
 class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
   late final double _coverHeight;
   late final double _coverWidth;
+
   final double _titleHeight = 29;
   final double _ratingHeight = 20;
 
@@ -57,8 +60,9 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
         margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
         child: FutureBuilder(
           future: widget.collection,
-          builder: (BuildContext context, snapshot) {
-            List<Widget> children = <Widget> [];
+          builder: (BuildContext context, AsyncSnapshot<({List<Game> games, List<double> ratings, List<File> thumbnails})> snapshot) {
+            final List<Widget> children = <Widget> [];
+
             if (snapshot.hasData) {
               for (int index = 0; index < snapshot.data!.games.length; index ++) {
                 children.add(_buildCoverImage(
@@ -69,9 +73,7 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
               }
             }
             return ListView.separated(
-              itemBuilder: (BuildContext context, int index) {
-                return children[index];
-              },
+              itemBuilder: (BuildContext context, int index) => children[index],
               itemCount: children.length,
               separatorBuilder: (BuildContext context, int index) {
                 return VerticalDivider(
@@ -105,7 +107,8 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
       decoration = DecorationImage(
         image: FileImage(thumbnail),
       );
-    } else {
+    }
+    else {
       placeholder = Icon(
         Icons.broken_image_rounded,
         color: ColorEnumeration.grey.value,
@@ -117,10 +120,9 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
       child: Column(
         children: <Widget>[
           InkWell(
-            borderRadius: BorderRadius.circular(12.5),
-            onTap: () => context.push(
-              '/details',
-              extra: game,
+            borderRadius: gBorderRadius,
+            onTap: () => context.showDetails(
+              game: game,
             ),
             child: Ink(
               decoration: BoxDecoration(
@@ -128,7 +130,7 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
                   color: ColorEnumeration.divider.value,
                   width: 1,
                 ),
-                borderRadius: BorderRadius.circular(12.5),
+                borderRadius: gBorderRadius,
                 image: decoration,
               ),
               height: _coverHeight,
