@@ -1,13 +1,13 @@
 part of '../details_handler.dart';
 
+// COVER SECTION 🖼️: ============================================================================================================================================================ //
+
 /// A widget that displays the game's cover image, handling loading and error states.
 ///
-/// This widget listens to changes in the cover image state and updates the UI accordingly.
-class _Cover extends StatelessWidget {
+/// This widget fetches and displays the game's cover image from the bucket storage.
+class _CoverSection extends StatelessWidget {
 
-  const _Cover({
-    required this.controller,
-  });
+  const _CoverSection(this.controller);
 
   /// Controls the state of the game's cover image.
   ///
@@ -24,13 +24,12 @@ class _Cover extends StatelessWidget {
         builder: (BuildContext context, File? file, Widget? _) {
           if (file != null) {
             return ThumbnailWidget(
-              border: const Border(),
               borderRadius: BorderRadius.zero,
               image: FileImage(file),
             );
           }
           return Icon(
-            Icons.image_rounded,
+            HugeIcons.strokeRoundedImage01,
             color: ColorEnumeration.elements.value,
           );
         },
