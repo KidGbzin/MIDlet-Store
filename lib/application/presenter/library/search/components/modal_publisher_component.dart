@@ -23,7 +23,7 @@ class _PublisherModalState extends State<_PublisherModal> {
 
   @override
   void initState() {
-    _initialState = widget.controller.selectedPublisherState.value;
+    _initialState = widget.controller.nSelectedPublisher.value;
   
     super.initState();
   }
@@ -31,6 +31,7 @@ class _PublisherModalState extends State<_PublisherModal> {
   @override
   void didChangeDependencies() {
     localizations = AppLocalizations.of(context)!;
+    widget.controller.fetchFiltersPublishers();
     
     super.didChangeDependencies();
   }
@@ -43,7 +44,7 @@ class _PublisherModalState extends State<_PublisherModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.selectedPublisherState.value = _initialState;
+            widget.controller.nSelectedPublisher.value = _initialState;
             context.pop();
           },
         ),
@@ -61,16 +62,24 @@ class _PublisherModalState extends State<_PublisherModal> {
           title: AppLocalizations.of(context)!.sectionFilterPublisher,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 7.5,
-                crossAxisSpacing: 7.5,
-                childAspectRatio: 1.25,
-              ),
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: widget.controller.getPublishers().entries.map(_tile).toList(),
+            child: ValueListenableBuilder(
+              valueListenable: widget.controller.nFiltersPublishers,
+              builder: (BuildContext context, filters, Widget? _) {
+                if (filters == null) {
+                  return Align(alignment: Alignment.center, child: LoadingAnimation());
+                }
+                return GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 7.5,
+                    crossAxisSpacing: 7.5,
+                    childAspectRatio: 1.25,
+                  ),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: filters.entries.map(_tile).toList(),
+                );
+              }
             ),
           ),
         ),
@@ -91,12 +100,12 @@ class _PublisherModalState extends State<_PublisherModal> {
           onTap: () {
         
             // Toggle the publisher selection on tap.
-            widget.controller.selectedPublisherState.value == publisher
-              ? widget.controller.selectedPublisherState.value = null
-              : widget.controller.selectedPublisherState.value = publisher;
+            widget.controller.nSelectedPublisher.value == publisher
+              ? widget.controller.nSelectedPublisher.value = null
+              : widget.controller.nSelectedPublisher.value = publisher;
           },
           child: ValueListenableBuilder(
-            valueListenable: widget.controller.selectedPublisherState,
+            valueListenable: widget.controller.nSelectedPublisher,
             builder: (BuildContext context, String? isSelected, Widget? _) {
               return Ink(
                 decoration: BoxDecoration(

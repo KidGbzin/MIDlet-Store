@@ -30,7 +30,7 @@ class _LauncherViewState extends State<_LauncherView> {
                   if (progress == ProgressEnumeration.loading) {
                     child = Align(
                       alignment: Alignment.center,
-                      child: LoadingWidget(),
+                      child: LoadingAnimation(),
                     );
                   }
                   else if (progress == ProgressEnumeration.isOutdated) {

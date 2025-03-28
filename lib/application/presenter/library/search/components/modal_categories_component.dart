@@ -27,7 +27,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
 
   @override
   void initState() {
-    _initialState = widget.controller.selectedTagsState.value;
+    _initialState = widget.controller.nSelectedTags.value;
 
     super.initState();
   }
@@ -35,6 +35,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
   @override
   void didChangeDependencies() {
     localizations = AppLocalizations.of(context)!;
+    widget.controller.fetchFiltersTags(localizations);
     
     super.didChangeDependencies();
   }
@@ -47,7 +48,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.selectedTagsState.value = _initialState;
+            widget.controller.nSelectedTags.value = _initialState;
             context.pop();
           },
         ),
@@ -65,10 +66,18 @@ class _CategoriesModalState extends State<_CategoriesModal> {
           title: localizations.sectionFilterCategories,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: Wrap(
-              runSpacing: 7.5,
-              spacing: 7.5,
-              children: widget.controller.getCategories(localizations).map(_tile).toList(),
+            child: ValueListenableBuilder(
+              valueListenable: widget.controller.nFiltersTags,
+              builder: (BuildContext context, filters, Widget? _) {
+                if (filters == null) {
+                  return Align(alignment: Alignment.center, child: LoadingAnimation());
+                }
+                return Wrap(
+                  runSpacing: 7.5,
+                  spacing: 7.5,
+                  children: filters.map(_tile).toList(),
+                );
+              }
             ),
           ),
         ),
@@ -87,12 +96,12 @@ class _CategoriesModalState extends State<_CategoriesModal> {
     final String name = record.$2;
     final int count = record.$3;
 
-    final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.selectedTagsState.value.contains(tag.code));
+    final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.nSelectedTags.value.contains(tag.code));
 
     return InkWell(
       borderRadius: gBorderRadius,
       onTap: () {
-        final List<String> temporary = widget.controller.selectedTagsState.value;
+        final List<String> temporary = widget.controller.nSelectedTags.value;
 
         if (temporary.contains(tag.code)) {
           temporary.remove(tag.code);
@@ -103,7 +112,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
           isSelected.value = !isSelected.value;
         }
         
-        widget.controller.selectedTagsState.value = List.from(temporary);
+        widget.controller.nSelectedTags.value = List.from(temporary);
       },
       child: ValueListenableBuilder(
         valueListenable: isSelected,

@@ -126,11 +126,8 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
             ),
             child: Ink(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: ColorEnumeration.divider.value,
-                  width: 1,
-                ),
                 borderRadius: gBorderRadius,
+                boxShadow: kElevationToShadow[3],
                 image: decoration,
               ),
               height: _coverHeight,

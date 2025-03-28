@@ -18,12 +18,14 @@ import '../../../core/enumerations/tag_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../core/extensions/messenger_extension.dart';
+import '../../../core/extensions/router_extension.dart';
 
 import '../../../repositories/bucket_repository.dart';
 import '../../../repositories/database_repository.dart';
 import '../../../repositories/hive_repository.dart';
 
 import '../../widgets/button_widget.dart';
+import '../../widgets/loading_widget.dart';
 import '../../widgets/modal_widget.dart';
 import '../../widgets/rating_stars_widget.dart';
 import '../../widgets/section_widget.dart';
@@ -86,9 +88,9 @@ class _SearchViewState extends State<Search> {
     );
 
     controller = _Controller(
-      bucket: bucket,
-      database: database,
-      hive: hive,
+      rBucket: bucket,
+      rSupabase: database,
+      rHive: hive,
     );
     controller.initialize(
       publisher: widget.publisher,

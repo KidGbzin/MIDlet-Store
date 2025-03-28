@@ -53,7 +53,7 @@ class _SuggestionOverlayState extends State<_SuggestionOverlay> with WidgetsBind
       ),
       key: _key,
       child: ValueListenableBuilder(
-        valueListenable: widget.controller.gemeSuggestionsList,
+        valueListenable: widget.controller.nSuggestions,
         builder: (BuildContext context, List<Game> suggestions, Widget? _) {
           return ListView.builder(
             itemCount: _itemCount(suggestions.length),

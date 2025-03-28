@@ -38,7 +38,7 @@ class _InstallationModalState extends State<_InstallationModal> {
         valueListenable: widget.controller.installationState,
         builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
           if (progress == ProgressEnumeration.loading) {
-            return LoadingWidget();
+            return LoadingAnimation();
           }
           else if (progress == ProgressEnumeration.ready) {
             return _ReadyToInstall(
