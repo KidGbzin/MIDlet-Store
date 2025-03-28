@@ -24,30 +24,30 @@ import '../application.dart';
 /// All the services and repositories are initialized here, and then the [Application] root widget is started.
 void main() {
 
-  // SERVICE INSTANCES 🧩: ====================================================================================================================================================== //
+  // SERVICE INSTANCES 🔧: ====================================================================================================================================================== //
 
   /// Service responsible for handling Android I/O operations.
   ///
   /// Acts as a dependency for the Bucket service.
-  final AndroidService androidService = AndroidService();
+  final AndroidService sAndroid = AndroidService();
 
   /// Service responsible for user authentication.
-  final AuthenticationService authenticationService = AuthenticationService();
+  final AuthenticationService sAuthenticantion = AuthenticationService();
 
   /// Service for managing GitHub repository files.
   ///
   /// Handles the file operations and serves as a dependency for Hive and Bucket repositories.
-  final GitHubService gitHubService = GitHubService(http.Client());
+  final GitHubService sGitHub = GitHubService(http.Client());
 
   /// Service for interacting with the Supabase back-end.
   ///
   /// Handles data operations and can be accessed via Provider injection.
-  final SupabaseService supabaseService = SupabaseService();
+  final SupabaseService sSupabase = SupabaseService();
 
   /// Service for handling Android native activity functions.
   ///
   /// Uses method calls to interact with native Kotlin features and can be accessed via Provider injection.
-  final ActivityService activityService = ActivityService();
+  final ActivityService sActivity = ActivityService();
 
   // REPOSITORY INSTANCES 🗃️: =================================================================================================================================================== //
 
@@ -55,22 +55,22 @@ void main() {
   ///
   /// Handles application files and can be accessed globally via Provider injection.
   /// Depends on Android and GitHub services.
-  final BucketRepository bucketRepository = BucketRepository(
-    android: androidService,
-    gitHub: gitHubService,
+  final BucketRepository rBucket = BucketRepository(
+    android: sAndroid,
+    gitHub: sGitHub,
   );
 
   /// Repository for local database management.
   ///
   /// Manages the application's cache and depends on the GitHub service.
   /// Can be accessed globally via Provider injection.
-  final HiveRepository hiveRepository = HiveRepository(gitHubService);
+  final HiveRepository rHive = HiveRepository(sGitHub);
 
   /// Repository for interacting with the Supabase database server.
   ///
   /// Handles Supabase operations and depends on the Supabase service.
   /// Can be accessed globally via Provider injection.
-  final SupabaseRepository supabaseRepository = SupabaseRepository(supabaseService);
+  final SupabaseRepository rSupabase = SupabaseRepository(sSupabase);
 
   /// Starts the application using the Provider for dependency injection.
   /// 
@@ -78,25 +78,25 @@ void main() {
   runApp(MultiProvider(
     providers: <SingleChildWidget> [
       Provider<ActivityService>.value(
-        value: activityService,
+        value: sActivity,
       ),
       Provider<AuthenticationService>.value(
-        value: authenticationService,
+        value: sAuthenticantion,
       ),
       Provider<BucketRepository>.value(
-        value: bucketRepository,
+        value: rBucket,
       ),
       Provider<GitHubService>.value(
-        value: gitHubService,
+        value: sGitHub,
       ),
       Provider<HiveRepository>.value(
-        value: hiveRepository,
+        value: rHive,
       ),
       Provider<SupabaseService>.value(
-        value: supabaseService,
+        value: sSupabase,
       ),
       Provider<SupabaseRepository>.value(
-        value: supabaseRepository,
+        value: rSupabase,
       ),
     ],
     child: Application(),

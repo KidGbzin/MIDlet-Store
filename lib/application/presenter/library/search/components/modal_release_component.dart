@@ -25,7 +25,7 @@ class _ReleaseModalState extends State<_ReleaseModal> {
 
   @override
   void initState() {
-    _initialState = widget.controller.selectedReleaseYearState.value;
+    _initialState = widget.controller.nSelectedReleaseYear.value;
 
     super.initState();
   }
@@ -33,6 +33,7 @@ class _ReleaseModalState extends State<_ReleaseModal> {
   @override
   void didChangeDependencies() {
     localizations = AppLocalizations.of(context)!;
+    widget.controller.fetchFiltersReleaseYear();
 
     super.didChangeDependencies();
   }
@@ -45,7 +46,7 @@ class _ReleaseModalState extends State<_ReleaseModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.selectedReleaseYearState.value = _initialState;
+            widget.controller.nSelectedReleaseYear.value = _initialState;
             context.pop();
           },
         ),
@@ -63,16 +64,24 @@ class _ReleaseModalState extends State<_ReleaseModal> {
           title: localizations.sectionFilterReleaseYear,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 7.5,
-                crossAxisSpacing: 7.5,
-                childAspectRatio: 1.25,
-              ),
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: widget.controller.getReleaseYears().entries.map(_tile).toList(),
+            child: ValueListenableBuilder(
+              valueListenable: widget.controller.nFiltersReleaseYear,
+              builder: (BuildContext context, filters, Widget? _) {
+                if (filters == null) {
+                  return Align(alignment: Alignment.center, child: LoadingAnimation());
+                }
+                return GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 7.5,
+                    crossAxisSpacing: 7.5,
+                    childAspectRatio: 1.25,
+                  ),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: filters.entries.map(_tile).toList(),
+                );
+              }
             ),
           ),
         ),
@@ -94,16 +103,16 @@ class _ReleaseModalState extends State<_ReleaseModal> {
       onTap: () {
 
         // Toggle the year selection on tap.
-        widget.controller.selectedReleaseYearState.value == releaseYear
-          ? widget.controller.selectedReleaseYearState.value = null
-          : widget.controller.selectedReleaseYearState.value = releaseYear;
+        widget.controller.nSelectedReleaseYear.value == releaseYear
+          ? widget.controller.nSelectedReleaseYear.value = null
+          : widget.controller.nSelectedReleaseYear.value = releaseYear;
       },
       child: ValueListenableBuilder(
-        valueListenable: widget.controller.selectedReleaseYearState,
+        valueListenable: widget.controller.nSelectedReleaseYear,
         builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
           return Ink(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: gBorderRadius,
               color: selectedReleaseYear == releaseYear
                 ? ColorEnumeration.primary.value.withAlpha(190)
                 : ColorEnumeration.foreground.value,

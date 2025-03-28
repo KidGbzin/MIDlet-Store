@@ -70,7 +70,7 @@ class _SearchBarState extends State<_SearchBar> {
         children: <Widget> [
           Expanded(
             child: TextField(
-              controller: widget.controller.textController,
+              controller: widget.controller.cTextField,
               cursorHeight: 20,
               cursorOpacityAnimates: true,
               cursorRadius: const Radius.circular(100),
@@ -85,7 +85,7 @@ class _SearchBarState extends State<_SearchBar> {
               maxLength: 30,
               maxLines: 1,
               onSubmitted: (String query) {
-                widget.controller.clearFilters(context, localizations, false);
+                widget.controller.clearFilters(context, localizations);
                 widget.controller.applySearch(query);
               },
               onChanged: (String query) {},

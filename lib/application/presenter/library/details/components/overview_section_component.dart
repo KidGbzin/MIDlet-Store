@@ -25,22 +25,13 @@ class _OverviewSectionState extends State<_OverviewSection> {
       height: 125,
       padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
       child: Row(
+        spacing: 30,
         children: <Widget> [
           Expanded(
             child: _buildReleaseLabel(),
           ),
-          VerticalDivider(
-            width: 31,
-            thickness: 1,
-            color: ColorEnumeration.divider.value,
-          ),
           Expanded(
             child: _buildPublisherLabel(),
-          ),
-          VerticalDivider(
-            width: 31,
-            thickness: 1,
-            color: ColorEnumeration.divider.value,
           ),
           Expanded(
             child: ValueListenableBuilder(
@@ -132,7 +123,7 @@ class _OverviewSectionState extends State<_OverviewSection> {
   /// Tapping on the rating triggers a modal where users can submit a new rating for the game.
   Widget _buildRatingLabel(double averageRating) {
     return InkWell(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: gBorderRadius,
       onTap: () {
         showModalBottomSheet(
           context: context,

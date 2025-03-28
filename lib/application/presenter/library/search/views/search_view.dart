@@ -56,8 +56,8 @@ class _SearchState extends State<_SearchView> {
               ),
             ),
             ButtonWidget.icon(
-              icon: HugeIcons.strokeRoundedFilterRemove,
-              onTap: () => widget.controller.clearFilters(context, localizations, true),
+              icon: HugeIcons.strokeRoundedArrowReloadHorizontal,
+              onTap: () => widget.controller.clearFilters(context, localizations),
             ),
           ],
         ),
@@ -77,7 +77,7 @@ class _SearchState extends State<_SearchView> {
               runSpacing: 7.5,
               children: <Widget> [
                 ValueListenableBuilder(
-                  valueListenable: widget.controller.selectedTagsState,
+                  valueListenable: widget.controller.nSelectedTags,
                   builder: (BuildContext context, List<String> selectedTags, Widget? _) {
                     return _FilterButton(
                       color: selectedTags.isEmpty ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
@@ -93,7 +93,7 @@ class _SearchState extends State<_SearchView> {
                   },
                 ),
                 ValueListenableBuilder(
-                  valueListenable: widget.controller.selectedPublisherState,
+                  valueListenable: widget.controller.nSelectedPublisher,
                   builder: (BuildContext context, String? selectedPublisher, Widget? _) {
                     return _FilterButton(
                       color: selectedPublisher == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
@@ -109,7 +109,7 @@ class _SearchState extends State<_SearchView> {
                   },   
                 ),
                 ValueListenableBuilder(
-                  valueListenable: widget.controller.selectedReleaseYearState,
+                  valueListenable: widget.controller.nSelectedReleaseYear,
                   builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
                     return _FilterButton(
                       color: selectedReleaseYear == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
@@ -130,12 +130,20 @@ class _SearchState extends State<_SearchView> {
           gDivider,
           Expanded(
             child: ValueListenableBuilder(
-              valueListenable: widget.controller.gameListState,
-              builder: (BuildContext context, List<Game> currentlyActiveGameList, Widget? _) {
-                return _ListView(
-                  controller: widget.controller,
-                  games: currentlyActiveGameList,
-                );
+              valueListenable: widget.controller.nGames,
+              builder: (BuildContext context, listener, Widget? _) {
+                if (listener.$2) {
+                  return Align(
+                    alignment: Alignment.center,
+                    child: LoadingAnimation(),
+                  );
+                }
+                else {
+                  return _ListView(
+                    controller: widget.controller,
+                    games: listener.$1,
+                  );
+                }
               }
             ),
           ),
