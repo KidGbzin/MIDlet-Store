@@ -3,18 +3,20 @@ import 'package:hugeicons/hugeicons.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 
+// LOADING WIDGET 🧩: =========================================================================================================================================================== //
+
 /// A widget that displays a rotating loading icon.
 ///
-/// The [LoadingWidget] uses an [AnimationController] to rotate the icon continuously, providing a visual indication of loading or processing.
-class LoadingWidget extends StatefulWidget {
+/// The [LoadingAnimation] uses an [AnimationController] to rotate the icon continuously, providing a visual indication of loading or processing.
+class LoadingAnimation extends StatefulWidget {
 
-  const LoadingWidget({super.key});
+  const LoadingAnimation({super.key});
 
   @override
-  State<LoadingWidget> createState() => _LoadingWidgetState();
+  State<LoadingAnimation> createState() => _LoadingAnimationState();
 }
 
-class _LoadingWidgetState extends State<LoadingWidget> with SingleTickerProviderStateMixin {
+class _LoadingAnimationState extends State<LoadingAnimation> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
@@ -47,8 +49,9 @@ class _LoadingWidgetState extends State<LoadingWidget> with SingleTickerProvider
         );
       },
       child: HugeIcon(
-        icon: HugeIcons.strokeRoundedLoading01,
+        icon: HugeIcons.strokeRoundedLoading03,
         color: ColorEnumeration.elements.value,
+        size: 25,
       ),
     );
   }

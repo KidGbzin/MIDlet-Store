@@ -86,9 +86,8 @@ class _ListTileState extends State<_ListTile> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.push(
-        '/details',
-        extra: widget.game,
+      onTap: () => context.showDetails(
+        game: widget.game,
       ),
       child: FutureBuilder(
         future: Future.wait([
@@ -110,7 +109,7 @@ class _ListTileState extends State<_ListTile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget> [
               Padding(
-                padding: const EdgeInsets.fromLTRB(15, 25, 15, 0), // The headline font is a pixel off.
+                padding: const EdgeInsets.fromLTRB(14, 25, 15, 0), // The headline font is misaligned by a single pixel.
                 child: Text(
                   widget.game.title.replaceFirst(' -', ':').toUpperCase(),
                   maxLines: 1,
