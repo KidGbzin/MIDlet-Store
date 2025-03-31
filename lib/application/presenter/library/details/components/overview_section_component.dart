@@ -84,20 +84,7 @@ class _OverviewSectionState extends State<_OverviewSection> {
         spacing: 7.5,
         children: <Widget> [
           Expanded(
-            child: Image.asset(
-              'assets/publishers/${widget.controller.game.publisher}.png',
-              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                Logger.error.print(
-                  label: 'Details | Overview\'s Publisher Image',
-                  message: '$error',
-                  stackTrace: stackTrace,
-                );
-                return Icon(
-                  Icons.broken_image_rounded,
-                  color: ColorEnumeration.grey.value,
-                );
-              },
-            ),
+            child: _buildLogo(),
           ),
           Ink(
             height: 38,
@@ -114,6 +101,24 @@ class _OverviewSectionState extends State<_OverviewSection> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLogo() {
+    return FutureBuilder(
+      future: widget.controller.publisherLogo,
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.hasData) {
+          return Image.file(
+            snapshot.data!,
+            filterQuality: FilterQuality.high,
+          );
+        }
+        return Align(
+          alignment: Alignment.center,
+          child: LoadingAnimation(),
+        );
+      }
     );
   }
 
