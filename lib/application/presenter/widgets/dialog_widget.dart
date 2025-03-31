@@ -1,9 +1,16 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:midlet_store/globals.dart';
+
+import '../../core/configuration/global_configuration.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 
-/// A factory for creating [Widget] dialogs.
+// DIALOG WIDGET 💬: ============================================================================================================================================================ //
+
+/// The father of all application dialogs.
+/// 
+/// The [DialogWidget] is a reusable widget that can be used to create custom dialogs with a consistent design.
 class DialogWidget extends StatelessWidget {
 
   const DialogWidget({
@@ -24,24 +31,32 @@ class DialogWidget extends StatelessWidget {
   /// The width of the dialog.
   ///
   /// If not specified, a default width is used.
-  /// Change the dialog's width only when the dialog body contains views such as [ListView], [PageView], etc.
+  /// Adjust the dialog's width only when the dialog body contains views such as [ListView], [PageView], etc.
+  /// 
+  /// To calculate the default width, the widget subtracts 90 from the [MediaQuery]'s width.
   final double? width;
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      alignment: Alignment.center,
-      backgroundColor: color ?? ColorEnumeration.background.value,
-      insetPadding: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: kBorderRadius,
+    return BackdropFilter(
+      filter: ImageFilter.blur(
+        sigmaX: 7.5,
+        sigmaY: 7.5,
       ),
-      child: Container(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.sizeOf(context).width - 90,
+      child: Dialog(
+        alignment: Alignment.center,
+        backgroundColor: color ?? ColorEnumeration.background.value,
+        insetPadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: gBorderRadius,
         ),
-        width: width ?? MediaQuery.sizeOf(context).width - 90,
-        child: child,
+        child: Container(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.sizeOf(context).width - 90,
+          ),
+          width: width ?? MediaQuery.sizeOf(context).width - 90,
+          child: child,
+        ),
       ),
     );
   }

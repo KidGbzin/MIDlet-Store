@@ -8,33 +8,36 @@ part of '../details/details_handler.dart';
 class _Controller {
 
   _Controller({
-    required this.activity,
-    required this.bucket,
-    required this.database,
+    required this.sActivity,
+    required this.rBucket,
+    required this.rDatabase,
     required this.game,
-    required this.hive,
+    required this.rHive,
   });
 
-  final ActivityService activity;
+  /// The service responsible for handling Android native activity functions, including opening the emulator activity.
+  ///
+  /// This instance is used to interact with the Android operating system, allowing the application to perform actions such as opening specific activities or services.
+  final ActivityService sActivity;
 
   /// A repository for managing data retrieval and storage within the bucket.
   ///
   /// Responsible for handling interactions with external storage systems, including retrieving and caching assets such as game previews and thumbnails.
-  final BucketRepository bucket;
+  final BucketRepository rBucket;
 
   /// The service responsible for interacting with the database for data operations.
   ///
-  /// This [SupabaseRepository] instance provides methods for reading, writing, and querying data from the database. 
-  final SupabaseRepository database;
+  /// This instance provides methods for reading, writing, and querying data from the database. 
+  final SupabaseRepository rDatabase;
 
   /// The service used for data operations with the local database.
   /// 
-  /// This [HiveRepository] instance handles interactions with the local storage (Hive), providing methods for reading, writing, and querying game data or related information.
-  final HiveRepository hive;
+  /// This instance handles interactions with the local storage (Hive), providing methods for reading, writing, and querying game data or related information.
+  final HiveRepository rHive;
 
   /// The game whose data is to be displayed or manipulated.
   /// 
-  /// This [Game] instance holds all relevant information about the current game, such as title, description, ratings, and associated assets like previews and thumbnails.
+  /// This instance holds all relevant information about the current game, such as title, description, ratings, and associated assets like previews and thumbnails.
   final Game game;
  
   /// Initializes the details controller by setting up favorite status and updating recent games.
@@ -47,8 +50,8 @@ class _Controller {
       playAudio();
       fetchThumbnail();
       _updateGameData();
-      isFavoriteState = ValueNotifier(hive.favorites.contains(game));
-      hive.recentGames.put(game);
+      isFavoriteState = ValueNotifier(rHive.favorites.contains(game));
+      rHive.recentGames.put(game);
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -74,7 +77,7 @@ class _Controller {
     totalRatingsState.dispose();
   }
 
-  // AUDIO PLAYER 🧩: =========================================================================================================================================================== //
+  // AUDIO RELATED 🎵: =========================================================================================================================================================== //
   
   /// The audio player used to manage and play the game's theme audio.
   ///
@@ -105,7 +108,7 @@ class _Controller {
   /// Does nothing if the audio is not playing.
   void pauseAudio() => _player.stop();
 
-  // BUCKET 🧩: ================================================================================================================================================================= //
+  // BUCKET REÇATED 🗃️: ========================================================================================================================================================= //
 
   /// A [ValueNotifier] that tracks the state of the thumbnail.
   ///
@@ -120,7 +123,9 @@ class _Controller {
   ///
   /// This getter fetches the audio file associated with the current game from the storage bucket.
   /// The audio file is returned as a [File] object, which can be used to play the audio.
-  Future<File> get _audio => bucket.audio(game.title);
+  Future<File> get _audio => rBucket.audio(game.title);
+
+  Future<File> get publisherLogo => rBucket.publisher(game.publisher);
 
   /// Retrieves a [Future] that resolves to a [List] of [Uint8List] objects representing preview images from the bucket.
   ///
@@ -128,13 +133,13 @@ class _Controller {
   /// The images are returned as a list of [Uint8List] objects, which can be used to display the previews in the UI.
   /// 
   /// The [Uint8List] objects contain the image data in the PNG format.
-  Future<List<Uint8List>> get previews => bucket.previews(game.title);
+  Future<List<Uint8List>> get previews => rBucket.previews(game.title);
 
   /// Retrieves a [Future] that resolves to a [File] representing the thumbnail image from the bucket.
   ///
   /// This getter fetches the thumbnail image associated with the current game from the storage bucket.
   /// The image is returned as a [File] object, which can be used to display the thumbnail in the UI.
-  Future<File> thumbnail(String title) => bucket.cover(title);
+  Future<File> thumbnail(String title) => rBucket.cover(title);
 
   /// Fetches the thumbnail image associated with the current game from the bucket and updates the state of the thumbnail.
   ///
@@ -144,32 +149,46 @@ class _Controller {
   /// 
   /// The [_Cover] component listens to the [thumbnailState] to update the UI accordingly.
   Future<void> fetchThumbnail() async {
-    thumbnailState.value = await bucket.cover(game.title);
+    thumbnailState.value = await rBucket.cover(game.title);
   }
 
-  // FAVORITES 🧩: ============================================================================================================================================================== //
+  // FAVORITES RELATED ❤️: ====================================================================================================================================================== //
 
   /// A [ValueNotifier] that tracks the favorite state of the game.
   ///
   /// This notifier is used in the [_BookmarkButton] component to indicate whether the game has been marked as a favorite.
   late final ValueNotifier<bool> isFavoriteState;
 
-  /// Toggles the bookmark status of the current game.
+  /// Toggles the bookmark status of the current game and updates the UI.
   ///
-  /// This function switches the game's status between favorite and non-favorite. 
-  /// If the game is currently marked as a favorite, it will be removed from the favorites cache. 
+  /// This function switches the game's status between favorite and non-favorite.
+  /// If the game is currently marked as a favorite, it will be removed from the favorites cache.
   /// If it is not marked as a favorite, it will be added to the favorites cache.
-  void toggleBookmarkStatus() {
+  /// Additionally, a message is displayed to the user indicating the change in the game's status.
+  void toggleBookmarkStatus(BuildContext context, AppLocalizations localizations) {
+    late final String message;
+    final String title = game.title.replaceFirst(' -', ':');
+
     if (isFavoriteState.value) {
-      hive.favorites.remove(game);
+      rHive.favorites.remove(game);
+      message = localizations.messageFavoritesRemoved.replaceFirst('\$1', title);
     }
     else {
-      hive.favorites.put(game);
+      rHive.favorites.put(game);
+      message = localizations.messageFavoritesAdded.replaceFirst('\$1', title);
     }
+
     isFavoriteState.value = !isFavoriteState.value;
+
+    final MessengerExtension messenger = MessengerExtension(
+      message: message,
+      icon: HugeIcons.strokeRoundedFavourite,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(messenger);
   }
 
-  // RECOMENDATIONS 🧩: ========================================================================================================================================================= //
+  // RECOMENDATIONS RELATED 🧩: ================================================================================================================================================= //
 
   /// A lazily initialized list of recommended games from the same publisher.
   ///
@@ -190,14 +209,14 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topPublisherGames.isEmpty) {
-      _topPublisherGames = hive.games.fromPublisher(game.publisher);
+      _topPublisherGames = rHive.games.fromPublisher(game.publisher);
       _topPublisherGames.shuffle();
       _topPublisherGames = _topPublisherGames.take(8).toList();
     }
 
     for (Game element in _topPublisherGames) {
       ratings.add(await getAverageRating(element));
-      thumbnails.add(await bucket.cover(element.title).catchError((_) => File('/')));
+      thumbnails.add(await rBucket.cover(element.title).catchError((_) => File('/')));
     }
 
     ({List<Game> games, List<double> ratings, List<File> thumbnails}) record = (
@@ -219,12 +238,12 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topRelatedGames.isEmpty) {
-      _topRelatedGames = await hive.games.topRelatedGames(game);
+      _topRelatedGames = await rHive.games.topRelatedGames(game);
     }
 
     for (Game element in _topRelatedGames) {
       ratings.add(await getAverageRating(element));
-      thumbnails.add(await bucket.cover(element.title).catchError((_) => File('/')));
+      thumbnails.add(await rBucket.cover(element.title).catchError((_) => File('/')));
     }
 
     ({List<Game> games, List<double> ratings, List<File> thumbnails}) record = (
@@ -236,7 +255,7 @@ class _Controller {
     return record;
   }
 
-  // GAME 🧩: =================================================================================================================================================================== //
+  // GAME RELATED 🎮: =================================================================================================================================================================== //
 
   /// Tracks the current average rating of the game.
   ///
@@ -276,13 +295,13 @@ class _Controller {
   /// 
   /// This function is initialized within the `initialize` function.
   Future<void> _updateGameData() async {
-    final GameData data = hive.cachedRequests.get('${game.identifier}') ?? GameData(
+    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
     );
 
     // Fetch and update average rating.
     try {
-      data.averageRating ??= await database.getAverageRatingByGame(game);
+      data.averageRating ??= await rDatabase.getAverageRatingByGame(game);
       averageRatingState.value = data.averageRating!;
     }
     catch (error, stackTrace) {
@@ -296,7 +315,7 @@ class _Controller {
 
     // Fetch and update user rating.
     try {
-      data.myRating ??= await database.getUserRatingForGame(game);
+      data.myRating ??= await rDatabase.getUserRatingForGame(game);
       myRatingState.value = data.myRating!;
     }
     catch (error, stackTrace) {
@@ -310,7 +329,7 @@ class _Controller {
 
     // Fetch and update total ratings count.
     try {
-      data.totalRatings ??= await database.getGameRatingsCount(game);
+      data.totalRatings ??= await rDatabase.getGameRatingsCount(game);
       totalRatingsState.value = data.totalRatings!;
     }
     catch (error, stackTrace) {
@@ -324,7 +343,7 @@ class _Controller {
 
     // Fetch and update individual star count.
     try {
-      data.stars ??= await database.getGameRatingsByStarsCount(game);
+      data.stars ??= await rDatabase.getGameRatingsByStarsCount(game);
       starsCountState.value = data.stars!;
     }
     catch (error, stackTrace) {
@@ -342,7 +361,7 @@ class _Controller {
       };
     }
   
-    hive.cachedRequests.put(data);
+    rHive.cachedRequests.put(data);
   }
 
   /// Inserts or updates the user's rating for a game.
@@ -350,13 +369,13 @@ class _Controller {
   /// This function is primarily used in the [_SubmitRatingModal] to allow users to rate a game.
   /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
   Future<void> upsertUserRating(int rating) async {
-    final GameData data = hive.cachedRequests.get('${game.identifier}') ?? GameData(
+    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
       myRating: rating,
     );
 
     try {
-      await database.upsertGameRating(game, rating);
+      await rDatabase.upsertGameRating(game, rating);
       myRatingState.value = rating;
     }
     catch (error, stackTrace) {
@@ -370,7 +389,7 @@ class _Controller {
 
     // Fetch and update total ratings count.
     try {
-      data.totalRatings = await database.getGameRatingsCount(game);
+      data.totalRatings = await rDatabase.getGameRatingsCount(game);
       totalRatingsState.value = data.totalRatings!;
     }
     catch (error, stackTrace) {
@@ -384,7 +403,7 @@ class _Controller {
 
     // Fetch and update average rating.
     try {
-      data.averageRating = await database.getAverageRatingByGame(game);
+      data.averageRating = await rDatabase.getAverageRatingByGame(game);
       averageRatingState.value = data.averageRating!;
     }
     catch (error, stackTrace) {
@@ -398,7 +417,7 @@ class _Controller {
 
     // Fetch and update individual star count.
     try {
-      data.stars = await database.getGameRatingsByStarsCount(game);
+      data.stars = await rDatabase.getGameRatingsByStarsCount(game);
       starsCountState.value = data.stars!;
     }
     catch (error, stackTrace) {
@@ -416,7 +435,7 @@ class _Controller {
       };
     }
   
-    hive.cachedRequests.put(data);
+    rHive.cachedRequests.put(data);
   }
 
   /// Retrieves the current average rating of the specified game.
@@ -425,11 +444,11 @@ class _Controller {
   /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
   /// The fetched or defaulted value is then stored in the cache for future use.
   Future<double> getAverageRating(Game game) async {
-    final GameData data = hive.cachedRequests.get('${game.identifier}') ?? GameData(
+    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
     );
     try {
-      data.averageRating ??= await database.getAverageRatingByGame(game);
+      data.averageRating ??= await rDatabase.getAverageRatingByGame(game);
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -439,7 +458,7 @@ class _Controller {
       );
       data.averageRating = 0.0;
     }
-    hive.cachedRequests.put(data);
+    rHive.cachedRequests.put(data);
     return data.averageRating!;
   }
 
@@ -460,12 +479,12 @@ class _Controller {
   /// Opens the GitHub repository for the emulator in the browser.
   ///
   /// This function is used to allow users to download the emulator from the official GitHub repository.
-  Future<void> openGitHub() async => await activity.gitHub();
+  Future<void> openGitHub() async => await sActivity.gitHub();
 
   /// Opens the Play Store to download the emulator.
   ///
   /// This function is used to allow users to download the emulator from the Google Play Store.
-  Future<void> openPlayStore() async => await activity.playStore();
+  Future<void> openPlayStore() async => await sActivity.playStore();
 
   /// Downloads the specified MIDlet from the bucket.
   ///
@@ -473,7 +492,7 @@ class _Controller {
   /// It updates the [installationState] based on the result of the download operation.
   Future<void> getMIDlet() async {
     try {
-      _midlet = await bucket.midlet(game.defaultMIDlet!);
+      _midlet = await rBucket.midlet(game.midlets.firstWhere((midlet) => midlet.isDefault));
 
       installationState.value = ProgressEnumeration.ready;
     }
@@ -496,7 +515,7 @@ class _Controller {
     try {
       if (_midlet == null) throw Exception("This game does not have a MIDLet available!");
 
-      await activity.emulator(_midlet!);
+      await sActivity.emulator(_midlet!);
     }
     on PlatformException catch (error, stackTrace) {
       installationState.value = ProgressEnumeration.emulatorNotFound;

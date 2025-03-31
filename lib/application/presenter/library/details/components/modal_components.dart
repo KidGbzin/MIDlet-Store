@@ -14,6 +14,7 @@ class _SubmitRatingModal extends StatefulWidget {
 
 class _SubmitRatingModalState extends State<_SubmitRatingModal> {
   late final ValueNotifier<num> _currentRating;
+  late final AppLocalizations localizations;
 
   bool _isReadyToSubmit(num currentRating) => (currentRating != 0 && currentRating != widget.controller.myRatingState.value);
 
@@ -22,6 +23,13 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
     _currentRating = ValueNotifier<num>(widget.controller.myRatingState.value);
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -74,10 +82,10 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
   Widget _buildRatingSection() {
     return Section(
       description: widget.controller.myRatingState.value == 0
-        ? AppLocalizations.of(context)!.sectionUserRatingDescriptionNotRated
-        : AppLocalizations.of(context)!.sectionUserRatingDescriptionRated,
+        ? localizations.sectionUserRatingDescriptionNotRated
+        : localizations.sectionUserRatingDescriptionRated,
       
-      title: AppLocalizations.of(context)!.sectionUserRating,
+      title: localizations.sectionUserRating,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 25, 15, 0),
         child: Align(
@@ -148,8 +156,8 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
                   padding: const EdgeInsets.fromLTRB(0, 2.5, 0, 0),
                   child: Text(
                     widget.controller.myRatingState.value == 0
-                      ? AppLocalizations.of(context)!.buttonSubmitRating
-                      : AppLocalizations.of(context)!.buttonUpdateRating,
+                      ? localizations.buttonSubmitRating
+                      : localizations.buttonUpdateRating,
                     
                     style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
                   ),
@@ -223,7 +231,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
     required int starRatingCount,
     required int totalRatingsCount,
   }) {
-    final double percentage = starRatingCount / totalRatingsCount;
+    final double percentage = totalRatingsCount == 0 ? 0 : starRatingCount / totalRatingsCount;
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {

@@ -14,14 +14,15 @@ import '../services/github_service.dart';
 class BucketRepository {
 
   const BucketRepository({
-    required this.android,
-    required this.gitHub,
+    required this.sAndroid,
+    required this.sGitHub,
   });
+
   /// The service responsible for managing Android I/O operations.
-  final AndroidService android;
+  final AndroidService sAndroid;
 
   /// The service responsible for interacting with the GitHub API.
-  final GitHubService gitHub;
+  final GitHubService sGitHub;
 
   /// Retrieves the audio theme for a game identified by the [title].
   /// 
@@ -34,17 +35,17 @@ class BucketRepository {
   Future<File> audio(String title) async {
     const String folder = 'Audios';
     final String document = '$title.rtx';
-    File file = await android.read(
+    File file = await sAndroid.read(
       folder: folder,
       document: document,
     );
     final bool exists = await file.exists();
     if (!exists) {
-      final Uint8List? bytes = await gitHub.get('$folder/$document');
+      final Uint8List? bytes = await sGitHub.get('$folder/$document');
 
       if (bytes == null) throw Exception("Unable to retrieve the \"$title\" audio theme.");
 
-      file = await android.write(
+      file = await sAndroid.write(
         bytes: bytes,
         document: document,
         folder: folder,
@@ -64,17 +65,17 @@ class BucketRepository {
   Future<File> cover(String title) async {
     const String folder = 'Covers';
     final String document = '$title.png';
-    File file = await android.read(
+    File file = await sAndroid.read(
       folder: folder,
       document: document,
     );
     final bool exists = await file.exists();
     if (!exists) {
-      final Uint8List? bytes = await gitHub.get('$folder/$document');
+      final Uint8List? bytes = await sGitHub.get('$folder/$document');
 
       if (bytes == null) throw Exception("Unable to retrieve the \"$title\" cover image.");
 
-      file = await android.write(
+      file = await sAndroid.write(
         bytes: bytes,
         document: document,
         folder: folder,
@@ -92,17 +93,17 @@ class BucketRepository {
   /// - `Exception`: If the MIDlet file cannot be retrieved either locally or from GitHub.
   Future<File> midlet(MIDlet midlet) async {
     final String folder = 'MIDlets/${midlet.title}';
-    File file = await android.read(
+    File file = await sAndroid.read(
       folder: folder,
       document: midlet.file,
     );
     final bool exists = await file.exists();
     if (!exists) {
-      final Uint8List? bytes = await gitHub.get('$folder/${midlet.file}');
+      final Uint8List? bytes = await sGitHub.get('$folder/${midlet.file}');
 
       if (bytes == null) throw Exception("Unable to retrieve the file \"${midlet.file}\".");
 
-      file = await android.write(
+      file = await sAndroid.write(
         bytes: bytes,
         document: midlet.file,
         folder: folder,
@@ -123,23 +124,53 @@ class BucketRepository {
   Future<List<Uint8List>> previews(String title) async {
     const String folder = 'Previews';
     final String document = '$title.zip';
-    File file = await android.read(
+    File file = await sAndroid.read(
       folder: folder,
       document: document,
     );
     final bool exists = await file.exists();
     if (!exists) {
-      final Uint8List? bytes = await gitHub.get('$folder/$document');
+      final Uint8List? bytes = await sGitHub.get('$folder/$document');
 
       if (bytes == null) throw Exception("Unable to retrieve the \"$title\" previews.");
 
-      file = await android.write(
+      file = await sAndroid.write(
         bytes: bytes,
         document: document,
         folder: folder,
       );
     }
     return _extract(file);
+  }
+
+  /// Retrieves the publisher logo for a game identified by the [title].
+  /// 
+  /// This method first checks if the publisher logo file is available locally in the `Publisher` directory.
+  /// If the file is not found, it fetches the logo from the GitHub repository and caches it locally.
+  /// The retrieved logo is returned as a [File] object.
+  ///
+  /// Throws:
+  /// - `Exception`: If the logo cannot be retrieved either locally or from GitHub.
+  Future<File> publisher(String title) async {
+    const String folder = 'Publishers';
+    final String document = '$title.png';
+    File file = await sAndroid.read(
+      folder: folder,
+      document: document,
+    );
+    final bool exists = await file.exists();
+    if (!exists) {
+      final Uint8List? bytes = await sGitHub.get('$folder/$document');
+
+      if (bytes == null) throw Exception("Unable to retrieve the \"$title\" logo.");
+
+      file = await sAndroid.write(
+        bytes: bytes,
+        document: document,
+        folder: folder,
+      );
+    }
+    return file;
   }
 
   /// Extracts the files from a .ZIP archive and returns them as a sorted list of [Uint8List].
