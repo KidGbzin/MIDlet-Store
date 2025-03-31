@@ -93,7 +93,7 @@ class HiveRepository {
     
     if (lastUpdated != null && lastCached != null && lastUpdated.isBefore(lastCached)) return;
 
-    const String filePath = "DATABASE.json";
+    const String filePath = "Database/DATABASE.json";
     final Uint8List? bytes = await gitHub.get(filePath);
 
     if (bytes == null) throw Exception("Unable to find the \"$filePath\".");

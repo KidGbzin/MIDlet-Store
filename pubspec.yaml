@@ -42,6 +42,5 @@ flutter:
     - assets/badges/
     - assets/brands/
     - assets/flags/
-    - assets/publishers/
   generate: true
   uses-material-design: true

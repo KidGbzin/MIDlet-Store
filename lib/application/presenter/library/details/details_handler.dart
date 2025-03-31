@@ -100,11 +100,11 @@ class _DetailsState extends State<Details> {
     );
     
     controller = _Controller(
-      activity: activity,
-      bucket: bucket,
+      sActivity: activity,
+      rBucket: bucket,
       game: widget.game,
-      hive: hive,
-      database: database,
+      rHive: hive,
+      rDatabase: database,
     );
     controller.initialize();
   
