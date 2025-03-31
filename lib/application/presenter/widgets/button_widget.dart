@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../globals.dart';
+import '../../core/configuration/global_configuration.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
+
+// BUTTON WIDGET 🧩: ============================================================================================================================================================ //
 
 /// A button widget that can be used to create different types of buttons.
 ///
@@ -27,11 +29,11 @@ class ButtonWidget extends StatelessWidget {
     return ButtonWidget._(
       onTap: onTap,
       child: InkWell(
-        borderRadius: kBorderRadius,
+        borderRadius: gBorderRadius,
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: kBorderRadius,
+            borderRadius: gBorderRadius,
             color: ColorEnumeration.transparent.value,
           ),
           height: 40,
@@ -64,11 +66,11 @@ class ButtonWidget extends StatelessWidget {
     return ButtonWidget._(
       onTap: onTap,
       child: InkWell(
-        borderRadius: kBorderRadius,
+        borderRadius: gBorderRadius,
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.5),
+            borderRadius: gBorderRadius,
             color: color ?? ColorEnumeration.primary.value,
           ),
           height: 45,
@@ -89,7 +91,5 @@ class ButtonWidget extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return child;
-  }
+  Widget build(BuildContext context) => child;
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:midlet_store/globals.dart';
+
+import '../../core/configuration/global_configuration.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 import '../../core/enumerations/tag_enumeration.dart';
 import '../../core/enumerations/typographies_enumeration.dart';
+
+// TAGS WIDGET 🏷️: ============================================================================================================================================================== //
 
 /// A widget that displays the tags of a game as labels.
 ///
@@ -39,7 +42,7 @@ class TagsWidget extends StatelessWidget {
     return FittedBox(
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: kBorderRadius,
+          borderRadius: gBorderRadius,
           color: ColorEnumeration.foreground.value,
         ),
         height: 35,

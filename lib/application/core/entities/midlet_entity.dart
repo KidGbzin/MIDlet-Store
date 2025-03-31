@@ -1,4 +1,8 @@
-/// Represents a Java ME (J2ME) application entity, providing metadata and attributes related to a `.jar` file.
+// MIDLET ENTITY ☕️: ============================================================================================================================================================ //
+
+/// Represents a Java ME (J2ME) application entity, which is a `.jar` file containing a mobile Java application.
+///
+/// The `MIDlet` entity provides metadata and attributes related to the Java ME application, such as the brand, file, censoring, default, landscape, multiplayer, and tags.
 class MIDlet {
 
   MIDlet({
@@ -6,7 +10,6 @@ class MIDlet {
     required this.file,
     required this.isCensored,
     required this.isDefault,
-    required this.isKeyboard,
     required this.isLandscape,
     required this.isMultiplayerB,
     required this.isMultiplayerL,
@@ -32,9 +35,6 @@ class MIDlet {
 
   /// Specifies if this [MIDlet] is a default (pre-installed) application.
   final bool isDefault;
-
-  /// Indicates whether the [MIDlet] supports keyboard input.
-  final bool isKeyboard;
 
   /// Determines if the [MIDlet] is optimized for landscape orientation.
   final bool isLandscape;
@@ -82,7 +82,6 @@ class MIDlet {
       file: json['file'] as String,
       isCensored: json['isCensored'] as bool,
       isDefault: json['isDefault'] as bool,
-      isKeyboard: json['isKeyboard'] as bool,
       isLandscape: json['isLandscape'] as bool,
       isMultiplayerB: json['isMultiplayerB'] as bool,
       isMultiplayerL: json['isMultiplayerL'] as bool,
@@ -100,15 +99,13 @@ class MIDlet {
 
   /// Converts the [MIDlet] instance into a JSON-compatible map.
   /// 
-  /// This method is primarily used for serialization, including storage
-  /// and data transmission.
+  /// This method is primarily used for serialization, including storage and data transmission.
   Map<String, dynamic> toJson() {
     return {
       'brand': brand,
       'file': file,
       'isCensored': isCensored,
       'isDefault': isDefault,
-      'isKeyboard': isKeyboard,
       'isLandscape': isLandscape,
       'isMultiplayerB': isMultiplayerB,
       'isMultiplayerL': isMultiplayerL,

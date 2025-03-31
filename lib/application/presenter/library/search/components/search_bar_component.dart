@@ -1,14 +1,14 @@
 part of '../search_handler.dart';
 
+// SEARCH BAR 🔍: =============================================================================================================================================================== //
+
 /// A widget that creates a search bar with a suggestion overlay.
 ///
 /// This widget allows the user to input a search query while displaying a list of suggestions below the search bar when it is focused.
 /// The overlay is managed dynamically based on the focus state of the search bar, and it will be shown or hidden accordingly.
 class _SearchBar extends StatefulWidget {
 
-  const _SearchBar({
-    required this.controller,
-  });
+  const _SearchBar(this.controller);
 
   /// The controller used to manage the [Search] state.
   /// 
@@ -20,21 +20,23 @@ class _SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<_SearchBar> {
-  late final FocusNode _focusNode;
-  late OverlayEntry _overlay;
+  late final FocusNode focusNode;
+  late final AppLocalizations localizations;
+
+  late OverlayEntry overlay;
 
   @override
   void initState() {
 
     // Initialize the focus node and add a listener to handle focus changes.
-    _focusNode = FocusNode()
+    focusNode = FocusNode()
       ..addListener(() {
-        if (_focusNode.hasFocus) {
-          _overlay = _createOverlay();
-          Overlay.of(context).insert(_overlay);
+        if (focusNode.hasFocus) {
+          overlay = _createOverlay();
+          Overlay.of(context).insert(overlay);
         }
         else {
-          _overlay.remove();
+          overlay.remove();
         }
       });
     
@@ -43,16 +45,23 @@ class _SearchBarState extends State<_SearchBar> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    focusNode.dispose();
 
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
+
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.5),
+        borderRadius: gBorderRadius,
         color: ColorEnumeration.foreground.value,
       ),
       height: 40,
@@ -61,7 +70,7 @@ class _SearchBarState extends State<_SearchBar> {
         children: <Widget> [
           Expanded(
             child: TextField(
-              controller: widget.controller.textController,
+              controller: widget.controller.cTextField,
               cursorHeight: 20,
               cursorOpacityAnimates: true,
               cursorRadius: const Radius.circular(100),
@@ -69,14 +78,14 @@ class _SearchBarState extends State<_SearchBar> {
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.fromLTRB(15, 0, 2.5, 7),
-                counterText: '',
+                counterText: "",
                 hintFadeDuration: Durations.medium2,
               ),
-              focusNode: _focusNode,
+              focusNode: focusNode,
               maxLength: 30,
               maxLines: 1,
               onSubmitted: (String query) {
-                widget.controller.clearFilters();
+                widget.controller.clearFilters(context, localizations);
                 widget.controller.applySearch(query);
               },
               onChanged: (String query) {},

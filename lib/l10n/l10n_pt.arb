@@ -3,224 +3,90 @@
     "@@locale": "pt",
 
     "buttonPlay": "JOGAR",
-    "@buttonPlay": {},
-
     "buttonCommingSoon": "EM BREVE",
-    "@buttonCommingSoon": {},
-
     "buttonLoginWithGoogle": "ENTRAR COM O GOOGLE",
-    "@buttonLoginWithGoogle": {},
-
     "buttonReadyToInstall": "PRONTO PARA A INSTALAÇÃO",
-    "@buttonReadyToInstall": {},
-
     "buttonSubmitRating": "ENVIAR AVALIAÇÃO",
-    "@buttonSubmitRating": {},
-
     "buttonUpdateAvailable": "ATUALIZAÇÂO DISPONÍVEL",
-    "@buttonUpdateAvailable": {},
-
     "buttonUpdateRating": "ATUALIZAR AVALIAÇÃO",
-    "@buttonUpdateRating": {},
-
     "chipFilterByCategories": "Categorias",
-    "@chipFilterByCategories": {},
-
     "chipFilterByPublisher": "Publicadora",
-    "@chipFilterByPublisher": {},
-
     "chipFilterByReleaseYear": "Ano de Lançamento",
-    "@chipFilterByReleaseYear": {},
-
     "label3DVersion": "Versão 3D",
-    "@label3DVersion": {},
-
     "labelAchievements": "Conquistas",
-    "@labelAchievements": {},
-
     "labelCensored": "Versão Censurada",
-    "@labelCensored": {},
-
     "labelDownloads": "Downloads",
-    "@labelDownloads": {},
-
     "labelLandscape": "Orientação Paisagem",
-    "@labelLandscape": {},
-
     "labelMultiplayerBluetooth": "Multiplayer Bluetooth",
-    "@labelMultiplayerBluetooth": {},
-
     "labelMultiplayerLocal": "Multiplayer Local",
-    "@labelMultiplayerLocal": {},
-
     "labelMultiplayerOnline": "Online",
-    "@labelMultiplayerOnline": {},
-
     "labelMultiscreen": "Multitelas",
-    "@labelMultiscreen": {},
-
     "labelPublisher": "Publicadora",
-    "@labelPublisher": {},
-    
     "labelRelease": "Lançamento",
-    "@labelRelease": {},
-
     "labelSize": "Tamanho",
-    "@labelSize": {},
-
     "labelTouchscreen": "Tela sensível ao toque",
-    "@labelTouchscreen": {},
-
     "labelVersion": "Versão",
-    "@labelVersion": {},
-
     "launcherErrorMessage01": "Ocorreu um erro, impedindo a inicialização do aplicativo.",
-    "@launcherErrorMessage01": {},
-
     "launcherErrorMessage02": "Falha na conexão com o servidor, tente novamente mais tarde.",
-    "@launcherErrorMessage02": {},
-
     "launcherLoadingMessage01": "Conectando ao banco de dados, aguarde...",
-    "@launcherLoadingMessage01": {},
-
     "launcherLoadingMessage02": "Baixando arquivos necessários, aguarde...",
-    "@launcherLoadingMessage02": {},
-
-    "launcherLoadingMessage03": "Autenticando com o Supabase, aguarde...",
-    "@launcherLoadingMessage03": {},
-
-    "launcherLoadingMessage04": "Autenticando com o Google, aguarde...",
-    "@launcherLoadingMessage04": {},
-
+    "launcherLoadingMessage03": "Authenticating with Supabase, please wait...",
+    "launcherLoadingMessage04": "Authenticating with Google, please wait...",
+    "messageFiltersCleared": "Os filtros foram limpos, monstrando todos os $1 jogos.",
+    "messageFiltersApplied": "Os filtros foram aplicados, exibindo $1 de $2 jogos.",
+    "messageFiltersEmpty": "Nenhum filtro aplicado, exibindo todos os $1 jogos.",
+    "messageFavoritesAdded": "Você adicionou $1 à sua lista de favoritos.",
+    "messageFavoritesRemoved": "Você removeu $1 da sua lista de favoritos.",
     "sectionAbout": "SOBRE",
-    "@sectionAbout": {},
-
     "sectionEmulatorNotFound": "ALGO DEU ERRADO",
-    "@sectionEmulatorNotFound": {},
-
     "sectionEmulatorNotFoundDescription": "Nenhum emulador disponível foi encontrado no seu dispositivo. Certifique-se de que há um emulador instalado.",
-    "@sectionEmulatorNotFoundDescription": {},
-
     "sectionEmulatorNotFoundText01": "Você também pode instalar o emulador J2ME Loader em uma das opções abaixo.",
-    "@sectionEmulatorNotFoundText01": {},
-
     "sectionEmulatorNotFoundText02": "Quando houver um emulador instalado, ele será iniciado automaticamente da próxima vez.",
-    "@sectionEmulatorNotFoundText02": {},
-
     "sectionFilterCategories": "FILTRAR POR CATEGORIAS",
-    "@sectionFilterCategories": {},
-
     "sectionFilterCategoriesDescription": "Refine sua pesquisa selecionando até três categorias.",
-    "@sectionFilterCategoriesDescription": {},
-
     "sectionFilterPublisher": "FILTRAR POR PUBLICADORA",
-    "@sectionFilterPublisher": {},
-
     "sectionFilterPublisherDescription": "Filtre sua pesquisa selecionando uma publicadora específica.",
-    "@sectionFilterPublisherDescription": {},
-
     "sectionFilterReleaseYear": "FILTRAR POR ANO DE LANÇAMENTO",
-    "@sectionFilterReleaseYear": {},
-
     "sectionFilterReleaseYearDescription": "Filtre sua pesquisa selecionando um ano de lançamento especifico.",
-    "@sectionFilterReleaseYearDescription": {},
-
     "sectionInstallation": "INSTALAÇÂO",
-    "@sectionInstallation": {},
-
     "sectionInstallationDescription": "Ao clicar em \"Jogar\", o menu de instalação de MIDlets será aberto, exibindo informações relevantes sobre a versão do jogo que será instalada no seu emulador. O emulador será iniciado automaticamente após a instalação.\n\nEm breve, várias versões de um mesmo jogo estarão disponíveis para seleção.",
-    "@sectionInstallationDescription": {},
-
     "sectionPreviews": "PRÉVIAS",
-    "@sectionPreviews": {},
-
     "sectionPreviewsDescription": "As características e prévias do jogo podem variar conforme o modelo do seu telefone.",
-    "@sectionPreviewsDescription": {},
-
     "sectionPreviewsError": "Este jogo não possui prévias disponíveis.",
-    "@sectionPreviewsError": {},
-
-    "sectionPublisherDescription": "Descubra mais jogos da _ que você pode gostar.",
-    "@sectionPublisherDescription": {},
-
+    "sectionPublisherDescription": "Descubra mais jogos da $1 que você pode gostar.",
     "sectionReadyToInstall": "PRONTO PARA INSTALAR",
-    "@sectionReadyToInstall": {},
-
     "sectionReadyToInstallDescription": "O jogo foi baixado e está pronto para ser instalado no emulador.",
-    "@sectionReadyToInstallDescription": {},
-
     "sectionRelatedGames": "RECOMENDADO PARA VOCÊ",
-    "@sectionRelatedGames": {},
-
-    "sectionRelatedGamesDescription": "Se você gostou de _, pode gostar também destes outros jogos.",
-    "@sectionRelatedGamesDescription": {},
-
+    "sectionRelatedGamesDescription": "Se você gostou de $1, pode gostar também destes outros jogos.",
     "sectionUserRating": "SUA AVALIAÇÃO",
-    "@sectionUserRating": {},
-
-    "sectionUserRatingDescriptionRated": "Você ainda não avaliou este jogo. Compartilhe sua opinião dando uma nota!",
-    "@sectionUserRatingDescriptionRated": {},
-
-    "sectionUserRatingDescriptionNotRated": "Parece que você já avaliou este jogo. Deseja atualizar sua avaliação?",
-    "@sectionUserRatingDescriptionNotRated": {},
-
+    "sectionUserRatingDescriptionRated": "Parece que você já avaliou este jogo. Deseja atualizar sua avaliação?",
+    "sectionUserRatingDescriptionNotRated": "Você ainda não avaliou este jogo. Compartilhe sua opinião dando uma nota!",
     "tag3D": "3D",
-    "@tag3D": {},
-
     "tagAction": "Ação",
-    "@tagAction": {},
-
     "tagAdventure": "Aventura",
-    "@tagAdventure": {},
-
     "tagBreakout": "Quebra-Blocos",
-    "@tagBreakout": {},
-
     "tagCasual": "Casual",
-    "@tagCasual": {},
-
+    "tagDriving": "Direção",
+    "tagExtremeSports": "Esportes Radicais",
     "tagFighting": "Luta",
-    "@tagFighting": {},
-
     "tagFootball": "Futebol",
-    "@tagFootball": {},
-
     "tagHackAndSlash": "Hack 'n' Slash",
-    "@tagHackAndSlash": {},
-
     "tagMetroidvania": "Metroidvania",
-    "@tagMetroidvania": {},
-
+    "tagOffRoad": "Off-Road",
     "tagOpenWorld": "Mundo Aberto",
-    "@tagOpenWorld": {},
-
     "tagPlatformer": "Plataforma",
-    "@tagPlatformer": {},
-
     "tagPointAndClick": "Point 'n' Click",
-    "@tagPointAndClick": {},
-
     "tagPuzzle": "Quebra-Cabeça",
-    "@tagPuzzle": {},
-
     "tagRacing": "Corrida",
-    "@tagRacing": {},
-
+    "tagRally": "Rali",
+    "tagSciFi": "Ficção Científica",
     "tagShooter": "Tiro",
-    "@tagShooter": {},
-
+    "tagShootEmUp": "Shoot 'em Up",
     "tagSports": "Esportes",
-    "@tagSports": {},
-
+    "tagStarfighter": "Nave de Combate",
     "tagStealth": "Furtividade",
-    "@tagStealth": {},
-
     "tagSurvivalHorror": "Survival Horror",
-    "@tagSurvivalHorror": {},
-
+    "tagTakedown": "Takedown",
     "tagTerror": "Terror",
-    "@tagTerror": {},
-
-    "tagTowerDefense": "Tower Defense",
-    "@tagTowerDefense": {}
+    "tagTowerDefense": "Tower Defense"
 }

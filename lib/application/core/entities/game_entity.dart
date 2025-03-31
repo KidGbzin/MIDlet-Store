@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import '../entities/midlet_entity.dart';
 
+// GAME ENTITY 🎮: ============================================================================================================================================================== //
+
 /// Entity representing a game's information.
 ///
 /// This class stores essential details about a game, including its title, description, release year, tags, and publisher.
@@ -9,7 +11,6 @@ import '../entities/midlet_entity.dart';
 class Game {
 
   Game({
-    required this.defaultMIDlet,
     required this.descriptionBR,
     required this.descriptionID,
     required this.descriptionUS,
@@ -20,10 +21,6 @@ class Game {
     required this.tags,
     required this.title,
   });
-  /// The default [MIDlet] for this game, or null if it doesn't exist.
-  ///
-  /// This [MIDlet] is used as the default for installing and launching the game.
-  final MIDlet? defaultMIDlet;
 
   /// The game description in Brazilian Portuguese.
   final String? descriptionBR;
@@ -59,7 +56,6 @@ class Game {
   /// This method is used to deserialize raw JSON data into a [Game] object.
   factory Game.fromJson(dynamic json) {
     return Game(
-      defaultMIDlet: json["defaultMIDlet"] == null ? null : MIDlet.fromJson(json["defaultMIDlet"]),
       descriptionBR: json['descriptionBR'] as String?,
       descriptionID: json['descriptionID'] as String?,
       descriptionUS: json['descriptionUS'] as String?,
@@ -77,7 +73,6 @@ class Game {
   /// This method is used for serializing the [Game] object, enabling it to be stored in databases like Hive.
   Map<String, dynamic> toJson() {
     return <String, dynamic> {
-      'defaultMIDlet': defaultMIDlet?.toJson(),
       'descriptionBR': descriptionBR,
       'descriptionID': descriptionID,
       'descriptionUS': descriptionUS,

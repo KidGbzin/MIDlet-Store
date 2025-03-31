@@ -1,14 +1,14 @@
 part of '../details_handler.dart';
 
+// OVERVIEW SECTION 📄: ========================================================================================================================================================= //
+
 /// A section widget displaying the game overview, including the release date, publisher logo, and average rating.
 ///
 /// This widget consists of three main sections: release information, publisher details, and the average rating.
 /// Each section is clickable, with the rating section triggering a modal for submitting ratings.
 class _OverviewSection extends StatefulWidget {
 
-  const _OverviewSection({
-    required this.controller,
-  });
+  const _OverviewSection(this.controller);
 
   /// The controller that manages the game data.
   final _Controller controller;
@@ -25,29 +25,18 @@ class _OverviewSectionState extends State<_OverviewSection> {
       height: 125,
       padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
       child: Row(
-        children: <Widget>[
+        spacing: 30,
+        children: <Widget> [
           Expanded(
             child: _buildReleaseLabel(),
-          ),
-          VerticalDivider(
-            width: 31,
-            thickness: 1,
-            color: ColorEnumeration.divider.value,
           ),
           Expanded(
             child: _buildPublisherLabel(),
           ),
-          VerticalDivider(
-            width: 31,
-            thickness: 1,
-            color: ColorEnumeration.divider.value,
-          ),
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: widget.controller.averageRatingState,
-              builder: (BuildContext context, double averageRating, Widget? _) {
-                return _buildRatingLabel(averageRating);
-              },
+              builder: (BuildContext context, double averageRating, Widget? _) =>_buildRatingLabel(averageRating),
             ),
           ),
         ],
@@ -82,11 +71,11 @@ class _OverviewSectionState extends State<_OverviewSection> {
   /// When tapped, it navigates to the search page with the publisher's name as a search query.
   Widget _buildPublisherLabel() {
     return InkWell(
-      borderRadius: kBorderRadius,
+      borderRadius: gBorderRadius,
       onTap: () {
-        context.push(
-          '/search',
-          extra: widget.controller.game.publisher,
+        context.showSearch(
+          publisher: widget.controller.game.publisher,
+          replace: false,
         );
       },
       child: Column(
@@ -95,20 +84,7 @@ class _OverviewSectionState extends State<_OverviewSection> {
         spacing: 7.5,
         children: <Widget> [
           Expanded(
-            child: Image.asset(
-              'assets/publishers/${widget.controller.game.publisher}.png',
-              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                Logger.error.print(
-                  label: 'Details | Overview\'s Publisher Image',
-                  message: '$error',
-                  stackTrace: stackTrace,
-                );
-                return Icon(
-                  Icons.broken_image_rounded,
-                  color: ColorEnumeration.grey.value,
-                );
-              },
-            ),
+            child: _buildLogo(),
           ),
           Ink(
             height: 38,
@@ -128,13 +104,31 @@ class _OverviewSectionState extends State<_OverviewSection> {
     );
   }
 
+  Widget _buildLogo() {
+    return FutureBuilder(
+      future: widget.controller.publisherLogo,
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.hasData) {
+          return Image.file(
+            snapshot.data!,
+            filterQuality: FilterQuality.high,
+          );
+        }
+        return Align(
+          alignment: Alignment.center,
+          child: LoadingAnimation(),
+        );
+      }
+    );
+  }
+
   /// Displays the average rating for the game and allows users to tap to submit a new rating.
   ///
   /// The rating is shown as a number, and a star-based visual rating is displayed below.
   /// Tapping on the rating triggers a modal where users can submit a new rating for the game.
   Widget _buildRatingLabel(double averageRating) {
     return InkWell(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: gBorderRadius,
       onTap: () {
         showModalBottomSheet(
           context: context,

@@ -1,5 +1,7 @@
 part of '../details_handler.dart';
 
+// PREVIEWS DIALOG 🧩: ========================================================================================================================================================== //
+
 /// A [Dialog] that displays a scrollable [PageView] of game screenshots.
 ///
 /// This widget allows users to swipe through multiple game screenshots.

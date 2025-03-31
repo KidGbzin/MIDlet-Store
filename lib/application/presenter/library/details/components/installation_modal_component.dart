@@ -15,6 +15,7 @@ class _InstallationModal extends StatefulWidget {
 }
 
 class _InstallationModalState extends State<_InstallationModal> {
+
   @override
   void initState() {
     widget.controller.getMIDlet();
@@ -37,7 +38,7 @@ class _InstallationModalState extends State<_InstallationModal> {
         valueListenable: widget.controller.installationState,
         builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
           if (progress == ProgressEnumeration.loading) {
-            return LoadingWidget();
+            return LoadingAnimation();
           }
           else if (progress == ProgressEnumeration.ready) {
             return _ReadyToInstall(
@@ -211,9 +212,9 @@ class _ReadyToInstallState extends State<_ReadyToInstall> {
 
   /// Builds the MIDlet information section.
   Widget _buildMIDLetInformation() {
-    final MIDlet midlet = widget.controller.game.defaultMIDlet!;
+    final MIDlet midlet = widget.controller.game.midlets.firstWhere((midlet) => midlet.isDefault);
 
-    List<Widget> children = <Widget>[
+    List<Widget> children = <Widget> [
       _information(HugeIcons.strokeRoundedJava, midlet.file),
       _information(HugeIcons.strokeRoundedSmartPhone01, midlet.resolution.replaceFirst('x', ' x ')),
       _information(HugeIcons.strokeRoundedSourceCode, "${localizations.labelVersion}: ${midlet.version}"),

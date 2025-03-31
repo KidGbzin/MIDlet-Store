@@ -1,14 +1,14 @@
 part of '../search_handler.dart';
 
+// PUBLISHER MODAL 🏢: ========================================================================================================================================================== //
+
 /// A modal widget that displays a list of publishers to filter by.
 ///
 /// The widget is composed of a list of tiles, each representing a publisher.
 /// The selected publisher is then used to filter the list of games.
 class _PublisherModal extends StatefulWidget {
 
-  const _PublisherModal({
-    required this.controller,
-  });
+  const _PublisherModal(this.controller);
 
   /// The controller that manages the state of the games list.
   final _Controller controller;
@@ -19,14 +19,21 @@ class _PublisherModal extends StatefulWidget {
 
 class _PublisherModalState extends State<_PublisherModal> {
   late final String? _initialState;
+  late final AppLocalizations localizations;
 
-  /// The state is initialized with the initial value of the selected publisher,
-  /// which is used to reset the selected publisher when the user cancels the modal.
   @override
   void initState() {
-    _initialState = widget.controller.selectedPublisherState.value;
+    _initialState = widget.controller.nSelectedPublisher.value;
   
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
+    widget.controller.fetchFiltersPublishers();
+    
+    super.didChangeDependencies();
   }
 
   @override
@@ -37,14 +44,14 @@ class _PublisherModalState extends State<_PublisherModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.selectedPublisherState.value = _initialState;
+            widget.controller.nSelectedPublisher.value = _initialState;
             context.pop();
           },
         ),
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedTick02,
           onTap: () {
-            widget.controller.applyFilters();
+            widget.controller.applyFilters(context, localizations);
             context.pop();
           },
         ),
@@ -55,16 +62,29 @@ class _PublisherModalState extends State<_PublisherModal> {
           title: AppLocalizations.of(context)!.sectionFilterPublisher,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 7.5,
-                crossAxisSpacing: 7.5,
-                childAspectRatio: 1.25,
-              ),
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: widget.controller.getPublishers().entries.map(_tile).toList(),
+            child: ValueListenableBuilder(
+              valueListenable: widget.controller.nFiltersPublishers,
+              builder: (BuildContext context, filters, Widget? _) {
+                if (filters == null) {
+                  return Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: LoadingAnimation(),
+                    ),
+                  );
+                }
+                return GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 7.5,
+                    crossAxisSpacing: 7.5,
+                    childAspectRatio: 1.25,
+                  ),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: filters.entries.map(_tile).toList(),
+                );
+              }
             ),
           ),
         ),
@@ -81,60 +101,52 @@ class _PublisherModalState extends State<_PublisherModal> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return InkWell(
-          borderRadius: kBorderRadius,
+          borderRadius: gBorderRadius,
           onTap: () {
         
             // Toggle the publisher selection on tap.
-            widget.controller.selectedPublisherState.value == publisher
-              ? widget.controller.selectedPublisherState.value = null
-              : widget.controller.selectedPublisherState.value = publisher;
+            widget.controller.nSelectedPublisher.value == publisher
+              ? widget.controller.nSelectedPublisher.value = null
+              : widget.controller.nSelectedPublisher.value = publisher;
           },
           child: ValueListenableBuilder(
-            valueListenable: widget.controller.selectedPublisherState,
+            valueListenable: widget.controller.nSelectedPublisher,
             builder: (BuildContext context, String? isSelected, Widget? _) {
               return Ink(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: gBorderRadius,
                   color: isSelected == publisher
                     ? ColorEnumeration.primary.value.withAlpha(190)
                     : ColorEnumeration.foreground.value,
                 ),
-                
-                child: Column(
-                  children: <Widget> [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                        child: Image.asset(
-                          'assets/publishers/$publisher.png',
-                          filterQuality: FilterQuality.high,
-                          errorBuilder: (BuildContext context, Object error, StackTrace? _) {
-                            return Icon(
-                              HugeIcons.strokeRoundedImage02,
-                              color: ColorEnumeration.grey.value,
-                              size: 18,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 7.5, 15, 15),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          publisher,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TypographyEnumeration.body(ColorEnumeration.grey).style,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                padding: EdgeInsets.all(15),
+                child: _buildLogo(publisher),
               );
             },
+          ),
+        );
+      }
+    );
+  }
+
+  Widget _buildLogo(String publisher) {
+    return FutureBuilder(
+      future: widget.controller.getPublisherLogo(publisher),
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.hasData) {
+          return Image.file(
+            snapshot.data!,
+            filterQuality: FilterQuality.high,
+          );
+        }
+        return Align(
+          alignment: Alignment.center,
+          child: Text(
+            publisher,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            textAlign: TextAlign.center,
           ),
         );
       }

@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../globals.dart';
+import '../../../../l10n/l10n_localizations.dart';
+
+import '../../../core/configuration/global_configuration.dart';
 
 import '../../../core/entities/game_data_entity.dart';
 import '../../../core/entities/game_entity.dart';
@@ -16,11 +17,15 @@ import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/tag_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
+import '../../../core/extensions/messenger_extension.dart';
+import '../../../core/extensions/router_extension.dart';
+
 import '../../../repositories/bucket_repository.dart';
 import '../../../repositories/database_repository.dart';
 import '../../../repositories/hive_repository.dart';
 
 import '../../widgets/button_widget.dart';
+import '../../widgets/loading_widget.dart';
 import '../../widgets/modal_widget.dart';
 import '../../widgets/rating_stars_widget.dart';
 import '../../widgets/section_widget.dart';
@@ -38,6 +43,8 @@ part '../search/views/search_view.dart';
 
 part '../search/search_controller.dart';
 
+// SEARCH HANDLER 🔍: =========================================================================================================================================================== //
+
 /// The application's search view.
 ///
 /// This view provides users with a comprehensive list of all games, featuring a search bar and filtering options to enhance navigation and discovery.
@@ -49,6 +56,9 @@ class Search extends StatefulWidget {
     super.key,
   });
 
+  /// The publisher to filter by.
+  /// 
+  /// If provided, the search view will display only games from the specified publisher.
   final String? publisher;
 
   @override
@@ -78,9 +88,9 @@ class _SearchViewState extends State<Search> {
     );
 
     controller = _Controller(
-      bucket: bucket,
-      database: database,
-      hive: hive,
+      rBucket: bucket,
+      rSupabase: database,
+      rHive: hive,
     );
     controller.initialize(
       publisher: widget.publisher,
@@ -90,9 +100,5 @@ class _SearchViewState extends State<Search> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return _SearchView(
-      controller: controller,
-    );
-  }
+  Widget build(BuildContext context) => _SearchView(controller);
 }

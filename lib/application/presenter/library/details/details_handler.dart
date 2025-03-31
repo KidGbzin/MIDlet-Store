@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/l10n_localizations.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:go_router/go_router.dart';
@@ -13,8 +11,9 @@ import 'package:image/image.dart' as image;
 
 import 'package:provider/provider.dart';
 
-import '../../../../globals.dart';
+import '../../../../l10n/l10n_localizations.dart';
 
+import '../../../core/configuration/global_configuration.dart';
 import '../../../core/entities/game_data_entity.dart';
 import '../../../core/entities/game_entity.dart';
 import '../../../core/entities/midlet_entity.dart';
@@ -23,6 +22,9 @@ import '../../../core/enumerations/logger_enumeration.dart';
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
+
+import '../../../core/extensions/messenger_extension.dart';
+import '../../../core/extensions/router_extension.dart';
 
 import '../../../repositories/bucket_repository.dart';
 import '../../../repositories/hive_repository.dart';
@@ -53,6 +55,8 @@ part '../details/views/details_view.dart';
 
 part '../details/details_controller.dart';
 
+// DETAILS HANDLER 🔧: ========================================================================================================================================================== //
+
 /// The details view of a specific game.
 ///
 /// This view displays detailed information about a selected game and provides functionality for interacting with its data.
@@ -61,6 +65,7 @@ class Details extends StatefulWidget {
   
   const Details(this.game, {super.key});
 
+  /// The game to display details for.
   final Game game;
 
   @override
@@ -93,12 +98,13 @@ class _DetailsState extends State<Details> {
       context,
       listen: false,
     );
+    
     controller = _Controller(
-      activity: activity,
-      bucket: bucket,
+      sActivity: activity,
+      rBucket: bucket,
       game: widget.game,
-      hive: hive,
-      database: database,
+      rHive: hive,
+      rDatabase: database,
     );
     controller.initialize();
   
@@ -113,9 +119,5 @@ class _DetailsState extends State<Details> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return _DetailsView(
-      controller: controller,
-    );
-  }
+  Widget build(BuildContext context) => _DetailsView(controller);
 }
