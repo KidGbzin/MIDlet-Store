@@ -1,5 +1,7 @@
 part of '../search_handler.dart';
 
+// CATEGORIES MODAL 🏷️: ========================================================================================================================================================= //
+
 /// A modal widget that displays a list of categories to filter by.
 ///
 /// This widget is composed of a list of tiles, each representing a category.
@@ -8,9 +10,7 @@ part of '../search_handler.dart';
 /// The [controller] is responsible for managing the state of the search bar and the filters.
 class _CategoriesModal extends StatefulWidget {
 
-  const _CategoriesModal({
-    required this.controller,
-  });
+  const _CategoriesModal(this.controller);
 
   /// The controller that manages the state of the game list.
   /// 
@@ -27,8 +27,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
 
   @override
   void initState() {
-    _initialState = widget.controller.selectedTagsState.value;
-    
+    _initialState = widget.controller.nSelectedTags.value;
 
     super.initState();
   }
@@ -36,11 +35,10 @@ class _CategoriesModalState extends State<_CategoriesModal> {
   @override
   void didChangeDependencies() {
     localizations = AppLocalizations.of(context)!;
+    widget.controller.fetchFiltersTags(localizations);
     
-
     super.didChangeDependencies();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,14 +48,14 @@ class _CategoriesModalState extends State<_CategoriesModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.selectedTagsState.value = _initialState;
+            widget.controller.nSelectedTags.value = _initialState;
             context.pop();
           },
         ),
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedTick02,
           onTap: () {
-            widget.controller.applyFilters();
+            widget.controller.applyFilters(context, localizations);
             context.pop();
           },
         ),
@@ -68,10 +66,18 @@ class _CategoriesModalState extends State<_CategoriesModal> {
           title: localizations.sectionFilterCategories,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: Wrap(
-              runSpacing: 7.5,
-              spacing: 7.5,
-              children: widget.controller.getCategories(localizations).map(_tile).toList(),
+            child: ValueListenableBuilder(
+              valueListenable: widget.controller.nFiltersTags,
+              builder: (BuildContext context, filters, Widget? _) {
+                if (filters == null) {
+                  return Align(alignment: Alignment.center, child: LoadingAnimation());
+                }
+                return Wrap(
+                  runSpacing: 7.5,
+                  spacing: 7.5,
+                  children: filters.map(_tile).toList(),
+                );
+              }
             ),
           ),
         ),
@@ -79,7 +85,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
     );
   }
 
-  /// Builds a tile for each [tag] that can be selected or deselected.
+  /// Builds a tile for each tag that can be selected or deselected.
   ///
   /// When tapped, the tile toggles the tag's selection state in the [widget.controller.selectedTagsState].
   /// The tile displays the tag's icon and name.
@@ -90,12 +96,12 @@ class _CategoriesModalState extends State<_CategoriesModal> {
     final String name = record.$2;
     final int count = record.$3;
 
-    final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.selectedTagsState.value.contains(tag.code));
+    final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.nSelectedTags.value.contains(tag.code));
 
     return InkWell(
-      borderRadius: kBorderRadius,
+      borderRadius: gBorderRadius,
       onTap: () {
-        final List<String> temporary = widget.controller.selectedTagsState.value;
+        final List<String> temporary = widget.controller.nSelectedTags.value;
 
         if (temporary.contains(tag.code)) {
           temporary.remove(tag.code);
@@ -106,7 +112,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
           isSelected.value = !isSelected.value;
         }
         
-        widget.controller.selectedTagsState.value = List.from(temporary);
+        widget.controller.nSelectedTags.value = List.from(temporary);
       },
       child: ValueListenableBuilder(
         valueListenable: isSelected,
@@ -114,7 +120,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
           return FittedBox(
             child: Ink(
               decoration: BoxDecoration(
-                borderRadius: kBorderRadius,
+                borderRadius: gBorderRadius,
                 color: isSelected
                   ? ColorEnumeration.primary.value.withAlpha(190)
                   : ColorEnumeration.foreground.value,

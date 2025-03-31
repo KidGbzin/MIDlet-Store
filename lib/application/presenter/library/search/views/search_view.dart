@@ -1,11 +1,15 @@
 part of '../search_handler.dart';
 
+// SEARCH VIEW 🧩: ============================================================================================================================================================== //
+
+/// The stateful widget that represents the search view.
+/// 
+/// This widget is responsible for displaying the search interface and handling user interactions.
 class _SearchView extends StatefulWidget {
 
-  const _SearchView({
-    required this.controller,
-  });
+  const _SearchView(this.controller);
 
+  /// The controller associated with the view.
   final _Controller controller;
 
   @override
@@ -13,9 +17,9 @@ class _SearchView extends StatefulWidget {
 }
 
 class _SearchState extends State<_SearchView> {
-  late ScaffoldMessengerState snackbar;
-
   late final AppLocalizations localizations;
+
+  late ScaffoldMessengerState snackbar;
 
   @override
   void didChangeDependencies() {
@@ -48,27 +52,12 @@ class _SearchState extends State<_SearchView> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(15),
-                child: _SearchBar(
-                  controller: widget.controller,
-                ),
+                child: _SearchBar(widget.controller),
               ),
             ),
-            SizedBox.square(
-              dimension: 40,
-              child: ValueListenableBuilder(
-                valueListenable: widget.controller.gameListState,
-                builder: (BuildContext context, List<Game> games, Widget? _) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget> [
-                      Text(
-                        games.length.toString(),
-                        style: TypographyEnumeration.body(ColorEnumeration.elements).style,
-                      ),
-                    ],
-                  );
-                },
-              ),
+            ButtonWidget.icon(
+              icon: HugeIcons.strokeRoundedArrowReloadHorizontal,
+              onTap: () => widget.controller.clearFilters(context, localizations),
             ),
           ],
         ),
@@ -85,9 +74,10 @@ class _SearchState extends State<_SearchView> {
               alignment: WrapAlignment.start,
               crossAxisAlignment: WrapCrossAlignment.start,
               spacing: 7.5,
+              runSpacing: 7.5,
               children: <Widget> [
                 ValueListenableBuilder(
-                  valueListenable: widget.controller.selectedTagsState,
+                  valueListenable: widget.controller.nSelectedTags,
                   builder: (BuildContext context, List<String> selectedTags, Widget? _) {
                     return _FilterButton(
                       color: selectedTags.isEmpty ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
@@ -96,18 +86,14 @@ class _SearchState extends State<_SearchView> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) {
-                            return _CategoriesModal(
-                              controller: widget.controller,
-                            );
-                          },
+                          builder: (BuildContext context) => _CategoriesModal(widget.controller),
                         );
                       },
                     );
                   },
                 ),
                 ValueListenableBuilder(
-                  valueListenable: widget.controller.selectedPublisherState,
+                  valueListenable: widget.controller.nSelectedPublisher,
                   builder: (BuildContext context, String? selectedPublisher, Widget? _) {
                     return _FilterButton(
                       color: selectedPublisher == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
@@ -116,18 +102,14 @@ class _SearchState extends State<_SearchView> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) {
-                            return _PublisherModal(
-                              controller: widget.controller,
-                            );
-                          },
+                          builder: (BuildContext context) => _PublisherModal(widget.controller),
                         );
                       },
                     );
                   },   
                 ),
                 ValueListenableBuilder(
-                  valueListenable: widget.controller.selectedReleaseYearState,
+                  valueListenable: widget.controller.nSelectedReleaseYear,
                   builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
                     return _FilterButton(
                       color: selectedReleaseYear == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
@@ -136,11 +118,7 @@ class _SearchState extends State<_SearchView> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) {
-                            return _ReleaseModal(
-                              controller: widget.controller,
-                            );
-                          },
+                          builder: (BuildContext context) => _ReleaseModal(widget.controller),
                         );
                       },
                     );
@@ -149,19 +127,23 @@ class _SearchState extends State<_SearchView> {
               ],
             ),
           ),
-          Divider(
-            color: ColorEnumeration.divider.value,
-            height: 1,
-            thickness: 1,
-          ),
+          gDivider,
           Expanded(
             child: ValueListenableBuilder(
-              valueListenable: widget.controller.gameListState,
-              builder: (BuildContext context, List<Game> currentlyActiveGameList, Widget? _) {
-                return _ListView(
-                  controller: widget.controller,
-                  games: currentlyActiveGameList,
-                );
+              valueListenable: widget.controller.nGames,
+              builder: (BuildContext context, listener, Widget? _) {
+                if (listener.$2) {
+                  return Align(
+                    alignment: Alignment.center,
+                    child: LoadingAnimation(),
+                  );
+                }
+                else {
+                  return _ListView(
+                    controller: widget.controller,
+                    games: listener.$1,
+                  );
+                }
               }
             ),
           ),

@@ -1,14 +1,14 @@
 part of '../search_handler.dart';
 
+// RELEASE MODAL 📅: ============================================================================================================================================================ //
+
 /// A modal widget that displays a list of years to filter by.
 ///
 /// This widget is composed of a list of tiles, each representing a year.
 /// The selected year is then used to filter the list of games.
 class _ReleaseModal extends StatefulWidget {
 
-  const _ReleaseModal({
-    required this.controller,
-  });
+  const _ReleaseModal(this.controller);
 
   /// The controller that manages the state of the game list.
   /// 
@@ -21,14 +21,22 @@ class _ReleaseModal extends StatefulWidget {
 
 class _ReleaseModalState extends State<_ReleaseModal> {
   late final int? _initialState;
+  late final AppLocalizations localizations;
 
   @override
   void initState() {
-    _initialState = widget.controller.selectedReleaseYearState.value;
+    _initialState = widget.controller.nSelectedReleaseYear.value;
 
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
+    widget.controller.fetchFiltersReleaseYear();
+
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,34 +46,42 @@ class _ReleaseModalState extends State<_ReleaseModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.selectedReleaseYearState.value = _initialState;
+            widget.controller.nSelectedReleaseYear.value = _initialState;
             context.pop();
           },
         ),
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedTick02,
           onTap: () {
-            widget.controller.applyFilters();
+            widget.controller.applyFilters(context, localizations);
             context.pop();
           },
         ),
       ],
       child: SingleChildScrollView(
         child: Section(
-          description: AppLocalizations.of(context)!.sectionFilterReleaseYearDescription,
-          title: AppLocalizations.of(context)!.sectionFilterReleaseYear,
+          description: localizations.sectionFilterReleaseYearDescription,
+          title: localizations.sectionFilterReleaseYear,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 7.5,
-                crossAxisSpacing: 7.5,
-                childAspectRatio: 1.25,
-              ),
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: widget.controller.getReleaseYears().entries.map(_tile).toList(),
+            child: ValueListenableBuilder(
+              valueListenable: widget.controller.nFiltersReleaseYear,
+              builder: (BuildContext context, filters, Widget? _) {
+                if (filters == null) {
+                  return Align(alignment: Alignment.center, child: LoadingAnimation());
+                }
+                return GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 7.5,
+                    crossAxisSpacing: 7.5,
+                    childAspectRatio: 1.25,
+                  ),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: filters.entries.map(_tile).toList(),
+                );
+              }
             ),
           ),
         ),
@@ -83,20 +99,20 @@ class _ReleaseModalState extends State<_ReleaseModal> {
     final int count = entry.value;
   
     return InkWell(
-      borderRadius: kBorderRadius,
+      borderRadius: gBorderRadius,
       onTap: () {
 
         // Toggle the year selection on tap.
-        widget.controller.selectedReleaseYearState.value == releaseYear
-          ? widget.controller.selectedReleaseYearState.value = null
-          : widget.controller.selectedReleaseYearState.value = releaseYear;
+        widget.controller.nSelectedReleaseYear.value == releaseYear
+          ? widget.controller.nSelectedReleaseYear.value = null
+          : widget.controller.nSelectedReleaseYear.value = releaseYear;
       },
       child: ValueListenableBuilder(
-        valueListenable: widget.controller.selectedReleaseYearState,
+        valueListenable: widget.controller.nSelectedReleaseYear,
         builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
           return Ink(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: gBorderRadius,
               color: selectedReleaseYear == releaseYear
                 ? ColorEnumeration.primary.value.withAlpha(190)
                 : ColorEnumeration.foreground.value,
@@ -114,12 +130,23 @@ class _ReleaseModalState extends State<_ReleaseModal> {
                     style: TypographyEnumeration.rating(ColorEnumeration.grey).style,
                   ),
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Releases: $count",
-                    style: TypographyEnumeration.body(ColorEnumeration.grey).style,
-                  ),
+                Row(
+                  spacing: 7.5,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget> [
+                    Icon(
+                      HugeIcons.strokeRoundedGameController03,
+                      color: ColorEnumeration.grey.value,
+                      size: 18,
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "$count",
+                        style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
