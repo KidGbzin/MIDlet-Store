@@ -212,6 +212,9 @@
     "tagMetroidvania": "Metroidvania",
     "@tagMetroidvania": {},
 
+    "tagOffRoad": "Off-Road",
+    "@tagOffRoad": {},
+
     "tagOpenWorld": "Open World",
     "@tagOpenWorld": {},
 
@@ -227,17 +230,32 @@
     "tagRacing": "Racing",
     "@tagRacing": {},
 
+    "tagRally": "Rally",
+    "@tagRally": {},
+
+    "tagSciFi": "Sci-Fi",
+    "@tagSciFi": {},
+
     "tagShooter": "Shooter",
     "@tagShooter": {},
 
+    "tagShootEmUp": "Shoot 'Em Up",
+    "@tagShootEmUp": {},
+
     "tagSports": "Sports",
     "@tagSports": {},
+
+    "tagStarfighter": "Starfighter",
+    "@tagStarfighter": {},
 
     "tagStealth": "Stealth",
     "@tagStealth": {},
 
     "tagSurvivalHorror": "Survival Horror",
     "@tagSurvivalHorror": {},
+
+    "tagTakedown": "Takedown",
+    "@tagTakedown": {},
 
     "tagTerror": "Terror",
     "@tagTerror": {},
