@@ -197,7 +197,7 @@ class _Controller {
       }),
     );
   
-    categories.sort((x, y) => y.$2.compareTo(x.$2));
+    categories.sort((x, y) => x.$2.compareTo(y.$2));
   
     nFiltersTags.value = categories;
   }
@@ -439,4 +439,6 @@ class _Controller {
       return Future.value(null);
     }
   }
+
+  Future<File> getPublisherLogo(String title) => rBucket.publisher(title);
 }

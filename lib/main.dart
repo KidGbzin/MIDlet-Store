@@ -56,8 +56,8 @@ void main() {
   /// Handles application files and can be accessed globally via Provider injection.
   /// Depends on Android and GitHub services.
   final BucketRepository rBucket = BucketRepository(
-    android: sAndroid,
-    gitHub: sGitHub,
+    sAndroid: sAndroid,
+    sGitHub: sGitHub,
   );
 
   /// Repository for local database management.

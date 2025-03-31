@@ -66,7 +66,12 @@ class _PublisherModalState extends State<_PublisherModal> {
               valueListenable: widget.controller.nFiltersPublishers,
               builder: (BuildContext context, filters, Widget? _) {
                 if (filters == null) {
-                  return Align(alignment: Alignment.center, child: LoadingAnimation());
+                  return Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: LoadingAnimation(),
+                    ),
+                  );
                 }
                 return GridView(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -114,41 +119,34 @@ class _PublisherModalState extends State<_PublisherModal> {
                     ? ColorEnumeration.primary.value.withAlpha(190)
                     : ColorEnumeration.foreground.value,
                 ),
-                child: Column(
-                  children: <Widget> [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                        child: Image.asset(
-                          'assets/publishers/$publisher.png',
-                          filterQuality: FilterQuality.high,
-                          errorBuilder: (BuildContext context, Object error, StackTrace? _) {
-                            return Icon(
-                              HugeIcons.strokeRoundedImage02,
-                              color: ColorEnumeration.grey.value,
-                              size: 18,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 7.5, 15, 15),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          publisher,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TypographyEnumeration.body(ColorEnumeration.grey).style,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                padding: EdgeInsets.all(15),
+                child: _buildLogo(publisher),
               );
             },
+          ),
+        );
+      }
+    );
+  }
+
+  Widget _buildLogo(String publisher) {
+    return FutureBuilder(
+      future: widget.controller.getPublisherLogo(publisher),
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.hasData) {
+          return Image.file(
+            snapshot.data!,
+            filterQuality: FilterQuality.high,
+          );
+        }
+        return Align(
+          alignment: Alignment.center,
+          child: Text(
+            publisher,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            textAlign: TextAlign.center,
           ),
         );
       }
