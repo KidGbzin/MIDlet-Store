@@ -90,7 +90,7 @@ class MainActivity : FlutterActivity() {
     ) {
         val file: File = File(filePath);
         val intent: Intent = Intent(Intent.ACTION_VIEW);
-        val uri: Uri = FileProvider.getUriForFile(this, "${BuildConfig.APPLICATION_ID}.fileprovider", file);
+        val uri: Uri = FileProvider.getUriForFile(this, "${CHANNEL}.fileprovider", file);
 
         try {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
