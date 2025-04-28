@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../application/repositories/bucket_repository.dart';
-import '../application/repositories/database_repository.dart';
 import '../application/repositories/hive_repository.dart';
+import '../application/repositories/supabase_repository.dart';
 
 import '../application/services/activity_service.dart';
 import '../application/services/android_service.dart';
@@ -31,18 +31,24 @@ void main() {
   /// Acts as a dependency for the Bucket service.
   final AndroidService sAndroid = AndroidService();
 
-  /// Service responsible for user authentication.
-  final AuthenticationService sAuthenticantion = AuthenticationService();
+  /// Service responsible for user authentication with Google.
+  final GoogleOAuthService sGoogleOAuth = GoogleOAuthService(const String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'));
 
   /// Service for managing GitHub repository files.
   ///
   /// Handles the file operations and serves as a dependency for Hive and Bucket repositories.
-  final GitHubService sGitHub = GitHubService(http.Client());
+  final GitHubService sGitHub = GitHubService(
+    client: http.Client(),
+    token: const String.fromEnvironment("GITHUB_BUCKET_TOKEN"),
+  );
 
   /// Service for interacting with the Supabase back-end.
   ///
   /// Handles data operations and can be accessed via Provider injection.
-  final SupabaseService sSupabase = SupabaseService();
+  final SupabaseService sSupabase = SupabaseService(
+    anonKey: const String.fromEnvironment("SUPABASE_ANON_KEY"),
+    url: const String.fromEnvironment("SUPABASE_URL"),
+  );
 
   /// Service for handling Android native activity functions.
   ///
@@ -80,8 +86,8 @@ void main() {
       Provider<ActivityService>.value(
         value: sActivity,
       ),
-      Provider<AuthenticationService>.value(
-        value: sAuthenticantion,
+      Provider<GoogleOAuthService>.value(
+        value: sGoogleOAuth,
       ),
       Provider<BucketRepository>.value(
         value: rBucket,

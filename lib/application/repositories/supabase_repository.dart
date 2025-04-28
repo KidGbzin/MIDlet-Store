@@ -25,10 +25,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.information.print(
-      message: "\"$title\" average rating: ${response ?? 0}.", 
-      label: "Database | GET • Average Rating",
-    );
+    Logger.success.log("Successfully fetched the average rating for \"$title\" from Supabase: ${response ?? 0}.");
 
     return (response ?? 0).roundToDouble();
   }
@@ -52,14 +49,12 @@ class SupabaseRepository {
     }
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.information.print(
-      message: "\"$title\" ratings by star: "
-               "{5★: ${ratings["5"]}}, "
-               "{4★: ${ratings["4"]}}, "
-               "{3★: ${ratings["3"]}}, "
-               "{2★: ${ratings["2"]}}, "
-               "{1★: ${ratings["1"]}}.", 
-      label: "Database | GET • Ratings by Star Count",
+    Logger.success.log("Successfully fetched the ratings by stars for \"$title\" from Supabase: "
+                       "{5★: ${ratings["5"]}}, "
+                       "{4★: ${ratings["4"]}}, "
+                       "{3★: ${ratings["3"]}}, "
+                       "{2★: ${ratings["2"]}}, "
+                       "{1★: ${ratings["1"]}}.",
     );
 
     return ratings;
@@ -78,10 +73,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.information.print(
-      message: "\"$title\" total ratings: $response.", 
-      label: "Database | GET • Ratings Count",
-    );
+    Logger.success.log("Successfully fetched the total ratings for \"$title\" from Supabase: $response.");
 
     return response;
   }
@@ -100,10 +92,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.information.print(
-      message: "\"$title\" user rating: ${response ?? 0}.", 
-      label: "Database | GET • User Rating for Game",
-    );
+    Logger.success.log("Successfully fetched the user rating for \"$title\" from Supabase: ${response ?? 0}.");
 
     return response ?? 0;
   }
@@ -123,10 +112,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.information.print(
-      message: "\"$title\" rated by the user: $rating★.", 
-      label: "Database | UPSERT • User Rating",
-    );
+    Logger.success.log("Successfully upserted the rating for \"$title\" on Supabase: $rating★.");
   }
 
   /// Fetches the total number of downloads for a given [Game] and inserts a value if it does not exist.
@@ -143,10 +129,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.information.print(
-      message: "\"$title\" downloads: $response.", 
-      label: "Database | GET • Downloads Count",
-    );
+    Logger.success.log("Successfully fetched the downloads count for \"$title\" from Supabase: $response.");
 
     return response;
   }

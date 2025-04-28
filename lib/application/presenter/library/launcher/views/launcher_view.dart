@@ -23,7 +23,7 @@ class _LauncherViewState extends State<_LauncherView> {
           children: <Widget> [
             Expanded(
               child: ValueListenableBuilder(
-                valueListenable: widget.controller.progressState,
+                valueListenable: widget.controller.nProgress,
                 builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
                   Widget child = const SizedBox.shrink();
 

@@ -28,7 +28,7 @@ import '../../../core/extensions/router_extension.dart';
 
 import '../../../repositories/bucket_repository.dart';
 import '../../../repositories/hive_repository.dart';
-import '../../../repositories/database_repository.dart';
+import '../../../repositories/supabase_repository.dart';
 
 import '../../../services/activity_service.dart';
 

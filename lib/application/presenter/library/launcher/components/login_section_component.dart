@@ -42,8 +42,8 @@ class _LoginButton extends StatelessWidget {
     return ButtonWidget.widget(
       color: ColorEnumeration.foreground.value,
       onTap: () {
-        controller.progressState.value = ProgressEnumeration.loading;
-        controller.signIn(context);
+        controller.nProgress.value = ProgressEnumeration.loading;
+        controller.googleSignIn(context);
       },
       width: double.infinity,
       child: Align(

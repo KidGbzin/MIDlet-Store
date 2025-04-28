@@ -1,151 +1,137 @@
-part of 'launcher_handler.dart';
+part of '../launcher/launcher_handler.dart';
 
-/// A controller that manages the state of the launcher.
+/// Controls the initialization and authentication flow of the [Launcher] view.
 ///
-/// This controller is responsible for initializing the application.
+/// This controller handles service setup, session restoration, and user authentication management.
 class _Controller {
   
   _Controller({
-    required this.activityService,
-    required this.gitHub,
-    required this.googleAuthentication,
-    required this.hive,
-    required this.supabase,
+    required this.rHive,
+    required this.sActivity,
+    required this.sGoogleOAuth,
+    required this.sGitHub,
+    required this.sSupabase,
   });
 
-  /// An instance of [GitHubService] that interacts with the GitHub API.
+  /// Manages local storage operations, including games, favorites, recent games, and cached requests.
+  final HiveRepository rHive;
+
+  /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
+  final ActivityService sActivity;
+
+  /// Handles interactions with the GitHub API, such as fetching remote files and checking for application updates.
+  final GitHubService sGitHub;
+
+  /// Manages Google authentication flows, including silent sign-in and explicit sign-in requests.
+  final GoogleOAuthService sGoogleOAuth;
+
+  /// Manages Supabase authentication and database services, handling user sessions and data synchronization.
+  final SupabaseService sSupabase;
+
+  /// A notifier that holds and updates the current progress state of the launcher flow.
   ///
-  /// This instance is used to fetch remote files and check for application updates.
-  final GitHubService gitHub;
+  /// The state can be one of the values from [ProgressEnumeration], such as loading, login request, success, error, or outdated version.
+  late final ValueNotifier<ProgressEnumeration> nProgress;
 
-  /// An instance of [ActivityService] that manages native Android activity functions.
+  /// Initializes application services, checks for updates, and attempts to restore a cached user session.
   ///
-  /// This instance is used to interact with native Kotlin code and perform operations that are not available in Dart.
-  final ActivityService activityService;
-
-  /// An instance of [AuthenticationService] that manages Google authentication services.
-  ///
-  /// This instance is used to sign in and sign out users.
-  final AuthenticationService googleAuthentication;
-
-  /// An instance of [HiveRepository] that manages the local storage boxes for games, favorites, recent games, and cached requests.
-  ///
-  /// This instance is used to fetch and update the game collection from the GitHub repository, and store and retrieve game-related data.
-  final HiveRepository hive;
-
-  /// An instance of [SupabaseService] that manages the Supabase back-end services.
-  ///
-  /// This instance is used to log in users to Supabase and manage the application's data.
-  final SupabaseService supabase;
-
-  /// A notifier that manages the progress state throughout the application.
-  /// 
-  /// This [ValueNotifier] holds the current progress state, which can be one of the values from the [ProgressEnumeration] enum (e.g., login request, loading, success, error).
-  final ValueNotifier<ProgressEnumeration> progressState = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.loading);
-
-  /// Initializes the authentication services, application settings, and checks the user's locale.
+  /// Updates the [nProgress] state based on the initialization outcome.
   Future<void> initialize(BuildContext context) async {
+    Logger.information.log("Initializing the Launcher controller...");
+
+    nProgress = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.loading);
+
     try {
-      await hive.initialize();
+      await rHive.initialize();
+      await sSupabase.initialize();
 
-      final bool isOutdated = await gitHub.isVersionOutdated();
+      final bool isOutdated = await sGitHub.isVersionOutdated();
 
-      if (isOutdated) {
-        progressState.value = ProgressEnumeration.isOutdated;
-      }
-      else {
-        await fetchAndAutheticateUser();
-      }
-    }
+      nProgress.value = isOutdated 
+          ? ProgressEnumeration.isOutdated 
+          : await _findCachedSession();
+    } 
     catch (error, stackTrace) {
-      progressState.value = ProgressEnumeration.error;
-  
-      Logger.error.print(
-        message: '$error',
-        label: 'Launcher Controller | Initialize',
+      nProgress.value = ProgressEnumeration.error;
+
+      Logger.error.log(
+        "$error",
         stackTrace: stackTrace,
       );
     }
   }
 
-  /// Opens the MIDlet Store releases page on the web browser.
+  /// Disposes resources managed by the controller.
   ///
-  /// This function is used to open the GitHub releases page for the MIDlet Store.
-  Future<void> goToReleases() async => await activityService.openMidletStoreReleases();
+  /// Specifically, disposes the [nProgress] notifier to prevent memory leaks.
+  void dispose() {
+    Logger.information.log("Disposing the Launcher controller resources...");
 
-  /// Handles the authentication flow by attempting silent Google sign-in and logging the user into Supabase.
+    nProgress.dispose();
+  }
+
+  /// Opens the MIDlet Store releases page in the web browser.
   ///
-  /// The function first tries a silent Google sign-in.
-  /// If successful, it logs the user into Supabase using the provided tokens.
-  /// 
-  /// Progress is tracked and updated using [progressState].
-  Future<void> fetchAndAutheticateUser() async {
-    progressState.value = ProgressEnumeration.loading;
+  /// This redirects the user to the GitHub releases page for the MIDlet Store project.
+  Future<void> goToReleases() async => await sActivity.openMidletStoreReleases();
 
-    await supabase.initialize();
-
-    await hive.fetchAndUpdateGameCollection();
-
+  /// Attempts to restore a cached user session by performing a silent Google Sign-In.
+  ///
+  /// If a valid session is found, the user is automatically logged into Supabase and [ProgressEnumeration.finished] is returned.
+  /// If no session is found, [ProgressEnumeration.loginRequest] is returned.
+  /// In case of an error, [ProgressEnumeration.error] is returned.
+  ///
+  /// This method does not directly update [nProgress].
+  Future<ProgressEnumeration> _findCachedSession() async {
     try {
-      final GoogleSignInAuthentication? googleSignInAuthentication = await googleAuthentication.signInSilently();
+      final GoogleSignInAuthentication? googleSignInAuthentication = await sGoogleOAuth.signInSilently();
       
       if (googleSignInAuthentication != null) {
-        // Perform Supabase login using Google authentication tokens.
-        await supabase.loginWithGoogle(
+        await sSupabase.loginWithGoogle(
           idToken: googleSignInAuthentication.idToken!,
           accessToken: googleSignInAuthentication.accessToken,
         );
 
-        Logger.success.print(
-          message: 'Successfully logged in Supabase.',
-          label: 'Launcher Controller | Initialize',
-        );
-
-        progressState.value = ProgressEnumeration.finished;
-      }
+        return ProgressEnumeration.finished;
+      } 
       else {
-        // Update progress state to request login if silent sign-in fails.
-        progressState.value = ProgressEnumeration.loginRequest;
+        Logger.warning.log("There's no user login cached, asking for login...");
+
+        return ProgressEnumeration.loginRequest;
       }
-    }
-
+    } 
     catch (error, stackTrace) {
-      progressState.value = ProgressEnumeration.error;
-
-      Logger.error.print(
-        message: '$error',
-        label: 'Launcher Controller | Initialize',
+      Logger.error.log(
+        "$error",
         stackTrace: stackTrace,
       );
+
+      return ProgressEnumeration.error;
     }
   }
 
-  /// Performs the Google authentication process and logs the user into Supabase.
-  /// 
-  /// This method uses Google Sign-In to authenticate the user and then logs them into Supabase using the tokens provided.
-  /// If the authentication is successful, the user is redirected to the `/search` screen.
-  /// 
-  /// Progress is tracked and updated using [progressState].
-  Future<void> signIn(BuildContext context) async {
+  /// Performs a manual Google Sign-In process and logs the user into Supabase.
+  ///
+  /// If the sign-in is successful, [nProgress] is updated to [ProgressEnumeration.finished].
+  /// If the user cancels or an error occurs, [nProgress] is updated accordingly.
+  Future<void> googleSignIn(BuildContext context) async {
     try {
-      final GoogleSignInAuthentication? authentication = await googleAuthentication.signIn();
+      final GoogleSignInAuthentication? authentication = await sGoogleOAuth.signIn();
 
-      // If authentication is successful, proceed to Supabase login.
-      if (authentication != null) {
-        await supabase.loginWithGoogle(
-          idToken: authentication.idToken!,
-          accessToken: authentication.accessToken,
-        );
+      if (authentication == null) return;
+      
+      await sSupabase.loginWithGoogle(
+        idToken: authentication.idToken!,
+        accessToken: authentication.accessToken,
+      );
 
-        progressState.value = ProgressEnumeration.finished;
-      }
-    }
+      nProgress.value = ProgressEnumeration.finished;
+    } 
     catch (error, stackTrace) {
-      progressState.value = ProgressEnumeration.error;
+      nProgress.value = ProgressEnumeration.error;
 
-      Logger.error.print(
-        message: error.toString(),
-        label: 'Launcher Controller | Sign In',
+      Logger.error.log(
+        "$error",
         stackTrace: stackTrace,
       );
     }

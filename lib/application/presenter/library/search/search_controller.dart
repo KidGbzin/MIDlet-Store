@@ -86,11 +86,13 @@ class _Controller {
   Future<void> initialize({
     required String? publisher,
   }) async {
+    Logger.information.log("Initializing the Search controller...");
+
     nSelectedPublisher.value = publisher;
 
     try {
       final List<Game> games = await execute(() async {
-        _allGames = List.unmodifiable(rHive.games.all());
+        _allGames = List.unmodifiable(rHive.boxGames.all());
 
         if (nSelectedPublisher.value == null) {
           return _allGames;
@@ -101,12 +103,11 @@ class _Controller {
       });
 
       nGames.value = (games, false);
-      nSuggestions.value = rHive.recentGames.all();
+      nSuggestions.value = rHive.boxRecentGames.all();
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        label: 'Search Controller | Initialize',
-        message: '$error',
+      Logger.error.log(
+        "$error",
         stackTrace: stackTrace,
       );
     }
@@ -146,6 +147,8 @@ class _Controller {
   /// This method is called to release the resources and memory allocated by the controller when it is no longer needed.
   /// It disposes of all [ValueNotifier] instances and controllers that the controller is using to avoid memory leaks.
   void dispose() {
+    Logger.information.log("Disposing the Search controller resources...");
+
     nGames.dispose();
     nSuggestions.dispose();
     nSelectedPublisher.dispose();
@@ -175,8 +178,8 @@ class _Controller {
     final List<(TagEnumeration, String, int)> categories = <(TagEnumeration, String, int)> [];
     final Map<String, int> table = <String, int>{};
   
-    for (int index = 0; index < rHive.games.length; index++) {
-      final List<String> tags = rHive.games.fromIndex(index).tags;
+    for (int index = 0; index < rHive.boxGames.length; index++) {
+      final List<String> tags = rHive.boxGames.fromIndex(index).tags;
   
       for (int tagIndex = 0; tagIndex < tags.length; tagIndex++) {
         final String tag = tags[tagIndex];
@@ -213,8 +216,8 @@ class _Controller {
 
     final Map<String, int> publishers = <String, int> {};
 
-    for (int index = 0; index < rHive.games.length; index ++) {
-      final String publisher = rHive.games.fromIndex(index).publisher;
+    for (int index = 0; index < rHive.boxGames.length; index ++) {
+      final String publisher = rHive.boxGames.fromIndex(index).publisher;
 
       if (!publishers.containsKey(publisher)) {
         publishers[publisher] = 1;
@@ -240,8 +243,8 @@ class _Controller {
 
     final Map<int, int> years = <int, int> {};
 
-    for (int index = 0; index < rHive.games.length; index ++) {
-      final int year = rHive.games.fromIndex(index).release;
+    for (int index = 0; index < rHive.boxGames.length; index ++) {
+      final int year = rHive.boxGames.fromIndex(index).release;
 
       if (!years.containsKey(year)) {
         years[year] = 1;
@@ -279,14 +282,14 @@ class _Controller {
     final String message;
 
     if (nSelectedPublisher.value == null && nSelectedTags.value.isEmpty && nSelectedReleaseYear.value == null) {
-      message = localizations.messageFiltersEmpty.replaceFirst('\$1', '${rHive.games.length}');
+      message = localizations.messageFiltersEmpty.replaceFirst('\$1', '${rHive.boxGames.length}');
     }
 
     else {
       message = localizations.messageFiltersApplied.replaceAllMapped(RegExp(r'\$1|\$2'), (match) {
         return <String, String> {
           "\$1": games.length.toString(),
-          "\$2": rHive.games.length.toString(),
+          "\$2": rHive.boxGames.length.toString(),
         } [match[0]]!;
       });
     }
@@ -384,7 +387,7 @@ class _Controller {
   /// - `Average-Rating`: The average rating of the game.
   /// - `Downloads`: The total number of downloads for the game.
   Future<Map<String, dynamic>> getGameData(Game game) async {
-    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
+    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
     );
 
@@ -412,7 +415,7 @@ class _Controller {
       data.downloads = 0;
     }
 
-    rHive.cachedRequests.put(data);
+    rHive.boxCachedRequests.put(data);
 
     return <String, dynamic> {
       "Average-Rating": data.averageRating,

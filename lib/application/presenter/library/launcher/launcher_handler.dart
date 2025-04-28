@@ -42,41 +42,41 @@ class Launcher extends StatefulWidget {
 class _LauncherState extends State<Launcher> {
   late final _Controller controller;
 
-  late final ActivityService activity;
-  late final AuthenticationService authentication;
-  late final GitHubService gitHub;
-  late final HiveRepository hive;
-  late final SupabaseService supabase;
+  late final HiveRepository rHive;
+  late final ActivityService sActivity;
+  late final GitHubService sGitHub;
+  late final GoogleOAuthService sGoogleOAuth;
+  late final SupabaseService sSupabase;
 
   @override
   void initState() {
-    activity = Provider.of<ActivityService>(
+    rHive = Provider.of<HiveRepository>(
       context,
       listen: false,
     );
-    authentication = Provider.of<AuthenticationService>(
+    sActivity = Provider.of<ActivityService>(
       context,
       listen: false,
     );
-    gitHub = Provider.of<GitHubService>(
+    sGitHub = Provider.of<GitHubService>(
       context,
       listen: false,
     );
-    hive = Provider.of<HiveRepository>(
+    sGoogleOAuth = Provider.of<GoogleOAuthService>(
       context,
       listen: false,
     );
-    supabase = Provider.of<SupabaseService>(
+    sSupabase = Provider.of<SupabaseService>(
       context,
       listen: false,
     );
   
     controller = _Controller(
-      activityService: activity,
-      gitHub: gitHub,
-      googleAuthentication: authentication,
-      hive: hive,
-      supabase: supabase,
+      rHive: rHive,
+      sActivity: sActivity,
+      sGitHub: sGitHub,
+      sGoogleOAuth: sGoogleOAuth,
+      sSupabase: sSupabase,
     );
     controller.initialize(context);
 
@@ -84,7 +84,12 @@ class _LauncherState extends State<Launcher> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return _LauncherView(controller);
+  void dispose() {
+    controller.dispose();
+
+    super.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) => _LauncherView(controller);
 }

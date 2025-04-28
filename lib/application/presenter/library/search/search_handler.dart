@@ -21,7 +21,7 @@ import '../../../core/extensions/messenger_extension.dart';
 import '../../../core/extensions/router_extension.dart';
 
 import '../../../repositories/bucket_repository.dart';
-import '../../../repositories/database_repository.dart';
+import '../../../repositories/supabase_repository.dart';
 import '../../../repositories/hive_repository.dart';
 
 import '../../widgets/button_widget.dart';
@@ -68,35 +68,42 @@ class Search extends StatefulWidget {
 class _SearchViewState extends State<Search> {
   late final _Controller controller;
   
-  late final BucketRepository bucket;
-  late final HiveRepository hive;
-  late final SupabaseRepository database;
+  late final BucketRepository rBucket;
+  late final HiveRepository rHive;
+  late final SupabaseRepository rSupabase;
 
   @override
   void initState() {
-    bucket = Provider.of<BucketRepository>(
+    rBucket = Provider.of<BucketRepository>(
       context,
       listen: false,
     );
-    database = Provider.of<SupabaseRepository>(
+    rSupabase = Provider.of<SupabaseRepository>(
       context,
       listen: false,
     );
-    hive = Provider.of<HiveRepository>(
+    rHive = Provider.of<HiveRepository>(
       context,
       listen: false,
     );
 
     controller = _Controller(
-      rBucket: bucket,
-      rSupabase: database,
-      rHive: hive,
+      rBucket: rBucket,
+      rSupabase: rSupabase,
+      rHive: rHive,
     );
     controller.initialize(
       publisher: widget.publisher,
     );
   
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+
+    super.dispose();
   }
 
   @override

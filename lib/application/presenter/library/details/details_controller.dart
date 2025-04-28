@@ -50,8 +50,8 @@ class _Controller {
       playAudio();
       fetchThumbnail();
       _updateGameData();
-      isFavoriteState = ValueNotifier(rHive.favorites.contains(game));
-      rHive.recentGames.put(game);
+      isFavoriteState = ValueNotifier(rHive.boxFavorites.contains(game));
+      rHive.boxRecentGames.put(game);
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -170,11 +170,11 @@ class _Controller {
     final String title = game.title.replaceFirst(' -', ':');
 
     if (isFavoriteState.value) {
-      rHive.favorites.remove(game);
+      rHive.boxFavorites.remove(game);
       message = localizations.messageFavoritesRemoved.replaceFirst('\$1', title);
     }
     else {
-      rHive.favorites.put(game);
+      rHive.boxFavorites.put(game);
       message = localizations.messageFavoritesAdded.replaceFirst('\$1', title);
     }
 
@@ -209,7 +209,7 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topPublisherGames.isEmpty) {
-      _topPublisherGames = rHive.games.fromPublisher(game.publisher);
+      _topPublisherGames = rHive.boxGames.fromPublisher(game.publisher);
       _topPublisherGames.shuffle();
       _topPublisherGames = _topPublisherGames.take(8).toList();
     }
@@ -238,7 +238,7 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topRelatedGames.isEmpty) {
-      _topRelatedGames = await rHive.games.topRelatedGames(game);
+      _topRelatedGames = await rHive.boxGames.topRelatedGames(game);
     }
 
     for (Game element in _topRelatedGames) {
@@ -295,7 +295,7 @@ class _Controller {
   /// 
   /// This function is initialized within the `initialize` function.
   Future<void> _updateGameData() async {
-    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
+    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
     );
 
@@ -361,7 +361,7 @@ class _Controller {
       };
     }
   
-    rHive.cachedRequests.put(data);
+    rHive.boxCachedRequests.put(data);
   }
 
   /// Inserts or updates the user's rating for a game.
@@ -369,7 +369,7 @@ class _Controller {
   /// This function is primarily used in the [_SubmitRatingModal] to allow users to rate a game.
   /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
   Future<void> upsertUserRating(int rating) async {
-    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
+    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
       myRating: rating,
     );
@@ -435,7 +435,7 @@ class _Controller {
       };
     }
   
-    rHive.cachedRequests.put(data);
+    rHive.boxCachedRequests.put(data);
   }
 
   /// Retrieves the current average rating of the specified game.
@@ -444,7 +444,7 @@ class _Controller {
   /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
   /// The fetched or defaulted value is then stored in the cache for future use.
   Future<double> getAverageRating(Game game) async {
-    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
+    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
     );
     try {
@@ -458,7 +458,7 @@ class _Controller {
       );
       data.averageRating = 0.0;
     }
-    rHive.cachedRequests.put(data);
+    rHive.boxCachedRequests.put(data);
     return data.averageRating!;
   }
 
