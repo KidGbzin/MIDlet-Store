@@ -7,7 +7,11 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Carregar o keystore.properties
+dependencies {
+    implementation("io.flutter.plugins.googlemobileads:google_mobile_ads:5.3.1")
+    implementation("com.google.android.gms:play-services-ads:22.6.0")
+}
+
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 

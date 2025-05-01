@@ -3,11 +3,16 @@ package br.dev.kidgbzin.midlet_store;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle
 import android.util.Log;
+import android.view.LayoutInflater
 import androidx.core.content.FileProvider;
+import br.dev.kidgbzin.midlet_store.NativeAdvertisement;
+import com.google.android.gms.ads.MobileAds
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin
 import java.io.File;
 
 class MainActivity : FlutterActivity() {
@@ -22,6 +27,10 @@ class MainActivity : FlutterActivity() {
      **/
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine);
+
+        val factory = NativeAdvertisement(layoutInflater)
+        GoogleMobileAdsPlugin.registerNativeAdFactory(flutterEngine, "Native Advertisement", factory)
+        MobileAds.initialize(this) {}
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
             call, result -> when (call.method) {
@@ -72,6 +81,12 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
+    }
+
+    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        GoogleMobileAdsPlugin.unregisterNativeAdFactory(flutterEngine, "listTile")
+
+        super.cleanUpFlutterEngine(flutterEngine)
     }
 
     /**

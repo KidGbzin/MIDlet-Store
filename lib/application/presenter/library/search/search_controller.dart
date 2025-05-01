@@ -10,25 +10,22 @@ class _Controller {
   
   _Controller({
     required this.rBucket,
-    required this.rSupabase,
     required this.rHive,
+    required this.rSupabase,
+    required this.sAdMob,
   });
 
-  /// A repository for managing data retrieval and storage within the bucket.
-  ///
-  /// Responsible for handling interactions with external storage systems, including retrieving and caching assets such as game previews and thumbnails.
-  late final BucketRepository rBucket;
+  /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisementss.
+  final AdMobService sAdMob;
 
-  /// Local database service for data operations.
-  /// 
-  /// Manages local data, such as game details, ratings, and user preferences.
-  late final HiveRepository rHive;
+  /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
+  final BucketRepository rBucket;
 
-  /// The database service for handling broader data interactions.
-  /// 
-  /// This service interacts with the main database.
-  /// Responsible for fetching and updating game data, including average ratings, game details, and other important game-related information.
-  late final SupabaseRepository rSupabase;
+  /// Manages local database operations, including storing game details, ratings, and user preferences.
+  final HiveRepository rHive;
+
+  /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
+  final SupabaseRepository rSupabase;
 
   /// The complete list of all games available, loaded from the database.
   ///

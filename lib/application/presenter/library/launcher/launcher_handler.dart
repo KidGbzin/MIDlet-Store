@@ -12,6 +12,7 @@ import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../services/activity_service.dart';
+import '../../../services/admob_service.dart';
 import '../../../services/authentication_service.dart';
 import '../../../services/github_service.dart';
 import '../../../services/supabase_service.dart';
@@ -44,6 +45,7 @@ class _LauncherState extends State<Launcher> {
 
   late final HiveRepository rHive;
   late final ActivityService sActivity;
+  late final AdMobService sAdMob;
   late final GitHubService sGitHub;
   late final GoogleOAuthService sGoogleOAuth;
   late final SupabaseService sSupabase;
@@ -55,6 +57,10 @@ class _LauncherState extends State<Launcher> {
       listen: false,
     );
     sActivity = Provider.of<ActivityService>(
+      context,
+      listen: false,
+    );
+    sAdMob = Provider.of<AdMobService>(
       context,
       listen: false,
     );
@@ -74,6 +80,7 @@ class _LauncherState extends State<Launcher> {
     controller = _Controller(
       rHive: rHive,
       sActivity: sActivity,
+      sAdMob: sAdMob,
       sGitHub: sGitHub,
       sGoogleOAuth: sGoogleOAuth,
       sSupabase: sSupabase,

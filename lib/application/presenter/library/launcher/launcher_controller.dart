@@ -8,6 +8,7 @@ class _Controller {
   _Controller({
     required this.rHive,
     required this.sActivity,
+    required this.sAdMob,
     required this.sGoogleOAuth,
     required this.sGitHub,
     required this.sSupabase,
@@ -18,6 +19,9 @@ class _Controller {
 
   /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
   final ActivityService sActivity;
+
+  /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisements.
+  final AdMobService sAdMob;
 
   /// Handles interactions with the GitHub API, such as fetching remote files and checking for application updates.
   final GitHubService sGitHub;
@@ -42,6 +46,7 @@ class _Controller {
     nProgress = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.loading);
 
     try {
+      await sAdMob.initialize();
       await rHive.initialize();
       await sSupabase.initialize();
 

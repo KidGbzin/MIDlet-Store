@@ -24,6 +24,9 @@ import '../../../repositories/bucket_repository.dart';
 import '../../../repositories/supabase_repository.dart';
 import '../../../repositories/hive_repository.dart';
 
+import '../../../services/admob_service.dart';
+
+import '../../widgets/advertisement_widget.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/loading_widget.dart';
 import '../../widgets/modal_widget.dart';
@@ -71,6 +74,7 @@ class _SearchViewState extends State<Search> {
   late final BucketRepository rBucket;
   late final HiveRepository rHive;
   late final SupabaseRepository rSupabase;
+  late final AdMobService sAdMob;
 
   @override
   void initState() {
@@ -86,12 +90,18 @@ class _SearchViewState extends State<Search> {
       context,
       listen: false,
     );
+    sAdMob = Provider.of<AdMobService>(
+      context,
+      listen: false,
+    );
 
     controller = _Controller(
       rBucket: rBucket,
       rSupabase: rSupabase,
       rHive: rHive,
+      sAdMob: sAdMob,
     );
+
     controller.initialize(
       publisher: widget.publisher,
     );

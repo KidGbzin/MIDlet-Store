@@ -26,23 +26,35 @@ class _ListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemBuilder: (BuildContext context, int index) {
-        return _ListTile(
-          controller: controller,
-          game: games[index],
+
+  return ListView.separated(
+    itemBuilder: (BuildContext context, int index) {
+
+      // Show an advertisement after every 5 games (i.e., at every 6th position).
+      if ((index + 1) % 6 == 0) {
+        return AdvertisementWidget(
+          getAdvertisement: controller.sAdMob.getAdvertisement,
         );
-      },
-      itemCount: games.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return Divider(
-          color: ColorEnumeration.divider.value,
-          height: 1,
-          thickness: 1,
-        );
-      },
-    );
-  }
+      }
+
+      // Calculate the true index of the game by excluding inserted advertisements.
+      final gameIndex = index - (index ~/ 6);
+
+      return _ListTile(
+        controller: controller,
+        game: games[gameIndex],
+      );
+    },
+    itemCount: games.length + (games.length ~/ 5),
+    separatorBuilder: (BuildContext context, int index) {
+      return Divider(
+        color: ColorEnumeration.divider.value,
+        height: 1,
+        thickness: 1,
+      );
+    },
+  );
+}
 }
 
 // LIST TILE 🧩: ================================================================================================================================================================ //
