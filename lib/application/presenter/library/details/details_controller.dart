@@ -10,7 +10,7 @@ class _Controller {
   _Controller({
     required this.sActivity,
     required this.rBucket,
-    required this.rDatabase,
+    required this.rSupabase,
     required this.game,
     required this.rHive,
   });
@@ -28,7 +28,7 @@ class _Controller {
   /// The service responsible for interacting with the database for data operations.
   ///
   /// This instance provides methods for reading, writing, and querying data from the database. 
-  final SupabaseRepository rDatabase;
+  final SupabaseRepository rSupabase;
 
   /// The service used for data operations with the local database.
   /// 
@@ -301,7 +301,7 @@ class _Controller {
 
     // Fetch and update average rating.
     try {
-      data.averageRating ??= await rDatabase.getAverageRatingByGame(game);
+      data.averageRating ??= await rSupabase.getAverageRatingByGame(game);
       averageRatingState.value = data.averageRating!;
     }
     catch (error, stackTrace) {
@@ -315,7 +315,7 @@ class _Controller {
 
     // Fetch and update user rating.
     try {
-      data.myRating ??= await rDatabase.getUserRatingForGame(game);
+      data.myRating ??= await rSupabase.getUserRatingForGame(game);
       myRatingState.value = data.myRating!;
     }
     catch (error, stackTrace) {
@@ -329,7 +329,7 @@ class _Controller {
 
     // Fetch and update total ratings count.
     try {
-      data.totalRatings ??= await rDatabase.getGameRatingsCount(game);
+      data.totalRatings ??= await rSupabase.getGameRatingsCount(game);
       totalRatingsState.value = data.totalRatings!;
     }
     catch (error, stackTrace) {
@@ -343,7 +343,7 @@ class _Controller {
 
     // Fetch and update individual star count.
     try {
-      data.stars ??= await rDatabase.getGameRatingsByStarsCount(game);
+      data.stars ??= await rSupabase.getGameRatingsByStarsCount(game);
       starsCountState.value = data.stars!;
     }
     catch (error, stackTrace) {
@@ -375,7 +375,7 @@ class _Controller {
     );
 
     try {
-      await rDatabase.upsertGameRating(game, rating);
+      await rSupabase.upsertGameRating(game, rating);
       myRatingState.value = rating;
     }
     catch (error, stackTrace) {
@@ -389,7 +389,7 @@ class _Controller {
 
     // Fetch and update total ratings count.
     try {
-      data.totalRatings = await rDatabase.getGameRatingsCount(game);
+      data.totalRatings = await rSupabase.getGameRatingsCount(game);
       totalRatingsState.value = data.totalRatings!;
     }
     catch (error, stackTrace) {
@@ -403,7 +403,7 @@ class _Controller {
 
     // Fetch and update average rating.
     try {
-      data.averageRating = await rDatabase.getAverageRatingByGame(game);
+      data.averageRating = await rSupabase.getAverageRatingByGame(game);
       averageRatingState.value = data.averageRating!;
     }
     catch (error, stackTrace) {
@@ -417,7 +417,7 @@ class _Controller {
 
     // Fetch and update individual star count.
     try {
-      data.stars = await rDatabase.getGameRatingsByStarsCount(game);
+      data.stars = await rSupabase.getGameRatingsByStarsCount(game);
       starsCountState.value = data.stars!;
     }
     catch (error, stackTrace) {
@@ -448,7 +448,7 @@ class _Controller {
       identifier: game.identifier,
     );
     try {
-      data.averageRating ??= await rDatabase.getAverageRatingByGame(game);
+      data.averageRating ??= await rSupabase.getAverageRatingByGame(game);
     }
     catch (error, stackTrace) {
       Logger.error.print(
@@ -468,7 +468,7 @@ class _Controller {
   ///
   /// This [ValueNotifier] is used to communicate the state of the installation process to the user.
   /// It is updated by the [getMIDlet] and [tryInstallMIDlet] functions.
-  final ValueNotifier<ProgressEnumeration> installationState = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.loading);
+  final ValueNotifier<ProgressEnumeration> installationState = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.isLoading);
 
   /// The downloaded MIDlet, if any.
   ///
@@ -494,10 +494,10 @@ class _Controller {
     try {
       _midlet = await rBucket.midlet(game.midlets.firstWhere((midlet) => midlet.isDefault));
 
-      installationState.value = ProgressEnumeration.ready;
+      installationState.value = ProgressEnumeration.isReady;
     }
     catch (error, stackTrace) {
-      installationState.value = ProgressEnumeration.error;
+      installationState.value = ProgressEnumeration.hasError;
 
       Logger.error.print(
         message: "$error",
@@ -518,7 +518,7 @@ class _Controller {
       await sActivity.emulator(_midlet!);
     }
     on PlatformException catch (error, stackTrace) {
-      installationState.value = ProgressEnumeration.emulatorNotFound;
+      installationState.value = ProgressEnumeration.requestEmulator;
 
       Logger.error.print(
         message: "$error",
@@ -527,7 +527,7 @@ class _Controller {
       );
     }
     catch (error, stackTrace) {
-      installationState.value = ProgressEnumeration.error;
+      installationState.value = ProgressEnumeration.hasError;
 
       Logger.error.print(
         message: "$error",

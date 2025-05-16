@@ -5,7 +5,7 @@ import '../entities/game_entity.dart';
 
 extension RouterExtension on BuildContext {
   
-  void showDetails({
+  void gtDetails({
     required Game game,
     bool? replace = false,
   }) {
@@ -23,10 +23,10 @@ extension RouterExtension on BuildContext {
     }
   }
 
-  void showSearch({
-    String? publisher, 
+  void gtSearch({
+    String? publisher,
     bool? replace = false,
-  }) async {
+  }) {
     if (replace == true) {
       pushReplacement(
         '/search',
@@ -40,4 +40,8 @@ extension RouterExtension on BuildContext {
       );
     }
   }
+
+  void gtUpdate() async => pushReplacement('/update');
+
+  void gtLogin() async => pushReplacement('/login');
 }

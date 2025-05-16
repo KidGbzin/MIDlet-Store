@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import '../../../../l10n/l10n_localizations.dart';
 
 import '../../../core/configuration/global_configuration.dart';
+
 import '../../../core/entities/game_data_entity.dart';
 import '../../../core/entities/game_entity.dart';
 import '../../../core/entities/midlet_entity.dart';
@@ -51,22 +52,15 @@ part '../details/components/overview_section_component.dart';
 part '../details/components/previews_section_component.dart';
 part '../details/components/related_section_component.dart';
 
-part '../details/views/details_view.dart';
-
 part '../details/details_controller.dart';
+part '../details/details_view.dart';
 
-// DETAILS HANDLER 🔧: ========================================================================================================================================================== //
-
-/// The details view of a specific game.
-///
-/// This view displays detailed information about a selected game and provides functionality for interacting with its data.
-/// It integrates with external services for retrieving and managing game-related content.
 class Details extends StatefulWidget {
+
+  /// The [Game] object representing the game whose details will be displayed.
+  final Game game;
   
   const Details(this.game, {super.key});
-
-  /// The game to display details for.
-  final Game game;
 
   @override
   State<Details> createState() => _DetailsState();
@@ -74,50 +68,65 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   late final _Controller controller;
+  late final AppLocalizations localizations;
 
-  late final ActivityService activity;
-  late final BucketRepository bucket;
-  late final HiveRepository hive;
-  late final SupabaseRepository database;
+  late final ActivityService sActivity;
+  late final BucketRepository rBucket;
+  late final HiveRepository rHive;
+  late final SupabaseRepository rSupabase;
 
   @override
   void initState() {
-    activity = Provider.of<ActivityService>(
+    super.initState();
+
+    Logger.start.log("Initializing the Details handler...");
+
+    sActivity = Provider.of<ActivityService>(
       context,
       listen: false,
     );
-    bucket = Provider.of<BucketRepository>(
+    rBucket = Provider.of<BucketRepository>(
       context,
       listen: false,
     );
-    database = Provider.of<SupabaseRepository>(
+    rSupabase = Provider.of<SupabaseRepository>(
       context,
       listen: false,
     );
-    hive = Provider.of<HiveRepository>(
+    rHive = Provider.of<HiveRepository>(
       context,
       listen: false,
     );
     
     controller = _Controller(
-      sActivity: activity,
-      rBucket: bucket,
       game: widget.game,
-      rHive: hive,
-      rDatabase: database,
+      sActivity: sActivity,
+      rBucket: rBucket,
+      rHive: rHive,
+      rSupabase: rSupabase,
     );
     controller.initialize();
-  
-    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
+
+    super.didChangeDependencies();
   }
 
   @override
   void dispose() {
+    Logger.dispose.log("Disposing the Details resources...");
+
     controller.dispose();
 
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => _DetailsView(controller);
+  Widget build(BuildContext context) => _DetailsView(
+    controller: controller,
+    localizations: localizations,
+  );
 }

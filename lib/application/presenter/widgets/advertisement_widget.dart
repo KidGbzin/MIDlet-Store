@@ -31,7 +31,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
 
   @override
   void initState() {
-    nProgress = ValueNotifier(ProgressEnumeration.loading);
+    nProgress = ValueNotifier(ProgressEnumeration.isLoading);
     advertisement = widget.getAdvertisement(nProgress);
     advertisement.load();
 
@@ -55,15 +55,15 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
       child: ValueListenableBuilder(
         valueListenable: nProgress,
         builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
-          if (progress == ProgressEnumeration.ready) {
+          if (progress == ProgressEnumeration.isReady) {
             return AdWidget(
               ad: advertisement,
             );
           }
-          else if (progress == ProgressEnumeration.loading) {
+          else if (progress == ProgressEnumeration.isLoading) {
             return LoadingAnimation();
           }
-          else if (progress == ProgressEnumeration.error) {
+          else if (progress == ProgressEnumeration.hasError) {
             return Align(
               alignment: Alignment.center,
               child: Text(

@@ -121,7 +121,7 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
         children: <Widget>[
           InkWell(
             borderRadius: gBorderRadius,
-            onTap: () => context.showDetails(
+            onTap: () => context.gtDetails(
               game: game,
             ),
             child: Ink(

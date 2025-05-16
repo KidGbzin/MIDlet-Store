@@ -37,15 +37,15 @@ class _InstallationModalState extends State<_InstallationModal> {
       child: ValueListenableBuilder(
         valueListenable: widget.controller.installationState,
         builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
-          if (progress == ProgressEnumeration.loading) {
+          if (progress == ProgressEnumeration.isLoading) {
             return LoadingAnimation();
           }
-          else if (progress == ProgressEnumeration.ready) {
+          else if (progress == ProgressEnumeration.isReady) {
             return _ReadyToInstall(
               controller: widget.controller,
             );
           }
-          else if (progress == ProgressEnumeration.error) {
+          else if (progress == ProgressEnumeration.hasError) {
             return Center(
               child: Text(
                 '...',
@@ -53,7 +53,7 @@ class _InstallationModalState extends State<_InstallationModal> {
               ),
             );
           }
-          else if (progress == ProgressEnumeration.emulatorNotFound) {
+          else if (progress == ProgressEnumeration.requestEmulator) {
             return _EmulatorNotFound(
               controller: widget.controller,
             );

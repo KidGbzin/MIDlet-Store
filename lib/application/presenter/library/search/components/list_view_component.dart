@@ -98,7 +98,7 @@ class _ListTileState extends State<_ListTile> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.showDetails(
+      onTap: () => context.gtDetails(
         game: widget.game,
       ),
       child: FutureBuilder(

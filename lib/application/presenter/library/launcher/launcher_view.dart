@@ -1,10 +1,17 @@
-part of '../launcher_handler.dart';
+part of '../launcher/launcher_handler.dart';
 
 class _LauncherView extends StatefulWidget {
 
-  const _LauncherView(this.controller);
-
+  /// Controls the handler’s state and behavior logic.
   final _Controller controller;
+
+  /// Provides localized strings and messages based on the user’s language and region.
+  final AppLocalizations localizations;
+
+  const _LauncherView({
+    required this.controller,
+    required this.localizations
+  });
 
   @override
   State<_LauncherView> createState() => _LauncherViewState();
@@ -27,36 +34,16 @@ class _LauncherViewState extends State<_LauncherView> {
                 builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
                   Widget child = const SizedBox.shrink();
 
-                  if (progress == ProgressEnumeration.loading) {
+                  if (progress == ProgressEnumeration.isLoading) {
                     child = Align(
                       alignment: Alignment.center,
                       child: LoadingAnimation(),
                     );
                   }
-                  else if (progress == ProgressEnumeration.isOutdated) {
-                    child = ButtonWidget.widget(
-                      color: ColorEnumeration.foreground.value,
-                      onTap: widget.controller.goToReleases,
-                      width: double.infinity,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 1, 0, 0),
-                          child: Text(
-                            AppLocalizations.of(context)!.buttonUpdateAvailable.toUpperCase(),
-                            maxLines: 1,
-                            style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
-                          ),
-                        ),
-                      ),
-                    );
+                  else if (progress == ProgressEnumeration.requestUpdate) {
+                 
                   }
-                  else if (progress == ProgressEnumeration.loginRequest) {
-                    child = _LoginSection(
-                      controller: widget.controller,
-                    );
-                  }
-                  else if (progress == ProgressEnumeration.finished) {
+                  else if (progress == ProgressEnumeration.isFinished) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (context.mounted) context.pushReplacement('/search');
                     });

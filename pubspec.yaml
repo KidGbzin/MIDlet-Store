@@ -12,6 +12,8 @@ dependencies:
   audioplayers: ^6.2.0
   cupertino_icons: ^1.0.8
   equatable: ^2.0.7
+  firebase_core: ^3.13.0
+  firebase_messaging: ^15.2.5
   flutter:
     sdk: flutter
   flutter_localizations:

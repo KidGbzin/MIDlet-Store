@@ -3,11 +3,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../presenter/library/details/details_handler.dart';
 import '../../presenter/library/launcher/launcher_handler.dart';
+import '../../presenter/library/login/login_handler.dart';
 import '../../presenter/library/search/search_handler.dart';
+import '../../presenter/library/update/update_handler.dart';
 
 import '../entities/game_entity.dart';
-
-// ROUTER CONFIGURATION ⚙️: ===================================================================================================================================================== //
 
 /// The application's routes.
 /// 
@@ -18,9 +18,7 @@ final GoRouter router = GoRouter(
   routes: <RouteBase> [
     GoRoute(
       path: '/',
-      builder: (BuildContext context, GoRouterState _) {
-        return const Launcher();
-      },
+      builder: (BuildContext context, GoRouterState _) => const Launcher(),
     ),
     GoRoute(
       path: '/details',
@@ -30,6 +28,10 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/login',
+      builder: (BuildContext context, GoRouterState _) => const Login(),
+    ),
+    GoRoute(
       path: '/search',
       builder: (BuildContext context, GoRouterState state) {
         final String? publisher = state.extra as String?;
@@ -37,6 +39,10 @@ final GoRouter router = GoRouter(
           publisher: publisher,
         );
       },
+    ),
+    GoRoute(
+      path: '/update',
+      builder: (BuildContext context, GoRouterState _) => const Update(),
     ),
   ],
 );

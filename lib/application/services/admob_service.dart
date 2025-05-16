@@ -72,11 +72,11 @@ class AdMobService {
       listener: NativeAdListener(
         onAdLoaded: (_) {
           Logger.information.log("Advertisement is ready!");
-          nProgress.value = ProgressEnumeration.ready;
+          nProgress.value = ProgressEnumeration.isReady;
         },
         onAdFailedToLoad: (advertisement, error) {
           Logger.error.log("$error");
-          nProgress.value = ProgressEnumeration.error;
+          nProgress.value = ProgressEnumeration.hasError;
           advertisement.dispose();
         },
       ),

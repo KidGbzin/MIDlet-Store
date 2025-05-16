@@ -6,28 +6,13 @@ import 'package:intl/intl.dart';
 ///
 /// Instead of using a single [log] function, use [Logger] for better code analysis and readability.
 enum Logger {
-
-  /// An [error] log.
-  ///
-  /// Used to [log] unhandled [Exception]s that break the application.
-  error("31", "⛔"),
-
-  /// An [information] log.
-  ///
-  /// Used to [log] general information that doesn't affect application functionality.
+  dispose("35", "🗑️"),
+  error("31", "❌"),
   information("36", "📣"),
-
-  /// A [success] log.
-  ///
-  /// Used to [log] successful requests.
   success("32", "✅"),
-
-  /// A [warning] log.
-  ///
-  /// Used to [log] alerts that do not break the application, such as "not found" actions.
+  start("36","🚀"),
   warning("33", "📢");
 
-  /// Creates a [Logger] with the given [code] and [emoji].
   const Logger(this.code, this.emoji);
 
   /// The color code, each code represents a different color.

@@ -73,7 +73,7 @@ class _OverviewSectionState extends State<_OverviewSection> {
     return InkWell(
       borderRadius: gBorderRadius,
       onTap: () {
-        context.showSearch(
+        context.gtSearch(
           publisher: widget.controller.game.publisher,
           replace: false,
         );

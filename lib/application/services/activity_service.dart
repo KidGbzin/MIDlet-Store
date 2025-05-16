@@ -37,7 +37,7 @@ class ActivityService {
   } 
 
   /// Opens the MIDlet Store releases page on the web browser.
-  Future<void> openMidletStoreReleases() async {
+  Future<void> openMIDletStoreReleases() async {
     final Map<String, String> arguments = <String, String> {
       "URL": "https://github.com/KidGbzin/MIDlet-Store/releases",
     };

@@ -1,16 +1,21 @@
+import 'dart:ui';
+
 import '../core/entities/game_entity.dart';
 
 import '../core/enumerations/logger_enumeration.dart';
 
 import '../services/supabase_service.dart';
 
-/// A repository class responsible for interacting with the Supabase database.
+/// A repository class that handles interactions with the Supabase database.
+///
+/// This class offers high-level methods for performing operations such as inserting and updating records.
+/// It serves as a centralized layer for all database access, abstracting the communication with Supabase tables and remote functions.
 class SupabaseRepository {
 
-  const SupabaseRepository(this.supabase);
-
-  /// The service used for making requests to the database.
+  /// Manages Supabase authentication and database services, handling user sessions and data synchronization.
   final SupabaseService supabase;
+
+  const SupabaseRepository(this.supabase);
   
   /// Fetches the average rating for a given [Game] from the database.
   /// 
@@ -96,24 +101,6 @@ class SupabaseRepository {
 
     return response ?? 0;
   }
-  
-  /// Inserts or updates the user's rating for a given [Game].
-  /// 
-  /// This method calls a remote function `upsert_user_rating` to either insert or update the user's rating for the specified game.
-  /// The response is a [Future] of [void].
-  Future<void> upsertGameRating(Game game, int rating) async {
-    await supabase.client.rpc(
-      'upsert_game_rating',
-      params: <String, dynamic> {
-        'user_id_input': supabase.currentUserID,
-        'game_id_input': game.identifier,
-        'rating_input': rating,
-      },
-    );
-
-    final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success.log("Successfully upserted the rating for \"$title\" on Supabase: $rating★.");
-  }
 
   /// Fetches the total number of downloads for a given [Game] and inserts a value if it does not exist.
   /// 
@@ -132,5 +119,39 @@ class SupabaseRepository {
     Logger.success.log("Successfully fetched the downloads count for \"$title\" from Supabase: $response.");
 
     return response;
+  }
+  
+  /// Inserts or updates the user's rating for a given [Game].
+  /// 
+  /// This method calls a remote function `upsert_user_rating` to either insert or update the user's rating for the specified game.
+  Future<void> upsertGameRating(Game game, int rating) async {
+    await supabase.client.rpc(
+      'upsert_game_rating',
+      params: <String, dynamic> {
+        'user_id_input': supabase.currentUserID,
+        'game_id_input': game.identifier,
+        'rating_input': rating,
+      },
+    );
+
+    final String title = game.title.replaceAll(' - ', ': ');
+    Logger.success.log("Successfully upserted the rating for \"$title\" on Supabase: $rating★.");
+  }
+
+  /// Inserts or updates the user's FCM token in the `fcm_tokens` table.
+  ///
+  /// This method ensures that the current device's FCM token is stored and associated with the authenticated user in Supabase.
+  /// If the token already exists, the record is updated with the current locale and timestamp.
+  Future<void> upsertFCMToken(String token, Locale locale) async {
+    await supabase.client.from('fcm_tokens').upsert({
+      'user_id': supabase.currentUserID,
+      'token': token,
+      'locale': "$locale",
+      'last_seen': DateTime.now().toIso8601String(),
+    },
+      onConflict: 'token',
+    );
+
+    Logger.success.log("Successfully registered the FCM token.");
   }
 }

@@ -1,16 +1,17 @@
-part of '../details_handler.dart';
+part of '../details/details_handler.dart';
 
-// DETAILS VIEW 🧩: ============================================================================================================================================================= //
-
-/// The main view for the game details page.
-/// 
-/// This view displays detailed information about a specific game, including its cover, title, description, and additional data.
 class _DetailsView extends StatefulWidget {
 
-  const _DetailsView(this.controller);
-
-  /// The controller for the game details page.
+  /// Controls the handler’s state and behavior logic.
   final _Controller controller;
+
+  /// Provides localized strings and messages based on the user’s language and region.
+  final AppLocalizations localizations;
+
+  const _DetailsView({
+    required this.controller,
+    required this.localizations,
+  });
 
   @override
   State<_DetailsView> createState() => _DetailsViewState();
@@ -18,10 +19,8 @@ class _DetailsView extends StatefulWidget {
 
 class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver {
   late final String gameTitle;
-  late final AppLocalizations localizations;
 
   late ScaffoldMessengerState snackbar;
-
 
   @override
   void initState() {
@@ -45,7 +44,6 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
 
   @override
   void didChangeDependencies() {
-    localizations = AppLocalizations.of(context)!;
     snackbar = ScaffoldMessenger.of(context);
     snackbar.clearSnackBars();
 
@@ -70,7 +68,14 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
           children: <Widget> [
             ButtonWidget.icon(
               icon: HugeIcons.strokeRoundedArrowLeft01,
-              onTap: context.pop,
+              onTap: () {
+                if (context.canPop()) {
+                  context.pop();
+                }
+                else {
+                  context.gtSearch();
+                }
+              },
             ),
             const Spacer(),
             _BookmarkButton(widget.controller),
@@ -100,15 +105,15 @@ class _DetailsViewState extends State<_DetailsView> with WidgetsBindingObserver 
           _RelatedGamesSection(
             collection: widget.controller.getTopPublisherGames(),
             controller: widget.controller,
-            description: localizations.sectionPublisherDescription.replaceFirst('\$1', widget.controller.game.publisher),
+            description: widget.localizations.sectionPublisherDescription.replaceFirst('\$1', widget.controller.game.publisher),
             title: widget.controller.game.publisher,
           ),
           gDivider,
           _RelatedGamesSection(
             collection: widget.controller.getTopRelatedGames(),
             controller: widget.controller,
-            description: localizations.sectionRelatedGamesDescription.replaceFirst('\$1', gameTitle),
-            title: localizations.sectionRelatedGames,
+            description: widget.localizations.sectionRelatedGamesDescription.replaceFirst('\$1', gameTitle),
+            title: widget.localizations.sectionRelatedGames,
           ),
         ],
       ),
