@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../core/enumerations/logger_enumeration.dart';
+import '../../logger.dart';
 
 /// Service for managing interactions with Supabase, including initialization, authentication, and session management.  
 ///
@@ -35,7 +35,7 @@ class SupabaseService {
   /// Configures the Supabase client to communicate with the backend using the provided [anonKey] and [url].
   /// The client must be initialized before interacting with the Supabase services.
   Future<void> initialize() async {
-    Logger.information.log("Initializing the Supabase service...");
+    Logger.information("Initializing the Supabase service...");
 
     await Supabase.initialize(
       anonKey: anonKey,
@@ -60,6 +60,6 @@ class SupabaseService {
       provider: OAuthProvider.google,
     );
 
-    Logger.success.log('Successfully authenticated in the Supabase as ${response.session!.user.userMetadata!["name"]} via Google OAuth.');
+    Logger.success('Successfully authenticated in the Supabase as ${response.session!.user.userMetadata!["name"]} via Google OAuth.');
   }
 }

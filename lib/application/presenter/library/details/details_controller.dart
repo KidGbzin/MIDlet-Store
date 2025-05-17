@@ -54,9 +54,8 @@ class _Controller {
       rHive.boxRecentGames.put(game);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        label: 'Details Controller • Initialize',
-        message: '$error',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
     }
@@ -305,11 +304,11 @@ class _Controller {
       averageRatingState.value = data.averageRating!;
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Average Rating',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       data.averageRating = 0.0;
     }
 
@@ -319,11 +318,11 @@ class _Controller {
       myRatingState.value = data.myRating!;
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | User Rating',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       data.myRating = 0;
     }
 
@@ -333,11 +332,11 @@ class _Controller {
       totalRatingsState.value = data.totalRatings!;
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Total Ratings',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       data.totalRatings = 0;
     }
 
@@ -347,11 +346,11 @@ class _Controller {
       starsCountState.value = data.stars!;
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Ratings by Star',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       data.stars = <String, int> {
         "5": 0,
         "4": 0,
@@ -379,11 +378,11 @@ class _Controller {
       myRatingState.value = rating;
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Upsert Rating',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       return;
     }
 
@@ -393,11 +392,11 @@ class _Controller {
       totalRatingsState.value = data.totalRatings!;
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Total Ratings',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       data.totalRatings = 0;
     }
 
@@ -407,11 +406,11 @@ class _Controller {
       averageRatingState.value = data.averageRating!;
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Average Rating',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       data.averageRating = 0.0;
     }
 
@@ -421,11 +420,11 @@ class _Controller {
       starsCountState.value = data.stars!;
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Ratings by Star',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       data.stars = <String, int> {
         "5": 0,
         "4": 0,
@@ -451,11 +450,11 @@ class _Controller {
       data.averageRating ??= await rSupabase.getAverageRatingByGame(game);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: "$error",
-        label: "Search Controller | Average Rating",
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       data.averageRating = 0.0;
     }
     rHive.boxCachedRequests.put(data);
@@ -499,9 +498,8 @@ class _Controller {
     catch (error, stackTrace) {
       installationState.value = ProgressEnumeration.hasError;
 
-      Logger.error.print(
-        message: "$error",
-        label: "Downloads | GET • MIDlet",
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
     }
@@ -520,18 +518,16 @@ class _Controller {
     on PlatformException catch (error, stackTrace) {
       installationState.value = ProgressEnumeration.requestEmulator;
 
-      Logger.error.print(
-        message: "$error",
-        label: "Downloads | Install MIDlet",
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
     }
     catch (error, stackTrace) {
       installationState.value = ProgressEnumeration.hasError;
 
-      Logger.error.print(
-        message: "$error",
-        label: "Downloads | Install MIDlet",
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
     }

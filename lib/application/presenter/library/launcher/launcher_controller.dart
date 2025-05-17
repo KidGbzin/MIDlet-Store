@@ -56,7 +56,7 @@ class _Controller {
     catch (error, stackTrace) {
       nProgress.value = ProgressEnumeration.hasError;
 
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );

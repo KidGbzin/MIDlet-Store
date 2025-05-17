@@ -4,8 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
-import '../application/core/enumerations/logger_enumeration.dart';
-
 import '../application/repositories/bucket_repository.dart';
 import '../application/repositories/hive_repository.dart';
 import '../application/repositories/supabase_repository.dart';
@@ -13,17 +11,20 @@ import '../application/repositories/supabase_repository.dart';
 import '../application/services/activity_service.dart';
 import '../application/services/admob_service.dart';
 import '../application/services/android_service.dart';
-import '../application/services/authentication_service.dart';
+import 'application/services/google_authentication_service.dart';
 import '../application/services/firebase_messaging_service.dart';
 import '../application/services/github_service.dart';
 import '../application/services/supabase_service.dart';
 
 import '../application.dart';
+import '../logger.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Logger.start.log("Initializing the Firebase enviroment...");
+  await Logger.initialize();
+
+  Logger.start("Initializing the Firebase enviroment...");
 
   await Firebase.initializeApp(
     options: FirebaseOptions(
@@ -36,7 +37,7 @@ Future<void> main() async {
   );
 
   final ActivityService sActivity = ActivityService();
-  final AdMobService sAdMob = AdMobService(const String.fromEnvironment("ADVERTISEMENT_UNIT_ID"));
+  final AdMobService sAdMob = AdMobService(const String.fromEnvironment("ADVERTISEMENT_UNIT"));
   final AndroidService sAndroid = AndroidService();
 
   final GitHubService sGitHub = GitHubService(

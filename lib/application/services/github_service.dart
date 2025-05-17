@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../core/enumerations/logger_enumeration.dart';
+import '../../logger.dart';
 
 /// Service for interacting with the GitHub API to fetch remote files.
 ///  
@@ -49,12 +49,12 @@ class GitHubService {
       headers: _headers,
     );
     if (response.statusCode == HttpStatus.ok) {
-      Logger.success.log('Successfully downloaded the file "$source" from the GitHub.');
+      Logger.start('Successfully downloaded the file "$source" from the GitHub.');
 
       return response.bodyBytes;
     }
     else {
-      Logger.error.log('Failed to download the file "$source" from GitHub, received status code ${response.statusCode}.');
+      Logger.error('Failed to download the file "$source" from GitHub, received status code ${response.statusCode}.');
 
       return null;
     }
@@ -106,14 +106,14 @@ class GitHubService {
     );
 
     if (response.statusCode != HttpStatus.ok) {
-      Logger.error.log('The file "$source" was not found in the GitHub repository.');
+      Logger.error('The file "$source" was not found in the GitHub repository.');
       throw Exception('Failed to fetch the file "$source" from GitHub, received status code ${response.statusCode}.');
     }
 
     final lastModifiedHeader = response.headers["last-modified"];
 
     if (lastModifiedHeader == null) {
-      Logger.error.log('The database metadata is missing the "Last-Modified" header.');
+      Logger.error('The database metadata is missing the "Last-Modified" header.');
       throw Exception('The "Last-Modified" header is missing from the database file.');
     }
 
@@ -123,7 +123,7 @@ class GitHubService {
       return DateFormat("dd MMM yyyy HH:mm:ss 'GMT'").parse(lastModified);
     }
     catch (error, stackTrace) {
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );

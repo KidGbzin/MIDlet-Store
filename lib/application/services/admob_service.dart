@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import '../core/enumerations/logger_enumeration.dart';
+import '../../logger.dart';
+
 import '../core/enumerations/progress_enumeration.dart';
 
 /// A service class responsible for managing and loading advertisements via AdMob.
@@ -51,7 +52,7 @@ class AdMobService {
       }
     }
 
-    Logger.information.log(body);
+    Logger.information(body);
 
     await MobileAds.instance.initialize();
   }
@@ -71,11 +72,11 @@ class AdMobService {
       request: const AdRequest(),
       listener: NativeAdListener(
         onAdLoaded: (_) {
-          Logger.information.log("Advertisement is ready!");
+          Logger.information("Advertisement is ready!");
           nProgress.value = ProgressEnumeration.isReady;
         },
         onAdFailedToLoad: (advertisement, error) {
-          Logger.error.log("$error");
+          Logger.error("$error");
           nProgress.value = ProgressEnumeration.hasError;
           advertisement.dispose();
         },

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import '../../core/enumerations/logger_enumeration.dart';
+import '../../../logger.dart';
+
 import '../../core/enumerations/palette_enumeration.dart';
 import '../../core/enumerations/progress_enumeration.dart';
 import '../../core/enumerations/typographies_enumeration.dart';
@@ -13,13 +14,13 @@ import '../widgets/loading_widget.dart';
 /// It manages the advertisement lifecycle and renders different UI states based on the progress of the advertisement loading process.
 class AdvertisementWidget extends StatefulWidget {
 
+  /// Callback that provides a [NativeAd] and receives a [ValueNotifier] to monitor the advertisement's loading state, such as loading, ready, or error.
+  final NativeAd Function(ValueNotifier<ProgressEnumeration> nProgress) getAdvertisement;
+
   const AdvertisementWidget({
     required this.getAdvertisement,
     super.key,
   });
-
-  /// Callback that provides a [NativeAd] and receives a [ValueNotifier] to monitor the advertisement's loading state, such as loading, ready, or error.
-  final NativeAd Function(ValueNotifier<ProgressEnumeration> nProgress) getAdvertisement;
 
   @override
   State<AdvertisementWidget> createState() => _AdvertisementWidgetState();
@@ -27,20 +28,23 @@ class AdvertisementWidget extends StatefulWidget {
 
 class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   late final ValueNotifier<ProgressEnumeration> nProgress;
+
   late NativeAd advertisement;
 
   @override
   void initState() {
+    super.initState();
+
+    Logger.start("Initializing advertisement...");
+
     nProgress = ValueNotifier(ProgressEnumeration.isLoading);
     advertisement = widget.getAdvertisement(nProgress);
     advertisement.load();
-
-    super.initState();
   }
 
   @override
   void dispose() {
-    Logger.information.log("Disposing advertisement...");
+    Logger.trash("Disposing advertisement...");
 
     advertisement.dispose();
     nProgress.dispose();

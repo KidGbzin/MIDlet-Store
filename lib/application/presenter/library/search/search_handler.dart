@@ -7,12 +7,13 @@ import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
 
+import '../../../../logger.dart';
+
 import '../../../core/configuration/global_configuration.dart';
 
 import '../../../core/entities/game_data_entity.dart';
 import '../../../core/entities/game_entity.dart';
 
-import '../../../core/enumerations/logger_enumeration.dart';
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/tag_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
@@ -54,15 +55,15 @@ part '../search/search_controller.dart';
 /// It integrates with external services for data retrieval and caching.
 class Search extends StatefulWidget {
 
-  const Search({
-    this.publisher,
-    super.key,
-  });
-
   /// The publisher to filter by.
   /// 
   /// If provided, the search view will display only games from the specified publisher.
   final String? publisher;
+
+  const Search({
+    this.publisher,
+    super.key,
+  });
 
   @override
   State<Search> createState() => _SearchViewState();
@@ -78,6 +79,10 @@ class _SearchViewState extends State<Search> {
 
   @override
   void initState() {
+    super.initState();
+
+    Logger.start("Initializing the Update handler...");
+
     rBucket = Provider.of<BucketRepository>(
       context,
       listen: false,
@@ -101,16 +106,15 @@ class _SearchViewState extends State<Search> {
       rHive: rHive,
       sAdMob: sAdMob,
     );
-
     controller.initialize(
       publisher: widget.publisher,
     );
-  
-    super.initState();
   }
 
   @override
   void dispose() {
+    Logger.trash("Disposing the Update resources...");
+
     controller.dispose();
 
     super.dispose();

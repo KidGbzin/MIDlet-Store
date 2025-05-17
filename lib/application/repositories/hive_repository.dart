@@ -5,15 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../logger.dart';
+
 import '../core/entities/game_data_entity.dart';
 import '../core/entities/game_entity.dart';
 
-import '../core/enumerations/logger_enumeration.dart';
 import '../services/github_service.dart';
 
 import '../interfaces/box_interface.dart';
-
-// HIVE REPOSITORY 🧩: ========================================================================================================================================================== //
 
 /// A class responsible for managing the cache of game data.
 ///
@@ -21,10 +20,10 @@ import '../interfaces/box_interface.dart';
 /// It also provides functionality to fetch and update game data from the API.
 class HiveRepository {
 
-  HiveRepository(this.sGitHub);
-
-  /// An instance of [GitHubService] service used to fetch game data from the API.
+  /// Handles interactions with the GitHub API, such as fetching remote files and checking for application updates.
   final GitHubService sGitHub;
+
+  HiveRepository(this.sGitHub);
 
   /// A box for managing cached requests.
   late final BoxCachedRequests boxCachedRequests;
@@ -45,7 +44,7 @@ class HiveRepository {
   ///
   /// It also clears all existing data and updates the local database with data from the API.
   Future<void> initialize() async {
-    Logger.information.log("Initializing the Hive repository...");
+    Logger.start("Initializing the Hive repository...");
 
     final Directory? directory = await getExternalStorageDirectory();
 
@@ -100,7 +99,7 @@ class HiveRepository {
       lastUpdated = await sGitHub.getLastUpdatedDate(source);
     }
     catch (error, stackTrace) {
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );
@@ -109,7 +108,7 @@ class HiveRepository {
     }
     
     if (lastCached != null && lastUpdated.isBefore(lastCached)) {
-      Logger.information.log("The local database is already up-to-date, no update required.");
+      Logger.information("The local database is already up-to-date, no update required.");
 
       return;
     }
@@ -119,12 +118,10 @@ class HiveRepository {
     try {
       bytes = await sGitHub.get(source);
 
-      if (bytes == null) {
-        throw Exception('The file "$source" could not be found in the repository.');
-      }
+      if (bytes == null) throw Exception('The file "$source" could not be found in the repository.');
     }
     catch (error, stackTrace) {
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );
@@ -143,10 +140,10 @@ class HiveRepository {
 
       boxSettings.setLastUpdated(DateTime.now().toString());
 
-      Logger.success.log("The local database was updated successfully with ${collection.length} games.");
+      Logger.success("The local database was updated successfully with ${collection.length} games.");
     }
     catch (error, stackTrace) {
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );
@@ -155,8 +152,6 @@ class HiveRepository {
     }
   }
 }
-
-// SETTINGS BOX 🧩: ============================================================================================================================================================= //
 
 /// A storage box for caching settings data, specifically user preferences and configuration details.
 /// 
@@ -167,18 +162,15 @@ class HiveRepository {
 /// The settings data is stored persistently, making it available across application sessions.
 class BoxSettings implements IBox {
 
-  const BoxSettings(this._box);
-
   /// The internal [Hive] box instance used for managing settings data.
   ///
   /// This field is private to ensure that the box's operations and lifecycle are controlled exclusively through this class.
   /// Preventing unintended modifications or access outside its intended scope.
   final Box _box;
 
-  /// The key for storing and retrieving the last updated timestamp.
-  ///
-  /// This key holds the timestamp indicating the last time the settings were updated.
-  final String _lastUpdated = "LAST_UPDATED";
+  const BoxSettings(this._box);
+
+  final String _keyLastUpdated = "LAST_UPDATED";
 
   @override
   void clear() => _box.clear();
@@ -190,7 +182,7 @@ class BoxSettings implements IBox {
   /// 
   /// The timestamp represents the last time the settings were updated. If the timestamp cannot be parsed, it returns `null`.
   DateTime? get lastUpdated {
-    final String? dateTime = _box.get(_lastUpdated);
+    final String? dateTime = _box.get(_keyLastUpdated);
 
     return DateTime.tryParse(dateTime ?? "");
   }
@@ -199,10 +191,8 @@ class BoxSettings implements IBox {
   /// 
   /// This function records the timestamp indicating when the settings were last updated.
   /// It is useful for tracking changes or synchronizing settings with remote data.
-  void setLastUpdated(String lastUpdated) => _box.put(_lastUpdated, lastUpdated);
+  void setLastUpdated(String lastUpdated) => _box.put(_keyLastUpdated, lastUpdated);
 }
-
-// CACHED REQUESTS BOX 🧩: ====================================================================================================================================================== //
 
 /// A storage box for caching game request data retrieved from Supabase.
 ///
@@ -210,13 +200,13 @@ class BoxSettings implements IBox {
 /// The cached data is stored in a Hive box with a maximum size of 1 MiB.
 class BoxCachedRequests implements IBox {
 
-  const BoxCachedRequests(this._box);
-
   /// The internal [Hive] box instance used for managing [GameData].
   ///
   /// This field is private to ensure that the box's operations and lifecycle are controlled exclusively through this class.
   /// Preventing unintended modifications or access outside its intended scope.
   final Box<GameData> _box;
+
+  const BoxCachedRequests(this._box);
   
   @override
   void clear() => _box.clear();
@@ -227,13 +217,11 @@ class BoxCachedRequests implements IBox {
   /// Retrieves a [GameData] object from storage, using the provided key.
   ///
   /// Returns `null` if no data exists for the provided key.
-  GameData? get(String key) =>_box.get(key);
+  GameData? get(String key) => _box.get(key);
 
   /// Puts or updates a [GameData] object in the storage box.
   void put(GameData gameData) => _box.put('${gameData.identifier}', gameData);
 }
-
-// FAVORITES BOX 🧩: ============================================================================================================================================================ //
 
 /// A storage box for managing the user's favorite games.
 ///
@@ -241,13 +229,13 @@ class BoxCachedRequests implements IBox {
 /// The box stores games based on their title and ensures that the operations are encapsulated to avoid direct manipulation outside this class.
 class BoxFavorites implements IBox {
 
-  const BoxFavorites(this._box);
-
   /// The internal [Hive] box instance used for managing [GameData].
   ///
   /// This field is private to ensure that the box's operations and lifecycle are controlled exclusively through this class.
   /// Preventing unintended modifications or access outside its intended scope.
   final Box<Game> _box;
+
+  const BoxFavorites(this._box);
 
   @override
   void close() => _box.close();
@@ -271,21 +259,19 @@ class BoxFavorites implements IBox {
   void remove(Game game) => _box.delete(game.title);
 }
 
-// GAMES BOX 🧩: ================================================================================================================================================================ //
-
 /// A storage box for managing [Game] objects retrieved and stored in Hive.
 ///
 /// This class implements [IBox] and provides various methods for interacting with the stored [Game] objects.
 /// It can retrieving games by index, title, publisher, or tags, and performing operations like adding, removing, and clearing games from the collection.
 class BoxGames implements IBox {
 
-  const BoxGames(this._box);
-
   /// The internal [Hive] box instance used for managing [GameData].
   ///
   /// This field is private to ensure that the box's operations and lifecycle are controlled exclusively through this class.
   /// Preventing unintended modifications or access outside its intended scope.
   final Box<Game> _box;
+
+  const BoxGames(this._box);
 
   /// Retrieves all [Game] objects stored in the box as a list.
   List<Game> all() {
@@ -329,6 +315,7 @@ class BoxGames implements IBox {
   /// Retrieves a list of [Game] objects with the given publisher.
   List<Game> fromPublisher(String publisher) {
     final List<Game> temporary = <Game> [];
+
     for (int index = 0; index < _box.length; index++) {
       final Game game = _box[index]!;
       if (publisher == game.publisher) {
@@ -341,6 +328,7 @@ class BoxGames implements IBox {
   /// Retrieves a list of [Game] objects that match the given tags.
   List<Game> fromTags(List<String> tags) {
     final List<Game> temporary = <Game> [];
+
     for (int index = 0; index < _box.length; index++) {
       final Game game = _box[index]!;
       if (tags.every((String tag) => game.tags.contains(tag))) {
@@ -442,21 +430,19 @@ List<String> _isolateTopRelatedGames(Map<String, dynamic> parameters) {
   return top8Keys;
 }
 
-// RECENT GAMES BOX 🧩: ========================================================================================================================================================= //
-
 /// A storage box for managing the most recent games played.
 ///
 /// This class implements [IBox] and provides functionality for adding, removing, and retrieving [Game] objects from a Hive box.
 /// The box ensures that only the most recent 10 games are stored, automatically deleting the oldest entry when a new game is added, maintaining a fixed size of 10 games.
 class BoxRecentGames implements IBox {
 
-  const BoxRecentGames(this._box);
-
   /// The internal [Hive] box instance used for managing [GameData].
   ///
   /// This field is private to ensure that the box's operations and lifecycle are controlled exclusively through this class.
   /// Preventing unintended modifications or access outside its intended scope.
   final Box<Game> _box;
+
+  const BoxRecentGames(this._box);
 
   /// Retrieves all [Game] objects stored in the recent games list as a list.
   List<Game> all() {

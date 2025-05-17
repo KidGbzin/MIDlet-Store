@@ -52,7 +52,7 @@ class __LoginViewState extends State<_LoginView> {
           }
           else {
             // TODO: Place an error widget here!
-            Logger.error.log('Encountered an unhandled Login progress state: "${progress.name.toUpperCase()}". This state should be handled explicitly!');
+            Logger.error('Encountered an unhandled Login progress state: "${progress.name.toUpperCase()}". This state should be handled explicitly!');
 
             return SizedBox();
           }

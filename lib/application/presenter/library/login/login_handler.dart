@@ -4,12 +4,13 @@ import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
 
-import '../../../core/enumerations/logger_enumeration.dart';
+import '../../../../logger.dart';
+
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
-import '../../../services/authentication_service.dart';
+import '../../../services/google_authentication_service.dart';
 import '../../../services/firebase_messaging_service.dart';
 import '../../../services/supabase_service.dart';
 
@@ -41,7 +42,7 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
 
-    Logger.start.log("Initializing the Login handler...");
+    Logger.start("Initializing the Login handler...");
 
     sFirebaseMessaging = Provider.of<FirebaseMessagingService>(
       context,
@@ -73,7 +74,7 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
-    Logger.dispose.log("Disposing the Login resources...");
+    Logger.trash("Disposing the Login resources...");
 
     controller.dispose();
 

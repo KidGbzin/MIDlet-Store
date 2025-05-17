@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
 
-import '../../../core/enumerations/logger_enumeration.dart';
+import '../../../../logger.dart';
+
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
@@ -34,7 +35,7 @@ class _UpdateState extends State<Update> {
   void initState() {
     super.initState();
 
-    Logger.start.log("Initializing the Update handler...");
+    Logger.start("Initializing the Update handler...");
 
     sActivity = Provider.of<ActivityService>(
       context,
@@ -55,7 +56,7 @@ class _UpdateState extends State<Update> {
 
   @override
   void dispose() {
-    Logger.dispose.log("Disposing the Update resources...");
+    Logger.trash("Disposing the Update resources...");
 
     super.dispose();
   }

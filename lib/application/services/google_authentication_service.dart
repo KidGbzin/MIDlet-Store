@@ -1,6 +1,6 @@
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../core/enumerations/logger_enumeration.dart';
+import '../../logger.dart';
 
 /// A service for handling user authentication via Google Sign-In.
 ///
@@ -31,16 +31,16 @@ class GoogleOAuthService {
       final GoogleSignInAccount? account = await _client.signIn();
 
       if (account != null) {
-        Logger.success.log("Successfully signed in as ${account.displayName}.");
+        Logger.success("Successfully signed in as ${account.displayName}.");
 
         return account.authentication;
       }
       else {
-        Logger.warning.log("The user canceled the Google Sign-In.");
+        Logger.warning("The user canceled the Google Sign-In.");
       }
     }
     catch (error, stackTrace) {
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );
@@ -57,16 +57,16 @@ class GoogleOAuthService {
       final GoogleSignInAccount? account = await _client.signInSilently();
 
       if (account != null) {
-        Logger.success.log("Successfully signed in silently as ${account.displayName} via Google OAuth.");
+        Logger.success("Successfully signed in silently as ${account.displayName} via Google OAuth.");
 
         return account.authentication;
       }
       else {
-        Logger.warning.log("There is no active user session found for silent sign-in.");
+        Logger.success("There is no active user session found for silent sign-in.");
       }
     }
     catch (error, stackTrace) {
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );
@@ -81,15 +81,11 @@ class GoogleOAuthService {
   Future<void> signOut() async {
     try {
       await _client.signOut();
-      Logger.information.print(
-        label: 'Google OAuth Service',
-        message: 'User signed out successfully.',
-      );
+      Logger.information('User signed out successfully.');
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        label: 'Google OAuth Service',
-        message: 'Sign-out failed: $error',
+      Logger.error(
+        'Sign-out failed: $error',
         stackTrace: stackTrace,
       );
     }

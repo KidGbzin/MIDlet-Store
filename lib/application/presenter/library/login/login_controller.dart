@@ -30,7 +30,9 @@ class _Controller {
       final bool hasCachedSession = await _hasCachedSession();
 
       if (hasCachedSession && context.mounted) {
-        sFirebaseMessaging.handlePendingNotification(context);
+        await sFirebaseMessaging.registerFCMTokenOnSupabase(context);
+
+        if (context.mounted) sFirebaseMessaging.handlePendingNotification(context);
 
         return;
       }
@@ -40,7 +42,7 @@ class _Controller {
     catch (error, stackTrace) {
       nProgress.value = ProgressEnumeration.hasError;
 
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );
@@ -89,7 +91,9 @@ class _Controller {
       );
 
       if (context.mounted) {
-        sFirebaseMessaging.handlePendingNotification(context);
+        await sFirebaseMessaging.registerFCMTokenOnSupabase(context);
+
+        if (context.mounted) sFirebaseMessaging.handlePendingNotification(context);
 
         return;
       }
@@ -97,7 +101,7 @@ class _Controller {
     catch (error, stackTrace) {
       nProgress.value = ProgressEnumeration.hasError;
 
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );

@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
 
-import '../../../core/enumerations/logger_enumeration.dart';
+import '../../../../logger.dart';
+
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
 
@@ -45,7 +46,7 @@ class _LauncherState extends State<Launcher> {
   void initState() {
     super.initState();
 
-    Logger.start.log("Initializing the Launcher handler...");
+    Logger.start("Initializing the Launcher handler...");
 
     rHive = Provider.of<HiveRepository>(
       context,
@@ -87,7 +88,7 @@ class _LauncherState extends State<Launcher> {
 
   @override
   void dispose() {
-    Logger.dispose.log("Disposing the Launcher resources...");
+    Logger.trash("Disposing the Launcher resources...");
 
     controller.dispose();
 

@@ -56,11 +56,6 @@ class _PreviewsSectionState extends State<_PreviewsSection> {
 
           // FAILURE:
           else if (snapshot.hasError) {
-            Logger.error.print(
-              label: 'Details | Previews',
-              message: '${snapshot.error}',
-              stackTrace: snapshot.stackTrace,
-            );
             child = Container(
               height: _coverHeight,
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),

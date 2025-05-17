@@ -5,10 +5,10 @@ import '../core/entities/game_entity.dart';
 
 import '../core/extensions/router_extension.dart';
 
-import '../core/enumerations/logger_enumeration.dart';
-
 import '../repositories/hive_repository.dart';
 import '../repositories/supabase_repository.dart';
+
+import '../../logger.dart';
 
 /// A service class responsible for managing Firebase Cloud Messaging (FCM) functionality.
 ///
@@ -36,7 +36,7 @@ class FirebaseMessagingService {
   /// Should be called on application startup (e.g., in the `Launcher`).
   /// It requests notification permissions, handles initial messages (if the app was terminated), sets up listeners for message events, and registers the FCM token in Supabase.
   Future<void> initialize(BuildContext context) async {
-    Logger.start.log("Initializing the Firebase Messaging service...");
+    Logger.start("Initializing the Firebase Messaging service...");
 
     await _instance.requestPermission();
 
@@ -44,14 +44,12 @@ class FirebaseMessagingService {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {});
-
-    if (context.mounted) await _registerFCMTokenOnSupabase(context);
   }
 
   /// Retrieves the current FCM device token and registers it with Supabase, associating the token with the device's locale.
   ///
   /// Listens for token refresh events to update the token in Supabase automatically.
-  Future<void> _registerFCMTokenOnSupabase(BuildContext context) async {
+  Future<void> registerFCMTokenOnSupabase(BuildContext context) async {
     final String? token = await _instance.getToken();
     late final Locale locale;
     
@@ -71,7 +69,7 @@ class FirebaseMessagingService {
   void handlePendingNotification(BuildContext context) {
     try {
       if (_message == null) {
-        Logger.information.log("There's no notification message to handle, opening the default Search view.");
+        Logger.information("There's no notification message to handle, opening the default Search view.");
 
         context.gtSearch(
           replace: true,
@@ -95,7 +93,7 @@ class FirebaseMessagingService {
       }
     }
     catch (error, stackTrace) {
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );

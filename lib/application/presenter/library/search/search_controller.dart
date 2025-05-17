@@ -83,8 +83,6 @@ class _Controller {
   Future<void> initialize({
     required String? publisher,
   }) async {
-    Logger.information.log("Initializing the Search controller...");
-
     nSelectedPublisher.value = publisher;
 
     try {
@@ -103,7 +101,7 @@ class _Controller {
       nSuggestions.value = rHive.boxRecentGames.all();
     }
     catch (error, stackTrace) {
-      Logger.error.log(
+      Logger.error(
         "$error",
         stackTrace: stackTrace,
       );
@@ -144,8 +142,6 @@ class _Controller {
   /// This method is called to release the resources and memory allocated by the controller when it is no longer needed.
   /// It disposes of all [ValueNotifier] instances and controllers that the controller is using to avoid memory leaks.
   void dispose() {
-    Logger.information.log("Disposing the Search controller resources...");
-
     nGames.dispose();
     nSuggestions.dispose();
     nSelectedPublisher.dispose();
@@ -392,11 +388,11 @@ class _Controller {
       data.averageRating ??= await rSupabase.getAverageRatingByGame(game);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: "$error",
-        label: "Search Controller | Average Rating",
+      Logger.error(
+        "$error",
         stackTrace: stackTrace,
       );
+
       data.averageRating = 0.0;
     }
 
@@ -404,11 +400,11 @@ class _Controller {
       data.downloads ??= await rSupabase.getOrInsertGameDownloads(game);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: "$error",
-        label: "Search Controller | Average Rating",
+      Logger.error(
+        "$error",
         stackTrace: stackTrace,
       );
+
       data.downloads = 0;
     }
 
@@ -430,9 +426,8 @@ class _Controller {
       return rBucket.cover(title);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: "$error",
-        label: "Search Controller | Cover",
+      Logger.error(
+        "$error",
         stackTrace: stackTrace,
       );
 

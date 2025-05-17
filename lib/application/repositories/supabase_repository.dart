@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import '../core/entities/game_entity.dart';
+import 'package:midlet_store/logger.dart';
 
-import '../core/enumerations/logger_enumeration.dart';
+import '../core/entities/game_entity.dart';
 
 import '../services/supabase_service.dart';
 
@@ -30,7 +30,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success.log("Successfully fetched the average rating for \"$title\" from Supabase: ${response ?? 0}.");
+    Logger.success("Successfully fetched the average rating for \"$title\" from Supabase: ${response ?? 0}.");
 
     return (response ?? 0).roundToDouble();
   }
@@ -54,7 +54,7 @@ class SupabaseRepository {
     }
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success.log("Successfully fetched the ratings by stars for \"$title\" from Supabase: "
+    Logger.success("Successfully fetched the ratings by stars for \"$title\" from Supabase: "
                        "{5★: ${ratings["5"]}}, "
                        "{4★: ${ratings["4"]}}, "
                        "{3★: ${ratings["3"]}}, "
@@ -78,7 +78,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success.log("Successfully fetched the total ratings for \"$title\" from Supabase: $response.");
+    Logger.success("Successfully fetched the total ratings for \"$title\" from Supabase: $response.");
 
     return response;
   }
@@ -97,7 +97,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success.log("Successfully fetched the user rating for \"$title\" from Supabase: ${response ?? 0}.");
+    Logger.success("Successfully fetched the user rating for \"$title\" from Supabase: ${response ?? 0}.");
 
     return response ?? 0;
   }
@@ -116,7 +116,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success.log("Successfully fetched the downloads count for \"$title\" from Supabase: $response.");
+    Logger.success("Successfully fetched the downloads count for \"$title\" from Supabase: $response.");
 
     return response;
   }
@@ -135,7 +135,7 @@ class SupabaseRepository {
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success.log("Successfully upserted the rating for \"$title\" on Supabase: $rating★.");
+    Logger.success("Successfully upserted the rating for \"$title\" on Supabase: $rating★.");
   }
 
   /// Inserts or updates the user's FCM token in the `fcm_tokens` table.
@@ -152,6 +152,6 @@ class SupabaseRepository {
       onConflict: 'token',
     );
 
-    Logger.success.log("Successfully registered the FCM token.");
+    Logger.success("Successfully registered the FCM token.");
   }
 }
