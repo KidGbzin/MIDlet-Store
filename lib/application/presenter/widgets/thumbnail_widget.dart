@@ -16,12 +16,15 @@ class ThumbnailWidget extends StatelessWidget {
     this.aspectRatio = 0.75,
     this.border,
     this.filterQuality = FilterQuality.none,
+    this.showShadow = true,
     required this.image,
     this.onTap,
     this.borderRadius,
 
     super.key,
   });
+
+  final bool showShadow;
 
   /// The aspect ratio of the thumbnail image.
   ///
@@ -81,7 +84,7 @@ class ThumbnailWidget extends StatelessWidget {
   Widget _decoration() {
     final BoxDecoration decoration = BoxDecoration(
       border: border,
-      boxShadow: kElevationToShadow[3],
+      boxShadow: showShadow ? kElevationToShadow[3] : null,
       borderRadius: borderRadius ?? gBorderRadius,
       color: ColorEnumeration.foreground.value,
       image: DecorationImage(

@@ -53,6 +53,8 @@ part '../details/components/overview_section_component.dart';
 part '../details/components/previews_section_component.dart';
 part '../details/components/related_section_component.dart';
 
+part '../details/components/section_rating_component.dart';
+
 part '../details/details_controller.dart';
 part '../details/details_view.dart';
 
