@@ -38,6 +38,7 @@ class ModalWidget extends StatelessWidget {
       showDragHandle: false,
       builder: (BuildContext context) {
         return Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget> [
 
@@ -57,9 +58,7 @@ class ModalWidget extends StatelessWidget {
               height: 1,
               thickness: 1,
             ),
-            Expanded(
-              child: child,
-            ),
+            child,
           ],
         );
       },

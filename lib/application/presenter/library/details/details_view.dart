@@ -19,14 +19,15 @@ class _DetailsView extends StatefulWidget {
 
 class __DetailsViewState extends State<_DetailsView> {
   late final List<Widget> children = <Widget> [
-    _OverviewSection(widget.controller),
+    _RatingSection(
+      controller: widget.controller,
+      localizations: widget.localizations,
+    ),
+    gDivider,
+    _ActionsSection(widget.localizations),    
     gDivider,
     _About(
       description: widget.controller.game.description(Localizations.localeOf(context)),
-    ),
-    gDivider,
-    _InstallationSection(
-      controller: widget.controller,
     ),
     gDivider,
     _PreviewsSection(
@@ -51,17 +52,20 @@ class __DetailsViewState extends State<_DetailsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: _PlayButton(
+        controller: widget.controller,
+        localizations: widget.localizations,
+      ),
       body: CustomScrollView(
         slivers: <Widget> [
           SliverAppBar(
             automaticallyImplyLeading: false,
             backgroundColor: ColorEnumeration.background.value,
             surfaceTintColor: ColorEnumeration.background.value,
-            elevation: 0,
             pinned: true,
-            stretch: true,
             title: Row(
               mainAxisSize: MainAxisSize.max,
+              spacing: 7.5,
               children: <Widget> [
                 ButtonWidget.icon(
                   icon: HugeIcons.strokeRoundedArrowLeft01,
@@ -80,6 +84,22 @@ class __DetailsViewState extends State<_DetailsView> {
             flexibleSpace: FlexibleSpaceBar(
               background: _CoverSection(widget.controller),
             ),
+          ),
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: ColorEnumeration.background.value,
+            surfaceTintColor: ColorEnumeration.background.value,
+            pinned: true,
+            titleSpacing: 0,
+            flexibleSpace: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _HeaderSection(widget.controller),
+              ],
+            ),
+            toolbarHeight: 60.6,
+            expandedHeight: 60.6,
+            collapsedHeight: 60.6,
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(

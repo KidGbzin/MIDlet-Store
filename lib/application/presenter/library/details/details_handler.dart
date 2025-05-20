@@ -19,7 +19,6 @@ import '../../../core/configuration/global_configuration.dart';
 
 import '../../../core/entities/game_data_entity.dart';
 import '../../../core/entities/game_entity.dart';
-import '../../../core/entities/midlet_entity.dart';
 
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
@@ -43,17 +42,15 @@ import '../../widgets/section_widget.dart';
 import '../../widgets/thumbnail_widget.dart';
 
 part '../details/components/about_section_component.dart';
-part '../details/components/bookmark_button_component.dart';
+part '../details/components/action_section_component.dart';
 part '../details/components/cover_section_component.dart';
 part '../details/components/dialog_components.dart';
-part '../details/components/installation_modal_component.dart';
-part '../details/components/installation_section_component.dart';
-part '../details/components/modal_components.dart';
-part '../details/components/overview_section_component.dart';
+part '../details/components/header_section_component.dart';
+part '../details/components/play_button_component.dart';
 part '../details/components/previews_section_component.dart';
+part '../details/components/rating_section_component.dart';
 part '../details/components/related_section_component.dart';
-
-part '../details/components/section_rating_component.dart';
+part '../details/components/submit_rating_modal_component.dart';
 
 part '../details/details_controller.dart';
 part '../details/details_view.dart';
