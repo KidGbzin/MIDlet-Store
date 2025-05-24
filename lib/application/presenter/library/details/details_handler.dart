@@ -22,7 +22,6 @@ import '../../../core/entities/game_entity.dart';
 
 import '../../../core/entities/midlet_entity.dart';
 import '../../../core/enumerations/palette_enumeration.dart';
-import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../core/extensions/messenger_extension.dart';

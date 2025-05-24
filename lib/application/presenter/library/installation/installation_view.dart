@@ -24,11 +24,22 @@ class _InstallationView extends StatefulWidget {
 class _InstallationViewState extends State<_InstallationView> {
   late final List<Widget> children = <Widget> [
     _ActionsSection(widget.midlet),
+    gDivider,
     _DetailsSection(widget.midlet),
     gDivider,
     AdvertisementWidget(getAdvertisement: widget.controller.sAdMob.getAdvertisement),
     gDivider,
-    install(),
+    _SelectEmulatorSection(
+      controller: widget.controller,
+      localizations: widget.localizations,
+    ),
+    gDivider,
+    AdvertisementWidget(getAdvertisement: widget.controller.sAdMob.getAdvertisement),
+    gDivider,
+    _InstallButton(
+      controller: widget.controller,
+      localizations: widget.localizations,
+    ),
   ];
 
   @override
@@ -69,24 +80,6 @@ class _InstallationViewState extends State<_InstallationView> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget install() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
-      child: ButtonWidget.widget(
-        width: double.infinity,
-        onTap: () {},
-        color: ColorEnumeration.primary.value,
-        child: Align(
-          alignment: Alignment.center,
-          child: Text(
-            "INSTALL MIDLET", // TODO: Translate.
-            style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
-          ),
-        ),
       ),
     );
   }

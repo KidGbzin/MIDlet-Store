@@ -2,10 +2,97 @@ part of '../installation/installation_handler.dart';
 
 class _Controller {
 
+  /// The Java ME application (MIDlet) object.
+  final MIDlet midlet;
+
+  /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
+  final BucketRepository rBucket;
+
+  /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
+  final ActivityService sActivity;
+
   /// Manages AdMob advertising operations, includingloading, displaying, and disposing of banner and interstitial advertisements.
   final AdMobService sAdMob;
 
-  const _Controller({
+  _Controller({
+    required this.midlet,
+    required this.rBucket,
     required this.sAdMob,
+    required this.sActivity,
   });
+
+  late final ValueNotifier<Emulators> nEmulator;
+
+  late final ValueNotifier<ProgressEnumeration> nInstallationState;
+
+  File? _file;
+
+  /// Initializes the handler’s core services and state notifiers.
+  ///
+  /// This method must be called from the `initState` of the handler widget.
+  /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
+  Future<void> initialize() async {
+    nEmulator = ValueNotifier<Emulators>(Emulators.j2meLoader);
+    nInstallationState = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.isLoading);
+  }
+
+  /// Disposes the handler’s resources and notifiers.
+  ///
+  /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
+  void dispose() {
+    nEmulator.dispose();
+    nInstallationState.dispose();
+  }
+
+  /// Downloads the MIDlet from the bucket.
+  ///
+  /// This function is used to download the selected MIDlet from the bucket.
+  /// It updates the [nInstallationState] based on the result of the download operation.
+  Future<void> downloadMIDlet() async {
+    Logger.information("Started downloading the MIDlet \"${midlet.file}\"...");
+
+    try {
+      _file = await rBucket.midlet(midlet);
+
+      await _tryInstallMIDlet();
+    }
+    catch (error, stackTrace) {
+      nInstallationState.value = ProgressEnumeration.hasError;
+
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  /// Installs the downloaded MIDlet using the emulator.
+  ///
+  /// This function is used to install the downloaded MIDlet using the emulator.
+  /// It updates the [nInstallationState] based on the result of the installation operation.
+  Future<void> _tryInstallMIDlet() async {
+    try {
+      if (_file == null) throw Exception("This MIDlet is not available!");
+
+      await sActivity.emulator(_file!, nEmulator.value);
+    }
+    on PlatformException catch (error, stackTrace) {
+      nInstallationState.value = ProgressEnumeration.requestEmulator;
+
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+    }
+    catch (error, stackTrace) {
+      nInstallationState.value = ProgressEnumeration.hasError;
+
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<void> launchUrl(String link) async => sActivity.url(link);
 }

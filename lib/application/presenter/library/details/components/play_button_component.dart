@@ -38,19 +38,17 @@ class _PlayButtonState extends State<_PlayButton> {
         child: InkWell(
           borderRadius: gBorderRadius,
           onTap: () {
-            // if (midlet != null) {
-            //   context.gtInstallation(
-            //     midlet: midlet!,
-            //   );
-            // }
-            // else {
+            if (midlet != null) {
+              context.gtInstallation(midlet!);
+            }
+            else {
               Logger.error("There's no default MIDlet, redirecting to the MIDlets view...");
+
               context.gtMIDlets(
                 cover: widget.controller.thumbnailState.value!,
                 midlets: widget.controller.game.midlets,
               );
-              // TODO: Redirect to the MIDlets view.
-            // }
+            }
           },
           child: Ink(
             height: 45,

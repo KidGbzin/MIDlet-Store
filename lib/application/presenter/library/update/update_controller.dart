@@ -10,5 +10,5 @@ class _Controller {
   });
 
   /// Launches the GitHub releases page for the MIDlet Store project in the user's default browser.
-  Future<void> openMIDletStoreReleases() async => await sActivity.openMIDletStoreReleases();
+  Future<void> openMIDletStoreReleases() async => await sActivity.url("https://github.com/KidGbzin/MIDlet-Store/releases");
 }
