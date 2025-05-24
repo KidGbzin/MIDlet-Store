@@ -124,4 +124,6 @@ class MIDlet {
   String get formattedSize => "${(size / 1024).round()} KB";
 
   String get formattedResolution => resolution.replaceFirst("x", " x ");
+
+  String get formattedTitle => title.replaceFirst(" -", ":");
 }

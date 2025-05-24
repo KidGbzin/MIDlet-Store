@@ -65,10 +65,7 @@ class _InstallationViewState extends State<_InstallationView> {
             surfaceTintColor: ColorEnumeration.background.value,
             pinned: true,
             titleSpacing: 0,
-            flexibleSpace: Section(
-              description: "Please check the MIDlet information before installing.",
-              title: widget.midlet.title.replaceFirst(" -", ":"),
-            ),
+            flexibleSpace: _HeaderSection(widget.controller, widget.localizations),
             toolbarHeight: 102,
             expandedHeight: 102,
             collapsedHeight: 102,
