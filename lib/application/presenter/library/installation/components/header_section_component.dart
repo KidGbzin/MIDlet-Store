@@ -55,7 +55,7 @@ class _HeaderSection extends StatelessWidget {
       "assets/brands/${controller.midlet.brand}.png",
       errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
         return Icon(
-          HugeIcons.strokeRoundedBrandfetch,
+          HugeIcons.strokeRoundedImage02,
           size: 18,
           color: ColorEnumeration.grey.value,
         );
