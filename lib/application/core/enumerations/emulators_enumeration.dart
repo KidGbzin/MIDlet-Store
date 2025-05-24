@@ -20,7 +20,7 @@ enum Emulators {
   /// 
   /// A modified fork of J2ME Loader with additional features.
   jlMod(
-    activity: "ru.woesss.j2meloader.MainActivity",
+    activity: "ru.playsoftware.j2meloader.MainActivity",
     assetImage: "assets/brands/JL-Mod.png",
     gitHub: "https://github.com/woesss/JL-Mod",
     package: "ru.woesss.j2meloader",
