@@ -23,7 +23,7 @@ class _InstallModalState extends State<_InstallModal> {
   void initState() {
     super.initState();
 
-    widget.controller.downloadMIDlet();
+    widget.controller.downloadMIDlet(context);
   }
 
   @override
@@ -47,9 +47,9 @@ class _InstallModalState extends State<_InstallModal> {
               return requestEmulator();
             }
             else {
-              Logger.error("Unhandled state \"$installationState\".");
+              Logger.error("Error state \"$installationState\".");
 
-              return SizedBox();
+              return error();
             }
           },
         ),
@@ -134,7 +134,7 @@ class _InstallModalState extends State<_InstallModal> {
   Widget badge(String assetImage, String link) {
     return GestureDetector(
       onTap: () {
-        widget.controller.launchUrl(link);
+        widget.controller.launchEmulatorPage(context, link);
       },
       child: SizedBox(
         height: 45,

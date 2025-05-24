@@ -48,13 +48,13 @@ class _Controller {
   ///
   /// This function is used to download the selected MIDlet from the bucket.
   /// It updates the [nInstallationState] based on the result of the download operation.
-  Future<void> downloadMIDlet() async {
+  Future<void> downloadMIDlet(BuildContext context) async {
     Logger.information("Started downloading the MIDlet \"${midlet.file}\"...");
 
     try {
       _file = await rBucket.midlet(midlet);
 
-      await _tryInstallMIDlet();
+      if (context.mounted) await _tryInstallMIDlet(context);
     }
     catch (error, stackTrace) {
       nInstallationState.value = ProgressEnumeration.hasError;
@@ -66,15 +66,14 @@ class _Controller {
     }
   }
 
-  /// Installs the downloaded MIDlet using the emulator.
-  ///
-  /// This function is used to install the downloaded MIDlet using the emulator.
-  /// It updates the [nInstallationState] based on the result of the installation operation.
-  Future<void> _tryInstallMIDlet() async {
+  /// Installs the downloaded MIDlet using the current selected emulator.
+  Future<void> _tryInstallMIDlet(BuildContext context) async {
     try {
       if (_file == null) throw Exception("This MIDlet is not available!");
 
       await sActivity.emulator(_file!, nEmulator.value);
+
+      if (context.mounted) context.pop();
     }
     on PlatformException catch (error, stackTrace) {
       nInstallationState.value = ProgressEnumeration.requestEmulator;
@@ -94,5 +93,20 @@ class _Controller {
     }
   }
 
-  Future<void> launchUrl(String link) async => sActivity.url(link);
+  /// Opens the emulator’s GitHub or Play Store page using a URL.
+  Future<void> launchEmulatorPage(BuildContext context, String link) async {
+    try {
+      await sActivity.url(link);
+
+      if (context.mounted) context.pop();
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      nInstallationState.value = ProgressEnumeration.hasError;
+    }
+  }
 }
