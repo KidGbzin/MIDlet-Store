@@ -1,13 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../presenter/library/details/details_handler.dart';
+import '../../presenter/library/installation/installation_handler.dart';
 import '../../presenter/library/launcher/launcher_handler.dart';
 import '../../presenter/library/login/login_handler.dart';
+import '../../presenter/library/midlets/midlets_handler.dart';
 import '../../presenter/library/search/search_handler.dart';
 import '../../presenter/library/update/update_handler.dart';
 
 import '../entities/game_entity.dart';
+import '../entities/midlet_entity.dart';
 
 /// The application's routes.
 /// 
@@ -22,14 +27,26 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/details',
-      builder: (BuildContext context, GoRouterState state) {
-        final Game game = state.extra as Game;
-        return Details(game);
-      },
+      builder: (BuildContext context, GoRouterState state) => Details(state.extra as Game),
+    ),
+    GoRoute(
+      path: '/installation',
+      builder: (BuildContext context, GoRouterState state) => Installation(state.extra as MIDlet),
     ),
     GoRoute(
       path: '/login',
       builder: (BuildContext context, GoRouterState _) => const Login(),
+    ),
+    GoRoute(
+      path: '/midlets',
+      builder: (BuildContext context, GoRouterState state) {
+        final ({File cover, List<MIDlet> midlets}) arguments = state.extra as ({File cover, List<MIDlet> midlets});
+
+        return MIDlets(
+          cover: arguments.cover,
+          midlets: arguments.midlets,
+        );
+      }
     ),
     GoRoute(
       path: '/search',

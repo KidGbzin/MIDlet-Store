@@ -120,4 +120,8 @@ class MIDlet {
       'version': version,
     };
   }
+
+  String get formattedSize => "${(size / 1024).round()} KB";
+
+  String get formattedResolution => resolution.replaceFirst("x", " x ");
 }

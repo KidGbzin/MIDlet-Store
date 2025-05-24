@@ -20,6 +20,7 @@ import '../../../core/configuration/global_configuration.dart';
 import '../../../core/entities/game_data_entity.dart';
 import '../../../core/entities/game_entity.dart';
 
+import '../../../core/entities/midlet_entity.dart';
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';

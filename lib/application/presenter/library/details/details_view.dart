@@ -56,6 +56,8 @@ class __DetailsViewState extends State<_DetailsView> {
         controller: widget.controller,
         localizations: widget.localizations,
       ),
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
+      floatingActionButtonLocation: _NoPaddingFABLocation(),
       body: CustomScrollView(
         slivers: <Widget> [
           SliverAppBar(
@@ -91,12 +93,7 @@ class __DetailsViewState extends State<_DetailsView> {
             surfaceTintColor: ColorEnumeration.background.value,
             pinned: true,
             titleSpacing: 0,
-            flexibleSpace: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _HeaderSection(widget.controller),
-              ],
-            ),
+            flexibleSpace: _HeaderSection(widget.controller),
             toolbarHeight: 60.6,
             expandedHeight: 60.6,
             collapsedHeight: 60.6,
@@ -110,5 +107,16 @@ class __DetailsViewState extends State<_DetailsView> {
         ],
       ),
     );
+  }
+}
+
+class _NoPaddingFABLocation extends FloatingActionButtonLocation {
+
+  @override
+  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
+    final double fabX = scaffoldGeometry.scaffoldSize.width - scaffoldGeometry.floatingActionButtonSize.width;
+    final double fabY = scaffoldGeometry.scaffoldSize.height - scaffoldGeometry.floatingActionButtonSize.height;
+
+    return Offset(fabX, fabY);
   }
 }
