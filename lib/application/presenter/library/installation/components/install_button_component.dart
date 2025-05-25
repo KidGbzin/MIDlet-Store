@@ -25,8 +25,7 @@ class _InstallButtonState extends State<_InstallButton> {
       padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
       child: Align(
         alignment: Alignment.center,
-        child: ButtonWidget.widget(
-          width: double.infinity,
+        child: GradientButton(
           onTap: () {
             showModalBottomSheet(
               context: context,
@@ -36,25 +35,8 @@ class _InstallButtonState extends State<_InstallButton> {
               ),
             );
           },
-          color: ColorEnumeration.primary.value,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 7.5,
-            children: <Widget> [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 1, 0, 0),
-                child: Text(
-                  "INSTALL", // TODO: Translate.
-                  style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
-                ),
-              ),
-              Icon(
-                HugeIcons.strokeRoundedDownload01,
-                color: ColorEnumeration.elements.value,
-                size: 25,
-              ),
-            ],
-          ),
+          icon: HugeIcons.strokeRoundedDownload01,
+          text: "INSTALL ON EMULATOR", // TODO: Translate.
         ),
       ),
     );

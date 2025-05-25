@@ -35,6 +35,7 @@ import '../../../services/activity_service.dart';
 
 import '../../widgets/button_widget.dart';
 import '../../widgets/dialog_widget.dart';
+import '../../widgets/gradient_button_widget.dart';
 import '../../widgets/loading_widget.dart';
 import '../../widgets/modal_widget.dart';
 import '../../widgets/rating_stars_widget.dart';

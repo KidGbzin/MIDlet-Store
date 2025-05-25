@@ -7,6 +7,7 @@ enum Emulators {
   /// 
   /// A popular open-source J2ME emulator for Android.
   j2meLoader(
+    accentColor: Color(0xff7b83C0),
     activity: "ru.playsoftware.j2meloader.MainActivity",
     assetImage: "assets/brands/J2ME-Loader.png",
     gitHub: "https://github.com/nikita36078/J2ME-Loader",
@@ -20,6 +21,7 @@ enum Emulators {
   /// 
   /// A modified fork of J2ME Loader with additional features.
   jlMod(
+    accentColor: Color.fromARGB(255, 132, 180, 192),
     activity: "ru.playsoftware.j2meloader.MainActivity",
     assetImage: "assets/brands/JL-Mod.png",
     gitHub: "https://github.com/woesss/JL-Mod",
@@ -27,6 +29,9 @@ enum Emulators {
     primaryColor: Color(0xff4b8a99),
     title: "JL-Mod",
   );
+
+  /// Accent color used for UI theming or branding.
+  final Color accentColor;
 
   /// The Android activity to launch for the emulator.
   final String activity;
@@ -50,6 +55,7 @@ enum Emulators {
   final String title;
 
   const Emulators({
+    required this.accentColor,
     required this.activity,
     required this.assetImage,
     required this.gitHub,

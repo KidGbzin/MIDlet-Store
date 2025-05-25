@@ -48,12 +48,12 @@ class _InstallationViewState extends State<_InstallationView> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Row(
+          spacing: 7.5,
           children: <Widget> [
             ButtonWidget.icon(
               icon: HugeIcons.strokeRoundedArrowLeft01,
               onTap: context.pop,
             ),
-            const Spacer(),
           ],
         ),
       ),

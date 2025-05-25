@@ -22,17 +22,20 @@ import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../repositories/bucket_repository.dart';
+
 import '../../../services/activity_service.dart';
 import '../../../services/admob_service.dart';
 
 import '../../widgets/advertisement_widget.dart';
 import '../../widgets/button_widget.dart';
+import '../../widgets/gradient_button_widget.dart';
 import '../../widgets/loading_widget.dart';
 import '../../widgets/modal_widget.dart';
 import '../../widgets/section_widget.dart';
 
 part '../installation/components/details_section_component.dart';
 part '../installation/components/emulator_section_component.dart';
+part '../installation/components/emulator_tile_component.dart';
 part '../installation/components/header_section_component.dart';
 part '../installation/components/install_button_component.dart';
 part '../installation/components/install_modal_component.dart';

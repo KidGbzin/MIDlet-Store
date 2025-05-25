@@ -30,10 +30,16 @@ class _SelectEmulatorSectionState extends State<_SelectEmulatorSection> {
           spacing: 15,
           children: <Widget> [
             Expanded(
-              child: emulator(Emulators.j2meLoader),
+              child: _EmulatorTile(
+                controller: widget.controller,
+                emulator: Emulators.j2meLoader,
+              ),
             ),
             Expanded(
-              child: emulator(Emulators.jlMod),
+              child: _EmulatorTile(
+                controller: widget.controller,
+                emulator: Emulators.jlMod,
+              ),
             ),
             ButtonWidget.icon(
               icon: HugeIcons.strokeRoundedHelpCircle,
