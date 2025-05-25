@@ -20,6 +20,7 @@ class MIDlet {
     required this.languages,
     required this.resolution,
     required this.size,
+    required this.source,
     required this.title,
     required this.version,
   });
@@ -66,6 +67,8 @@ class MIDlet {
   /// The size of the .JAR package in kilobytes.
   final int size;
 
+  final String source;
+
   /// The title of the [MIDlet].
   final String title;
 
@@ -92,6 +95,7 @@ class MIDlet {
       languages: List<String>.from(json["languages"]),
       resolution: json['resolution'] as String,
       size: json['size'] as int,
+      source: json['source'] ?? "https://github.com/KidGbzin/MIDlet-Store/issues/55", // TODO: Update the API.
       title: json['title'] as String,
       version: json['version'] as String,
     );
@@ -116,6 +120,7 @@ class MIDlet {
       'languages': languages,
       'resolution': resolution,
       'size': size,
+      'source': source,
       'title': title,
       'version': version,
     };

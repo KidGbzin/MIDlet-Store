@@ -54,6 +54,16 @@ class _InstallationViewState extends State<_InstallationView> {
               icon: HugeIcons.strokeRoundedArrowLeft01,
               onTap: context.pop,
             ),
+            const Spacer(),
+            ButtonWidget.icon(
+              icon: HugeIcons.strokeRoundedLink02,
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext _) => _SourceModal(widget.controller, widget.localizations),
+                );
+              }
+            ),
           ],
         ),
       ),

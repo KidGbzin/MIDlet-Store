@@ -93,6 +93,20 @@ class _Controller {
     }
   }
 
+  Future<void> launchSourceUrl(BuildContext context) async {
+    try {
+      await sActivity.url(midlet.source);
+
+      if (context.mounted) context.pop();
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
   /// Opens the emulator’s GitHub or Play Store page using a URL.
   Future<void> launchEmulatorPage(BuildContext context, String link) async {
     try {

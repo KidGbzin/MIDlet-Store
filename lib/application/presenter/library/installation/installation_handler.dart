@@ -39,6 +39,7 @@ part '../installation/components/emulator_tile_component.dart';
 part '../installation/components/header_section_component.dart';
 part '../installation/components/install_button_component.dart';
 part '../installation/components/install_modal_component.dart';
+part '../installation/components/source_modal_component.dart';
 
 part '../installation/installation_controller.dart';
 part '../installation/installation_view.dart';
