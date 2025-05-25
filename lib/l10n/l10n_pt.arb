@@ -88,5 +88,20 @@
     "tagSurvivalHorror": "Survival Horror",
     "tagTakedown": "Takedown",
     "tagTerror": "Terror",
-    "tagTowerDefense": "Tower Defense"
+    "tagTowerDefense": "Tower Defense",
+
+    "btOpenOnBrowser": "ABRIR NO NAVEGADOR",
+    "@btOpenOnBrowser": {
+        "description": "Texto do botão para abrir o link no navegador."
+    },
+
+    "scExternalSource": "VOCÊ ESTÁ SENDO REDIRECIONADO",
+    "@scExternalSource": {
+        "description": "Título exibido ao redirecionar o usuário para um site externo."
+    },
+
+    "scExternalSourceDescription": "Este arquivo MIDlet está disponível em @source. Para visualizar o arquivo original, abra o link em seu navegador.\n\nAtenção: Este é um site externo, sem afiliação oficial ao projeto MIDlet Store.",
+    "@scExternalSourceDescription": {
+        "description": "Descrição exibida ao redirecionar o usuário para um site externo."
+    }
 }

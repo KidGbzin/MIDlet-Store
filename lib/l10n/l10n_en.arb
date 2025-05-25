@@ -261,5 +261,20 @@
     "@tagTerror": {},
 
     "tagTowerDefense": "Tower Defense",
-    "@tagTowerDefense": {}
+    "@tagTowerDefense": {},
+
+    "btOpenOnBrowser": "OPEN ON BROWSER",
+    "@btOpenOnBrowser": {
+        "description": "Button text to open the link in the browser."
+    },
+
+    "scExternalSource": "YOU ARE BEING REDIRECTED",
+    "@scExternalSource": {
+        "description": "Title shown when redirecting the user to an external source website."
+    },
+
+    "scExternalSourceDescription": "This MIDlet file is available at @source. To view the original file, please open the link in your web browser.\n\nPlease note: This is an external website with no official affiliation to the MIDlet Store project.",
+    "@scExternalSourceDescription": {
+        "description": "Description shown when redirecting the user to an external source website."
+    }
 }

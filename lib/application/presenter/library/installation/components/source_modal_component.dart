@@ -21,14 +21,14 @@ class _SourceModal extends StatelessWidget {
         ),
       ],
       child: Section(
-        description: "This MIDlet file is available at \"${controller.midlet.source}\". To view the original file, please open the link in your web browser.\n\nPlease note: This is an external website with no official affiliation to the MIDlet Store project.",
-        title: "YOU ARE BEING REDIRECTED",
+        description: localizations.scExternalSourceDescription.replaceFirst("@source", controller.midlet.source),
+        title: localizations.scExternalSource,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
           child: GradientButton(
             icon: HugeIcons.strokeRoundedLink02,
             onTap: () => controller.launchSourceUrl(context),
-            text: "OPEN ON BROWSER",
+            text: localizations.btOpenOnBrowser,
           ),
         ),
       ),

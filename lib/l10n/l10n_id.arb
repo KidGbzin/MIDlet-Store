@@ -88,5 +88,19 @@
     "tagSurvivalHorror": "Horor Bertahan Hidup",
     "tagTakedown": "Menjatuhkan",
     "tagTerror": "Teror",
-    "tagTowerDefense": "Pertahanan Menara"
+    "tagTowerDefense": "Pertahanan Menara",
+    
+    "btOpenOnBrowser": "BUKA DI PERAMBAN",
+    "@btOpenOnBrowser": {
+        "description": "Teks tombol untuk membuka tautan di peramban."
+    },
+    "scExternalSource": "ANDA SEDANG DIALIHKAN",
+    "@scExternalSource": {
+        "description": "Judul yang ditampilkan saat mengarahkan pengguna ke situs web eksternal."
+    },
+
+    "scExternalSourceDescription": "Berkas MIDlet ini tersedia di @source. Untuk melihat berkas aslinya, silakan buka tautan tersebut di peramban Anda.\n\nHarap dicatat: Ini adalah situs eksternal yang tidak memiliki afiliasi resmi dengan proyek MIDlet Store.",
+    "@scExternalSourceDescription": {
+        "description": "Deskripsi yang ditampilkan saat mengarahkan pengguna ke situs web eksternal."
+    }
 }
