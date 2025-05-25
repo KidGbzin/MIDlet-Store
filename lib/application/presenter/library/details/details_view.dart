@@ -94,9 +94,9 @@ class __DetailsViewState extends State<_DetailsView> {
             pinned: true,
             titleSpacing: 0,
             flexibleSpace: _HeaderSection(widget.controller),
-            toolbarHeight: 60.6,
-            expandedHeight: 60.6,
-            collapsedHeight: 60.6,
+            toolbarHeight: 102 - MediaQuery.of(context).padding.top,
+            expandedHeight: 102 - MediaQuery.of(context).padding.top,
+            collapsedHeight: 102 - MediaQuery.of(context).padding.top,
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(

@@ -19,25 +19,42 @@ class _HeaderSectionState extends State<_HeaderSection> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget> [
         Expanded(
-          child: Section(
-            description: "${widget.controller.game.release} • ${widget.controller.game.publisher}",
-            title: widget.controller.game.title.replaceFirst(" -", ":"),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15, 25, 0, 25),
+            child: title(),
           ),
         ),
-        Ink(
-          height: 100,
-          padding: EdgeInsets.fromLTRB(0, 25, 15, 25),
+        Container(
+          padding: EdgeInsets.fromLTRB(15, 25, 15, 25),
           width: MediaQuery.sizeOf(context).width / 4,
-          child: Align(
-            alignment: Alignment.center,
-            child: _wPublisherLogo(),
-          ),
+          child: logo(),
         ),
       ],
     );
   }
 
-  Widget _wPublisherLogo() {
+  Widget title() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 15,
+      children: <Widget> [
+        Text(
+          widget.controller.game.formattedTitle.toUpperCase(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
+        ),
+        Text(
+          "${widget.controller.game.release} • ${widget.controller.game.publisher}",
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+        ),
+      ],
+    );
+  }
+
+  Widget logo() {
     return FutureBuilder(
       future: widget.controller.publisherLogo,
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {

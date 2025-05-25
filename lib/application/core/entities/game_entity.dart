@@ -97,4 +97,6 @@ class Game {
       default: throw Exception("Unsupported locale: ${locale.languageCode} | ${locale.countryCode}.");
     }
   }
+
+  String get formattedTitle => title.replaceFirst(" -", ":");
 }
