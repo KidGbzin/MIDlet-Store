@@ -71,6 +71,7 @@ class Search extends StatefulWidget {
 
 class _SearchViewState extends State<Search> {
   late final _Controller controller;
+  late final AppLocalizations localizations;
   
   late final BucketRepository rBucket;
   late final HiveRepository rHive;
@@ -112,8 +113,15 @@ class _SearchViewState extends State<Search> {
   }
 
   @override
+  void didChangeDependencies() {
+    localizations = AppLocalizations.of(context)!;
+
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
-    Logger.trash("Disposing the Update resources...");
+    Logger.trash("Disposing the Search resources...");
 
     controller.dispose();
 
@@ -121,5 +129,5 @@ class _SearchViewState extends State<Search> {
   }
 
   @override
-  Widget build(BuildContext context) => _SearchView(controller);
+  Widget build(BuildContext context) => _SearchView(controller, localizations);
 }

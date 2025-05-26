@@ -1,29 +1,26 @@
 part of '../search_handler.dart';
 
-// SEARCH VIEW 🧩: ============================================================================================================================================================== //
-
-/// The stateful widget that represents the search view.
-/// 
-/// This widget is responsible for displaying the search interface and handling user interactions.
 class _SearchView extends StatefulWidget {
 
-  const _SearchView(this.controller);
-
-  /// The controller associated with the view.
+  /// Controls the handler’s state and behavior logic.
   final _Controller controller;
+
+  /// Provides localized strings and messages based on the user’s language and region.
+  final AppLocalizations localizations;
+
+  const _SearchView(this.controller, this.localizations);
 
   @override
   State<_SearchView> createState() => _SearchState();
 }
 
 class _SearchState extends State<_SearchView> {
-  late final AppLocalizations localizations;
+  late final AppLocalizations localizations = widget.localizations;
 
   late ScaffoldMessengerState snackbar;
 
   @override
   void didChangeDependencies() {
-    localizations = AppLocalizations.of(context)!;
     snackbar = ScaffoldMessenger.of(context);
 
     super.didChangeDependencies();
@@ -86,7 +83,7 @@ class _SearchState extends State<_SearchView> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) => _CategoriesModal(widget.controller),
+                          builder: (BuildContext context) => _CategoriesModal(widget.controller, localizations),
                         );
                       },
                     );
@@ -102,7 +99,7 @@ class _SearchState extends State<_SearchView> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) => _PublisherModal(widget.controller),
+                          builder: (BuildContext context) => _PublisherModal(widget.controller, localizations),
                         );
                       },
                     );
@@ -118,7 +115,7 @@ class _SearchState extends State<_SearchView> {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) => _ReleaseModal(widget.controller),
+                          builder: (BuildContext context) => _ReleaseModal(widget.controller, localizations),
                         );
                       },
                     );
@@ -131,7 +128,7 @@ class _SearchState extends State<_SearchView> {
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: widget.controller.nGames,
-              builder: (BuildContext context, listener, Widget? _) {
+              builder: (BuildContext context, (List<Game>, bool) listener, Widget? _) {
                 if (listener.$2) {
                   return Align(
                     alignment: Alignment.center,

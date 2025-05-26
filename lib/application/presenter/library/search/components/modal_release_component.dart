@@ -1,41 +1,28 @@
 part of '../search_handler.dart';
 
-// RELEASE MODAL 📅: ============================================================================================================================================================ //
-
-/// A modal widget that displays a list of years to filter by.
-///
-/// This widget is composed of a list of tiles, each representing a year.
-/// The selected year is then used to filter the list of games.
 class _ReleaseModal extends StatefulWidget {
 
-  const _ReleaseModal(this.controller);
-
-  /// The controller that manages the state of the game list.
-  /// 
-  /// This controller is responsible for managing the state of the search bar and the filters.
+  /// Controls the handler’s state and behavior logic.
   final _Controller controller;
+
+  /// Provides localized strings and messages based on the user’s language and region.
+  final AppLocalizations localizations;
+
+  const _ReleaseModal(this.controller, this.localizations);
 
   @override
   State<_ReleaseModal> createState() => _ReleaseModalState();
 }
 
 class _ReleaseModalState extends State<_ReleaseModal> {
-  late final int? _initialState;
-  late final AppLocalizations localizations;
+  late final int? initialPublisher = widget.controller.nSelectedReleaseYear.value;
+  late final AppLocalizations localizations = widget.localizations;
 
   @override
   void initState() {
-    _initialState = widget.controller.nSelectedReleaseYear.value;
-
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    localizations = AppLocalizations.of(context)!;
     widget.controller.fetchFiltersReleaseYear();
 
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
@@ -46,7 +33,7 @@ class _ReleaseModalState extends State<_ReleaseModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.nSelectedReleaseYear.value = _initialState;
+            widget.controller.nSelectedReleaseYear.value = initialPublisher;
             context.pop();
           },
         ),
@@ -58,51 +45,53 @@ class _ReleaseModalState extends State<_ReleaseModal> {
           },
         ),
       ],
-      child: SingleChildScrollView(
-        child: Section(
-          description: localizations.sectionFilterReleaseYearDescription,
-          title: localizations.sectionFilterReleaseYear,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: ValueListenableBuilder(
-              valueListenable: widget.controller.nFiltersReleaseYear,
-              builder: (BuildContext context, filters, Widget? _) {
-                if (filters == null) {
-                  return Align(alignment: Alignment.center, child: LoadingAnimation());
-                }
-                return GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 7.5,
-                    crossAxisSpacing: 7.5,
-                    childAspectRatio: 1.25,
-                  ),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  children: filters.entries.map(_tile).toList(),
-                );
-              }
-            ),
-          ),
+      child: Expanded(
+        child: SingleChildScrollView(
+          child: body(),
         ),
       ),
     );
   }
 
-  /// Builds a tile for each year that can be selected or deselected.
-  ///
-  /// The tile displays the year and the number of games released in that year.
-  /// When tapped, the tile toggles the year's selection state in the [widget.controller.selectedReleaseYearState].
-  /// The tile also displays a visual indicator when the year is selected.
-  Widget _tile(MapEntry<int, int> entry) {
+  Widget body() {
+    return Section(
+      description: localizations.sectionFilterReleaseYearDescription,
+      title: localizations.sectionFilterReleaseYear,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+        child: ValueListenableBuilder(
+          valueListenable: widget.controller.nFiltersReleaseYear,
+          builder: (BuildContext context, Map<int, int>? filters, Widget? _) {
+            if (filters == null) {
+              return Align(
+                alignment: Alignment.center,
+                child: LoadingAnimation(),
+              );
+            }
+            return GridView(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 7.5,
+                crossAxisSpacing: 7.5,
+                childAspectRatio: 1.25,
+              ),
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: filters.entries.map(tile).toList(),
+            );
+          }
+        ),
+      ),
+    );
+  }
+
+  Widget tile(MapEntry<int, int> entry) {
     final int releaseYear = entry.key;
     final int count = entry.value;
   
     return InkWell(
       borderRadius: gBorderRadius,
       onTap: () {
-
-        // Toggle the year selection on tap.
         widget.controller.nSelectedReleaseYear.value == releaseYear
           ? widget.controller.nSelectedReleaseYear.value = null
           : widget.controller.nSelectedReleaseYear.value = releaseYear;
