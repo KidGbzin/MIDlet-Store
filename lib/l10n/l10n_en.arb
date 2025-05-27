@@ -14,14 +14,8 @@
     "buttonReadyToInstall": "READY TO INSTALL",
     "@buttonReadyToInstall": {},
 
-    "buttonSubmitRating": "SUBMIT RATING",
-    "@buttonSubmitRating": {},
-
     "buttonUpdateAvailable": "UPDATE AVAILABLE",
     "@buttonUpdateAvailable": {},
-
-    "buttonUpdateRating": "UPDATE RATING",
-    "@buttonUpdateRating": {},
 
     "chipFilterByCategories": "Categories",
     "@chipFilterByCategories": {},
@@ -170,15 +164,6 @@
     "sectionRelatedGamesDescription": "If you enjoyed $1, you might also enjoy these other games.",
     "@sectionRelatedGamesDescription": {},
 
-    "sectionUserRating": "YOUR RATING",
-    "@sectionUserRating": {},
-
-    "sectionUserRatingDescriptionRated": "Looks like you've already rated this game. Would you like to update your rating?",
-    "@sectionUserRatingDescriptionRated": {},
-
-    "sectionUserRatingDescriptionNotRated": "You haven't rated this game yet. Share your opinion by giving it a rating!",
-    "@sectionUserRatingDescriptionNotRated": {},
-
     "tag3D": "3D",
     "@tag3D": {},
 
@@ -268,6 +253,16 @@
         "description": "Button text to open the link in the browser."
     },
 
+    "btSubmitRating": "SUBMIT RATING",
+    "@btSubmitRating": {
+        "description": "Button text to submit a new game rating."
+    },
+
+    "btUpdateYourRating": "UPDATE YOUR RATING",
+    "@btUpdateYourRating": {
+        "description": "Shown when the user has not set a correct rating."
+    },
+
     "scExternalSource": "YOU ARE BEING REDIRECTED",
     "@scExternalSource": {
         "description": "Title shown when redirecting the user to an external source website."
@@ -276,5 +271,20 @@
     "scExternalSourceDescription": "This MIDlet file is available at @source. To view the original file, please open the link in your web browser.\n\nPlease note: This is an external website with no official affiliation to the MIDlet Store project.",
     "@scExternalSourceDescription": {
         "description": "Description shown when redirecting the user to an external source website."
+    },
+
+    "scSubmitRating": "SUBMIT RATING",
+    "@scSubmitRating": {
+        "description": "Title or heading for the section where the user submits a rating."
+    },
+
+    "scSubmitRatingDescriptionRated": "Looks like you've already rated this game with @star stars. Would you like to update your rating?",
+    "@scSubmitRatingDescriptionRated": {
+        "description": "Shown when the user has already rated the game."
+    },
+
+    "scSubmitRatingDescriptionNotRated": "You haven't rated this game yet. Share your opinion by giving it a rating!",
+    "@scSubmitRatingDescriptionNotRated": {
+        "description": "Shown when the user hasn't rated the game yet."
     }
 }

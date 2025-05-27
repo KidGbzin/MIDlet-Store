@@ -6,9 +6,7 @@
     "buttonCommingSoon": "SEGERA HADIR",
     "buttonLoginWithGoogle": "MASUK DENGAN GOOGLE",
     "buttonReadyToInstall": "SIAP UNTUK DIPASANG",
-    "buttonSubmitRating": "KIRIM PENILAIAN",
     "buttonUpdateAvailable": "PEMBARUAN TERSEDIA",
-    "buttonUpdateRating": "PERBARUI PENILAIAN",
     "chipFilterByCategories": "Kategori",
     "chipFilterByPublisher": "Penerbit",
     "chipFilterByReleaseYear": "Tahun Rilis",
@@ -58,9 +56,6 @@
     "sectionReadyToInstallDescription": "Gim telah selesai diunduh dan siap untuk dipasang di emulator.",
     "sectionRelatedGames": "REKOMENDASI UNTUK ANDA",
     "sectionRelatedGamesDescription": "Jika Anda menikmati $1, Anda mungkin juga akan menikmati gim-gim lainnya ini.",
-    "sectionUserRating": "PENILAIAN ANDA",
-    "sectionUserRatingDescriptionRated": "Sepertinya Anda sudah memberikan penilaian untuk gim ini. Apakah Anda ingin memperbarui penilaian Anda?",
-    "sectionUserRatingDescriptionNotRated": "Anda belum memberikan penilaian untuk gim ini. Bagikan pendapat Anda dengan memberikan penilaian!",
     "tag3D": "3D",
     "tagAction": "Aksi",
     "tagAdventure": "Petualangan",
@@ -94,6 +89,17 @@
     "@btOpenOnBrowser": {
         "description": "Teks tombol untuk membuka tautan di peramban."
     },
+
+    "btSubmitRating": "KIRIM PENILAIAN",
+    "@btSubmitRating": {
+        "description": "Teks tombol untuk mengirim penilaian baru pada game."
+    },
+
+    "btUpdateYourRating": "PERBARUI PENILAIAN",
+    "@btUpdateYourRating": {
+        "description": "Ditampilkan saat pengguna belum memberikan penilaian yang benar."
+    },
+
     "scExternalSource": "ANDA SEDANG DIALIHKAN",
     "@scExternalSource": {
         "description": "Judul yang ditampilkan saat mengarahkan pengguna ke situs web eksternal."
@@ -102,5 +108,20 @@
     "scExternalSourceDescription": "Berkas MIDlet ini tersedia di @source. Untuk melihat berkas aslinya, silakan buka tautan tersebut di peramban Anda.\n\nHarap dicatat: Ini adalah situs eksternal yang tidak memiliki afiliasi resmi dengan proyek MIDlet Store.",
     "@scExternalSourceDescription": {
         "description": "Deskripsi yang ditampilkan saat mengarahkan pengguna ke situs web eksternal."
+    },
+
+    "scSubmitRating": "KIRIM PENILAIAN",
+    "@scSubmitRating": {
+        "description": "Judul atau header untuk bagian di mana pengguna mengirimkan penilaian."
+    },
+
+    "scSubmitRatingDescriptionRated": "Sepertinya Anda sudah memberi @star bintang untuk game ini. Ingin memperbarui penilaian Anda?",
+    "@scSubmitRatingDescriptionRated": {
+        "description": "Ditampilkan saat pengguna sudah memberi penilaian pada game."
+    },
+
+    "scSubmitRatingDescriptionNotRated": "Anda belum memberi penilaian untuk game ini. Bagikan pendapat Anda dengan memberikan penilaian!",
+    "@scSubmitRatingDescriptionNotRated": {
+        "description": "Ditampilkan saat pengguna belum memberi penilaian pada game."
     }
 }

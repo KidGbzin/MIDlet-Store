@@ -1,55 +1,47 @@
 part of '../details/details_handler.dart';
 
-// CONTROLLER 🧩: =============================================================================================================================================================== //
-
-/// The controller responsible for handling the [Details] state and managing the associated data.
-///
-/// This controller is responsible for fetching, updating, and disposing of data related to a specific game.
 class _Controller {
 
-  _Controller({
-    required this.sActivity,
-    required this.rBucket,
-    required this.rSupabase,
-    required this.game,
-    required this.rHive,
-  });
+  /// Controls and triggers confetti animations for visual feedback or celebration effects.
+  final ConfettiController cConfetti;
 
-  /// The service responsible for handling Android native activity functions, including opening the emulator activity.
-  ///
-  /// This instance is used to interact with the Android operating system, allowing the application to perform actions such as opening specific activities or services.
+  /// The game currently being processed, displayed, or interacted with.
+  final Game game;
+
+  /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
   final ActivityService sActivity;
 
-  /// A repository for managing data retrieval and storage within the bucket.
-  ///
-  /// Responsible for handling interactions with external storage systems, including retrieving and caching assets such as game previews and thumbnails.
+  /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
   final BucketRepository rBucket;
 
-  /// The service responsible for interacting with the database for data operations.
-  ///
-  /// This instance provides methods for reading, writing, and querying data from the database. 
+  /// Handles backend operations using Supabase, including user authentication, data syncing, and remote queries.
   final SupabaseRepository rSupabase;
 
-  /// The service used for data operations with the local database.
-  /// 
-  /// This instance handles interactions with the local storage (Hive), providing methods for reading, writing, and querying game data or related information.
+  /// Manages local storage operations, including games, favorites, recent games, and cached requests.
   final HiveRepository rHive;
 
-  /// The game whose data is to be displayed or manipulated.
-  /// 
-  /// This instance holds all relevant information about the current game, such as title, description, ratings, and associated assets like previews and thumbnails.
-  final Game game;
- 
-  /// Initializes the details controller by setting up favorite status and updating recent games.
+  _Controller({
+    required this.cConfetti,
+    required this.game,
+    required this.rBucket,
+    required this.rHive,
+    required this.rSupabase,
+    required this.sActivity,
+  });
+  
+  late final ValueNotifier<GameData?> nGameMetadata;
+
+  /// Initializes the handler’s core services and state notifiers.
   ///
-  /// This function is responsible for initializing key state values related to a game.
-  /// It checks if the current game is marked as a favorite and updates the recent games list.
-  /// If an error occurs during initialization, it logs the error and its stack trace.
+  /// This method must be called from the `initState` of the handler widget.
+  /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
+    nGameMetadata = ValueNotifier<GameData?>(null);
+
     try {
       playAudio();
       fetchThumbnail();
-      _updateGameData();
+      _fetchGameMetadata();
       isFavoriteState = ValueNotifier(rHive.boxFavorites.contains(game));
       rHive.boxRecentGames.put(game);
     }
@@ -61,11 +53,12 @@ class _Controller {
     }
   }
 
-  /// Discards the resources used by the controller and cleans up allocated memory.
+  /// Disposes the handler’s resources and notifiers.
   ///
-  /// This method should be called when the controller is no longer needed to free up resources and prevent memory leaks.
-  /// It disposes of all [ValueNotifier] instances that the controller is using.
+  /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
   void dispose() {
+    cConfetti.dispose();
+    
     _player.dispose();
   
     averageRatingState.dispose();
@@ -74,6 +67,147 @@ class _Controller {
     starsCountState.dispose();
     thumbnailState.dispose();
     totalRatingsState.dispose();
+  }
+
+  /// Fetch all the game data needed and updates its listeners.
+  /// 
+  /// This function retrieves various types of game data from the database, such as average ratings, user ratings, total ratings, and ratings by star count.
+  /// It updates the corresponding reactive variables and caches the data for future use.
+  /// 
+  /// This function is initialized within the `initialize` function.
+  Future<void> _fetchGameMetadata() async {
+    final GameData metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+      identifier: game.identifier,
+    );
+
+    try {
+      metadata.averageRating ??= await rSupabase.getAverageRatingByGame(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.averageRating = 0.0;
+    }
+
+    try {
+      metadata.myRating ??= await rSupabase.getUserRatingForGame(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.myRating = 0;
+    }
+
+    try {
+      metadata.totalRatings ??= await rSupabase.getGameRatingsCount(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.totalRatings = 0;
+    }
+
+    try {
+      metadata.stars ??= await rSupabase.getGameRatingsByStarsCount(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.stars = <String, int> {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0,
+      };
+    }
+  
+    rHive.boxCachedRequests.put(metadata);
+    nGameMetadata.value = metadata;
+  }
+
+  /// Inserts or updates the user's rating for a game.
+  ///
+  /// This function is primarily used in the [_SubmitRatingModal] to allow users to rate a game.
+  /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
+  Future<void> submitRating(BuildContext context, int rating) async {
+    final GameData metadata = nGameMetadata.value!;
+
+    try {
+      await rSupabase.upsertGameRating(game, rating);
+
+      metadata.myRating = rating;
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      return;
+    }
+
+    try {
+      metadata.totalRatings = await rSupabase.getGameRatingsCount(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.totalRatings = 0;
+    }
+
+    try {
+      metadata.averageRating = await rSupabase.getAverageRatingByGame(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.averageRating = 0.0;
+    }
+
+    try {
+      metadata.stars = await rSupabase.getGameRatingsByStarsCount(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.stars = <String, int> {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0,
+      };
+    }
+  
+    rHive.boxCachedRequests.put(metadata);
+    nGameMetadata.value = null; // Force the reactive update.
+    nGameMetadata.value = metadata;
+
+    if (context.mounted) context.pop();
+
+    cConfetti.play();
   }
 
   // AUDIO RELATED 🎵: =========================================================================================================================================================== //
@@ -287,155 +421,7 @@ class _Controller {
     "1": 0,
   });
 
-  /// Fetch all the game data needed and updates its listeners.
-  /// 
-  /// This function retrieves various types of game data from the database, such as average ratings, user ratings, total ratings, and ratings by star count.
-  /// It updates the corresponding reactive variables and caches the data for future use.
-  /// 
-  /// This function is initialized within the `initialize` function.
-  Future<void> _updateGameData() async {
-    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
-      identifier: game.identifier,
-    );
-
-    // Fetch and update average rating.
-    try {
-      data.averageRating ??= await rSupabase.getAverageRatingByGame(game);
-      averageRatingState.value = data.averageRating!;
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      data.averageRating = 0.0;
-    }
-
-    // Fetch and update user rating.
-    try {
-      data.myRating ??= await rSupabase.getUserRatingForGame(game);
-      myRatingState.value = data.myRating!;
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      data.myRating = 0;
-    }
-
-    // Fetch and update total ratings count.
-    try {
-      data.totalRatings ??= await rSupabase.getGameRatingsCount(game);
-      totalRatingsState.value = data.totalRatings!;
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      data.totalRatings = 0;
-    }
-
-    // Fetch and update individual star count.
-    try {
-      data.stars ??= await rSupabase.getGameRatingsByStarsCount(game);
-      starsCountState.value = data.stars!;
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      data.stars = <String, int> {
-        "5": 0,
-        "4": 0,
-        "3": 0,
-        "2": 0,
-        "1": 0,
-      };
-    }
   
-    rHive.boxCachedRequests.put(data);
-  }
-
-  /// Inserts or updates the user's rating for a game.
-  ///
-  /// This function is primarily used in the [_SubmitRatingModal] to allow users to rate a game.
-  /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
-  Future<void> upsertUserRating(int rating) async {
-    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
-      identifier: game.identifier,
-      myRating: rating,
-    );
-
-    try {
-      await rSupabase.upsertGameRating(game, rating);
-      myRatingState.value = rating;
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      return;
-    }
-
-    // Fetch and update total ratings count.
-    try {
-      data.totalRatings = await rSupabase.getGameRatingsCount(game);
-      totalRatingsState.value = data.totalRatings!;
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      data.totalRatings = 0;
-    }
-
-    // Fetch and update average rating.
-    try {
-      data.averageRating = await rSupabase.getAverageRatingByGame(game);
-      averageRatingState.value = data.averageRating!;
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      data.averageRating = 0.0;
-    }
-
-    // Fetch and update individual star count.
-    try {
-      data.stars = await rSupabase.getGameRatingsByStarsCount(game);
-      starsCountState.value = data.stars!;
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      data.stars = <String, int> {
-        "5": 0,
-        "4": 0,
-        "3": 0,
-        "2": 0,
-        "1": 0,
-      };
-    }
-  
-    rHive.boxCachedRequests.put(data);
-  }
 
   /// Retrieves the current average rating of the specified game.
   /// 

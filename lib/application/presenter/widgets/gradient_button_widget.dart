@@ -23,10 +23,16 @@ class GradientButton extends StatefulWidget {
   /// If not specified, defaults to [double.infinity] in layout.
   final double width;
 
+  final ColorEnumeration primaryColor;
+
+  final ColorEnumeration secondaryColor;
+
   const GradientButton({
     required this.icon,
     required this.onTap,
     required this.text,
+    this.primaryColor = ColorEnumeration.primary,
+    this.secondaryColor = ColorEnumeration.accent,
     this.width = double.infinity,
     super.key,
   });
@@ -41,13 +47,13 @@ class _GradientButtonState extends State<GradientButton> with SingleTickerProvid
   late final List<ColorTween> tweens;
 
   late final List<Color> primary = <Color> [
-    ColorEnumeration.primary.value,
-    ColorEnumeration.accent.value,
+    widget.primaryColor.value,
+    widget.secondaryColor.value,
   ];
 
   late final List<Color> secondary = <Color> [
-    ColorEnumeration.accent.value,
-    ColorEnumeration.primary.value,
+    widget.secondaryColor.value,
+    widget.primaryColor.value,
   ];
 
   @override

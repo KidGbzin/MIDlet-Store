@@ -32,7 +32,9 @@ class SupabaseRepository {
     final String title = game.title.replaceAll(' - ', ': ');
     Logger.success("Successfully fetched the average rating for \"$title\" from Supabase: ${response ?? 0}.");
 
-    return (response ?? 0).roundToDouble();
+    final double value = (response ?? 0.0).toDouble();
+    print(value);
+    return value;
   }
 
   /// Fetches the rating distribution by star count for a given [Game].

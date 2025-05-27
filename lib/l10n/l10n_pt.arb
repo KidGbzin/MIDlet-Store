@@ -6,9 +6,7 @@
     "buttonCommingSoon": "EM BREVE",
     "buttonLoginWithGoogle": "ENTRAR COM O GOOGLE",
     "buttonReadyToInstall": "PRONTO PARA A INSTALAÇÃO",
-    "buttonSubmitRating": "ENVIAR AVALIAÇÃO",
     "buttonUpdateAvailable": "ATUALIZAÇÂO DISPONÍVEL",
-    "buttonUpdateRating": "ATUALIZAR AVALIAÇÃO",
     "chipFilterByCategories": "Categorias",
     "chipFilterByPublisher": "Publicadora",
     "chipFilterByReleaseYear": "Ano de Lançamento",
@@ -58,9 +56,6 @@
     "sectionReadyToInstallDescription": "O jogo foi baixado e está pronto para ser instalado no emulador.",
     "sectionRelatedGames": "RECOMENDADO PARA VOCÊ",
     "sectionRelatedGamesDescription": "Se você gostou de $1, pode gostar também destes outros jogos.",
-    "sectionUserRating": "SUA AVALIAÇÃO",
-    "sectionUserRatingDescriptionRated": "Parece que você já avaliou este jogo. Deseja atualizar sua avaliação?",
-    "sectionUserRatingDescriptionNotRated": "Você ainda não avaliou este jogo. Compartilhe sua opinião dando uma nota!",
     "tag3D": "3D",
     "tagAction": "Ação",
     "tagAdventure": "Aventura",
@@ -95,6 +90,16 @@
         "description": "Texto do botão para abrir o link no navegador."
     },
 
+    "btSubmitRating": "ENVIAR AVALIAÇÃO",
+    "@btSubmitRating": {
+        "description": "Texto do botão para enviar uma nova avaliação do jogo."
+    },
+
+    "btUpdateYourRating": "ATUALIZAR AVALIAÇÃO",
+    "@btUpdateYourRating": {
+        "description": "Exibido quando o usuário não definiu uma nota válida."
+    },
+
     "scExternalSource": "VOCÊ ESTÁ SENDO REDIRECIONADO",
     "@scExternalSource": {
         "description": "Título exibido ao redirecionar o usuário para um site externo."
@@ -103,5 +108,20 @@
     "scExternalSourceDescription": "Este arquivo MIDlet está disponível em @source. Para visualizar o arquivo original, abra o link em seu navegador.\n\nAtenção: Este é um site externo, sem afiliação oficial ao projeto MIDlet Store.",
     "@scExternalSourceDescription": {
         "description": "Descrição exibida ao redirecionar o usuário para um site externo."
+    },
+
+    "scSubmitRating": "ENVIAR AVALIAÇÃO",
+    "@scSubmitRating": {
+        "description": "Título ou cabeçalho da seção onde o usuário envia uma avaliação."
+    },
+
+    "scSubmitRatingDescriptionRated": "Parece que você já avaliou este jogo com @star estrelas. Deseja atualizar sua avaliação?",
+    "@scSubmitRatingDescriptionRated": {
+        "description": "Exibido quando o usuário já avaliou o jogo."
+    },
+
+    "scSubmitRatingDescriptionNotRated": "Você ainda não avaliou este jogo. Compartilhe sua opinião dando uma nota!",
+    "@scSubmitRatingDescriptionNotRated": {
+        "description": "Exibido quando o usuário ainda não avaliou o jogo."
     }
 }

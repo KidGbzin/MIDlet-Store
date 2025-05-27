@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image/image.dart' as image;
-
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
@@ -19,9 +19,10 @@ import '../../../core/configuration/global_configuration.dart';
 
 import '../../../core/entities/game_data_entity.dart';
 import '../../../core/entities/game_entity.dart';
-
 import '../../../core/entities/midlet_entity.dart';
+
 import '../../../core/enumerations/palette_enumeration.dart';
+import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../core/extensions/messenger_extension.dart';
@@ -34,6 +35,7 @@ import '../../../repositories/supabase_repository.dart';
 import '../../../services/activity_service.dart';
 
 import '../../widgets/button_widget.dart';
+import '../../widgets/confetti_widget.dart';
 import '../../widgets/dialog_widget.dart';
 import '../../widgets/gradient_button_widget.dart';
 import '../../widgets/loading_widget.dart';
@@ -58,7 +60,7 @@ part '../details/details_view.dart';
 
 class Details extends StatefulWidget {
 
-  /// The [Game] object representing the game whose details will be displayed.
+  /// The game currently being processed, displayed, or interacted with.
   final Game game;
   
   const Details(this.game, {super.key});
@@ -71,6 +73,7 @@ class _DetailsState extends State<Details> {
   late final _Controller controller;
   late final AppLocalizations localizations;
 
+  late final ConfettiController cConfetti;
   late final ActivityService sActivity;
   late final BucketRepository rBucket;
   late final HiveRepository rHive;
@@ -80,8 +83,13 @@ class _DetailsState extends State<Details> {
   void initState() {
     super.initState();
 
-    Logger.start("Initializing the Details handler...");
+    Logger.start("Initializing the Details handler of \"${widget.game.formattedTitle}\"...");
 
+    cConfetti = ConfettiController(
+      duration: const Duration(
+        seconds: 3,
+      ),
+    );
     sActivity = Provider.of<ActivityService>(
       context,
       listen: false,
@@ -100,6 +108,7 @@ class _DetailsState extends State<Details> {
     );
     
     controller = _Controller(
+      cConfetti: cConfetti,
       game: widget.game,
       sActivity: sActivity,
       rBucket: rBucket,
@@ -126,8 +135,13 @@ class _DetailsState extends State<Details> {
   }
 
   @override
-  Widget build(BuildContext context) => _DetailsView(
-    controller: controller,
-    localizations: localizations,
+  Widget build(BuildContext context) => Stack(
+    children: <Widget> [
+      _DetailsView(
+        controller: controller,
+        localizations: localizations,
+      ),
+      Confetti(cConfetti),
+    ],
   );
 }

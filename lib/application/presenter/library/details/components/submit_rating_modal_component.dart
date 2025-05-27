@@ -17,68 +17,102 @@ class _SubmitRatingModal extends StatefulWidget {
   State<_SubmitRatingModal> createState() => _SubmitRatingModalState();
 }
 
-class _SubmitRatingModalState extends State<_SubmitRatingModal> {
-  late final ValueNotifier<num> _currentRating;
-
-  bool _isReadyToSubmit(num currentRating) => (currentRating != 0 && currentRating != widget.controller.myRatingState.value);
-
-  @override
-  void initState() {
-    _currentRating = ValueNotifier<num>(widget.controller.myRatingState.value);
-
-    super.initState();
-  }
+class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTickerProviderStateMixin {
+  late final ValueNotifier<int> nRating = ValueNotifier<int>(widget.controller.nGameMetadata.value!.myRating!);
+  late final ValueNotifier<ProgressEnumeration> nState = ValueNotifier(ProgressEnumeration.isWaiting);
+  
+  late final AppLocalizations localizations = widget.localizations;
 
   @override
   void dispose() {
-    _currentRating.dispose();
+    nRating.dispose();
+    nState.dispose();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ModalWidget(
-      actions: <Widget> [
-        const Spacer(),
-        ButtonWidget.icon(
-          icon: HugeIcons.strokeRoundedCancel01,
-          onTap: context.pop,
-        ),
-      ],
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget> [
-          _buildRatingSection(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 75),
-            child: _buildSubmitButton(),
+    return ValueListenableBuilder(
+      valueListenable: nState,
+      builder: (BuildContext context, ProgressEnumeration state, Widget? _) {
+        Widget child;
+
+        if (state == ProgressEnumeration.isWaiting) {
+          child = SizedBox(
+            height: 268,
+            child: Column(
+              children: <Widget> [
+                section(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 25),
+                  child: submitButton(),
+                ),
+              ],
+            ),
+          );
+        }
+        else if (state == ProgressEnumeration.isLoading) {
+          child = Container(
+            height: 268, // The default size of the modal's body.
+            padding: const EdgeInsets.fromLTRB(0, 15, 0, 25),
+            child: Align(
+              alignment: Alignment.center,
+              child: LoadingAnimation(),
+            ),
+          );
+        }
+        else {
+          child = Icon(
+            HugeIcons.strokeRoundedAlert01,
+            color: ColorEnumeration.grey.value,
+            size: 18,
+          );
+        }
+
+        return ModalWidget(
+          actions: <Widget> [
+            const Spacer(),
+            ButtonWidget.icon(
+              icon: HugeIcons.strokeRoundedCancel01,
+              onTap: context.pop,
+            ),
+          ],
+          child: AnimatedSize(
+            duration: Durations.long2,
+            curve: Curves.easeOutCubic,
+            child: AnimatedSwitcher(
+              duration: Durations.long2,
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              child: child,
+            ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildRatingSection() {
-    return Section(
-      description: widget.controller.myRatingState.value == 0
-        ? widget.localizations.sectionUserRatingDescriptionNotRated
-        : widget.localizations.sectionUserRatingDescriptionRated,
-      
-      title: widget.localizations.sectionUserRating,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 25, 15, 0),
-        child: Align(
-          alignment: Alignment.center,
-          child: ValueListenableBuilder<int>(
-            valueListenable: widget.controller.myRatingState,
-            builder: (BuildContext context, int userRating, Widget? _) {
-              return RatingBar(
-                initialRating: userRating.toDouble(),
+  Widget section() {
+    return ValueListenableBuilder(
+      valueListenable: widget.controller.nGameMetadata,
+      builder: (BuildContext context, GameData? metadata, Widget? _) {
+        return Section(
+          description: metadata!.myRating == 0
+            ? localizations.scSubmitRatingDescriptionNotRated
+            : localizations.scSubmitRatingDescriptionRated.replaceFirst("@star", "${nRating.value}"),
+          
+          title: localizations.scSubmitRating,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15, 25, 15, 0),
+            child: Align(
+              alignment: Alignment.center,
+              child: RatingBar(
+                initialRating: metadata.myRating!.toDouble(),
                 itemSize: 50,
                 glow: false,
                 onRatingUpdate: (double rating) {
-                  _currentRating.value = rating;
+                  nRating.value = rating.toInt();
                 },
                 ratingWidget: RatingWidget(
                   full: Icon(
@@ -93,60 +127,57 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> {
                     HugeIcons.strokeRoundedStar,
                     color: ColorEnumeration.disabled.value,
                   ),
-                )
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSubmitButton() {
-    return ValueListenableBuilder(
-      valueListenable: _currentRating,
-      builder: (BuildContext context, num currentRating, Widget? _) {
-        final bool isReadyToSubmit = _isReadyToSubmit(currentRating);
-
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12.5),
-            onTap: () {
-              if (isReadyToSubmit) {
-                widget.controller.upsertUserRating(currentRating.toInt());
-                context.pop();
-              }
-            },
-            child: Ink(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.5),
-                gradient: LinearGradient(
-                  colors: <Color> [
-                    isReadyToSubmit ? ColorEnumeration.primary.value : ColorEnumeration.foreground.value,
-                    isReadyToSubmit ? ColorEnumeration.accent.value : ColorEnumeration.foreground.value,
-                  ],
-                ),
-              ),
-              height: 45,
-              width: double.infinity,
-              child: Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 2.5, 0, 0),
-                  child: Text(
-                    widget.controller.myRatingState.value == 0
-                      ? widget.localizations.buttonSubmitRating
-                      : widget.localizations.buttonUpdateRating,
-                    
-                    style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
-                  ),
                 ),
               ),
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget submitButton() {
+    return ValueListenableBuilder(
+      valueListenable: nRating,
+      builder: (BuildContext context, int rating, Widget? _) {
+        final bool isReadyToSubmit = (rating != 0 && rating != widget.controller.nGameMetadata.value!.myRating!);
+
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: AnimatedSwitcher(
+            duration: Durations.long2,
+            child: isReadyToSubmit ? activeButton(rating) : disabledButton(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget disabledButton() {
+    return GradientButton(
+      key: Key("Disabled-Button"),
+      icon: HugeIcons.strokeRoundedUnavailable,
+      onTap: () {},
+      primaryColor: ColorEnumeration.foreground,
+      secondaryColor: ColorEnumeration.foreground,
+      text: localizations.btUpdateYourRating,
+    );
+  }
+
+  Widget activeButton(int rating) {
+    return GradientButton(
+      key: Key("Active-Button"),
+      icon: HugeIcons.strokeRoundedSent,
+      onTap: () {
+        try {
+          nState.value = ProgressEnumeration.isLoading;
+          widget.controller.submitRating(context, rating);
+        }
+        catch (error) {
+          nState.value = ProgressEnumeration.hasError;
+        }
+      },
+      text: localizations.btSubmitRating,
     );
   }
 }
