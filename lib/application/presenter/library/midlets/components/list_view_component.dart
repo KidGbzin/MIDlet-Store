@@ -18,7 +18,7 @@ class _ListView extends StatefulWidget {
 }
 
 class _ListViewState extends State<_ListView> {
-  late final List<MIDlet> midlets = widget.controller.midlets;
+  late final List<MIDlet> midlets = widget.controller.game.midlets;
 
   @override
   Widget build(BuildContext context) {

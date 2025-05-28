@@ -21,7 +21,10 @@ class _ListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.gtInstallation(midlet);
+        context.gtInstallation(
+          game: controller.game,
+          midlet: midlet,
+        );
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

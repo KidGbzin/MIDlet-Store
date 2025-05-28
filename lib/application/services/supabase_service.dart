@@ -28,7 +28,7 @@ class SupabaseService {
   /// Retrieves the current session for the authenticated user.
   /// 
   /// This session provides information about the user's authentication state.
-  String get currentUserID => Supabase.instance.client.auth.currentUser!.id;
+  String get identifier => Supabase.instance.client.auth.currentUser!.id;
   
   /// Initializes the Supabase client with the provided credentials.
   ///

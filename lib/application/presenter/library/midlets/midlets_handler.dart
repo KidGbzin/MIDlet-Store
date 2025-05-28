@@ -11,6 +11,7 @@ import '../../../../logger.dart';
 
 import '../../../core/configuration/global_configuration.dart';
 
+import '../../../core/entities/game_entity.dart';
 import '../../../core/entities/midlet_entity.dart';
 
 import '../../../core/enumerations/palette_enumeration.dart';
@@ -33,13 +34,13 @@ part '../midlets/midlets_view.dart';
 
 class MIDlets extends StatefulWidget {
 
-  final List<MIDlet> midlets;
-
   final File cover;
+
+  final Game game;
 
   const MIDlets({
     required this.cover,
-    required this.midlets,
+    required this.game,
     
     super.key,
   });
@@ -67,7 +68,7 @@ class _MIDletsState extends State<MIDlets> {
 
     controller = _Controller(
       cover: widget.cover,
-      midlets: widget.midlets,
+      game: widget.game,
       sAdMob: sAdMob,
     );
     controller.initialize();

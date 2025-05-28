@@ -44,19 +44,26 @@ extension RouterExtension on BuildContext {
     }
   }
 
-  void gtInstallation(MIDlet midlet, {
+  void gtInstallation({
+    required Game game,
+    required MIDlet midlet,
     bool? replace = false,
   }) {
+    final ({Game game, MIDlet midlet}) arguments = (
+      game: game,
+      midlet: midlet,
+    );
+
     if (replace == true) {
       pushReplacement(
         '/installation',
-        extra: midlet,
+        extra: arguments,
       );
     }
     else {
       push(
         '/installation',
-        extra: midlet,
+        extra: arguments,
       );
     }
   }

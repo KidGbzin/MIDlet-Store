@@ -43,7 +43,10 @@ class _PlayButtonState extends State<_PlayButton> {
             icon: HugeIcons.strokeRoundedPlay,
             onTap: () {
               if (midlet != null) {
-                context.gtInstallation(midlet!);
+                context.gtInstallation(
+                  game: widget.controller.game,
+                  midlet: midlet!,
+                );
               }
               else {
                 Logger.error("There's no default MIDlet, redirecting to the MIDlets view...");
@@ -54,7 +57,7 @@ class _PlayButtonState extends State<_PlayButton> {
                 );
               }
             },
-            text: "PLAY GAME",
+            text: "PLAY GAME", // TODO: Translate
             width: (MediaQuery.sizeOf(context).width - 45) / 2,
           ),
         ),

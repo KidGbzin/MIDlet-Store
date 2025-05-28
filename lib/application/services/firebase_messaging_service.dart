@@ -55,11 +55,11 @@ class FirebaseMessagingService {
     
     if (token != null && context.mounted) {
       locale = Localizations.localeOf(context);
-      await rSupabase.upsertFCMToken(token, locale);
+      await rSupabase.upsertFirebaseToken(token, locale.toString());
     }
     
     _instance.onTokenRefresh.listen((newToken) async {
-      await rSupabase.upsertFCMToken(newToken, locale);
+      await rSupabase.upsertFirebaseToken(newToken, locale.toString());
     });
   }
 

@@ -13,6 +13,8 @@ import '../../../../logger.dart';
 
 import '../../../core/configuration/global_configuration.dart';
 
+import '../../../core/entities/game_data_entity.dart';
+import '../../../core/entities/game_entity.dart';
 import '../../../core/entities/midlet_entity.dart';
 
 import '../../../core/enumerations/emulators_enumeration.dart';
@@ -23,6 +25,8 @@ import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../repositories/bucket_repository.dart';
 
+import '../../../repositories/hive_repository.dart';
+import '../../../repositories/supabase_repository.dart';
 import '../../../services/activity_service.dart';
 import '../../../services/admob_service.dart';
 
@@ -46,10 +50,17 @@ part '../installation/installation_view.dart';
 
 class Installation extends StatefulWidget {
 
+  /// The game currently being processed, displayed, or interacted with.
+  final Game game;
+
   /// The Java ME application (MIDlet) object.
   final MIDlet midlet;
 
-  const Installation(this.midlet, {super.key});
+  const Installation({
+    required this.game,
+    required this.midlet,
+    super.key,
+  });
 
   @override
   State<Installation> createState() => _InstallationState();
@@ -60,6 +71,8 @@ class _InstallationState extends State<Installation> {
   late final AppLocalizations localizations;
 
   late final BucketRepository rBucket;
+  late final HiveRepository rHive;
+  late final SupabaseRepository rSupabase;
   late final ActivityService sActivity;
   late final AdMobService sAdMob;
 
@@ -73,6 +86,14 @@ class _InstallationState extends State<Installation> {
       context,
       listen: false,
     );
+    rHive = Provider.of<HiveRepository>(
+      context,
+      listen: false,
+    );
+    rSupabase = Provider.of<SupabaseRepository>(
+      context,
+      listen: false,
+    );
     sActivity = Provider.of<ActivityService>(
       context,
       listen: false,
@@ -83,8 +104,11 @@ class _InstallationState extends State<Installation> {
     );
 
     controller = _Controller(
+      game: widget.game,
       midlet: widget.midlet,
       rBucket: rBucket,
+      rHive: rHive,
+      rSupabase: rSupabase,
       sActivity: sActivity,
       sAdMob: sAdMob,
     );

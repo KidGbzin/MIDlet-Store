@@ -70,6 +70,7 @@ class _Controller {
     
       return true;
     }
+
     return false;
   }
 

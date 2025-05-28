@@ -1,5 +1,6 @@
 import 'dart:developer' as dart;
 import 'dart:io';
+
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -35,6 +36,7 @@ class Logger {
     );
   }
 
+  static void download(String message, {StackTrace? stackTrace}) => _log(message, "31", "📥", stackTrace);
   static void error(String message, {StackTrace? stackTrace}) => _log(message, "31", "❌", stackTrace);
   static void information(String message, {StackTrace? stackTrace}) => _log(message, "36", "📣", stackTrace);
   static void start(String message, {StackTrace? stackTrace}) => _log(message, "36", "🚀", stackTrace);
@@ -61,9 +63,9 @@ class Logger {
   /// - 37: White.
   static void _log(String message, String code, String emoji, StackTrace? stackTrace) {
     final String timestamp = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
-    final String caller = _caller(StackTrace.current).toUpperCase();
+    final String caller = _caller(StackTrace.current).toUpperCase().padRight(34);
     final String stack = stackTrace == null ? "" : "\n$stackTrace";
-    final String text = "[ $timestamp | ${caller.toUpperCase()} ] : $message$stack";
+    final String text = "[ $timestamp | $caller ] : $message$stack";
 
     dart.log(
       ": \x1b[${code}m$emoji $message\x1B[0m",

@@ -1,6 +1,4 @@
-import 'dart:ui';
-
-import 'package:midlet_store/logger.dart';
+import '../../logger.dart';
 
 import '../core/entities/game_entity.dart';
 
@@ -17,84 +15,26 @@ class SupabaseRepository {
 
   const SupabaseRepository(this.supabase);
   
-  /// Fetches the average rating for a given [Game] from the database.
-  /// 
-  /// This method calls a remote function `average_rating_for_game` on the database and returns the average rating for the provided game.
-  /// The average rating is rounded to the nearest whole number and returned as a [double].
-  Future<double> getAverageRatingByGame(Game game) async {
-    final num? response = await supabase.client.rpc(
-      'average_rating_by_game',
-      params: <String, dynamic> {
-        'game_id_input': game.identifier,
-      },
-    );
-
-    final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success("Successfully fetched the average rating for \"$title\" from Supabase: ${response ?? 0}.");
-
-    final double value = (response ?? 0.0).toDouble();
-    print(value);
-    return value;
-  }
-
-  /// Fetches the rating distribution by star count for a given [Game].
-  /// 
-  /// This method calls a remote function `count_ratings_by_star` to get the count of ratings for each star value (1 to 5 stars) for the provided game.
-  /// The response is a [Map] where the keys are strings representing the star values (e.g. "5", "4", etc.) and the values are the counts of ratings for each star value.
-  Future<Map<String, int>> getGameRatingsByStarsCount(Game game) async {
-    final List<dynamic> response = await supabase.client.rpc(
-      'game_ratings_by_star_count',
-      params: <String, dynamic> {
-        'game_id_input': game.identifier,
-      },
-    );
-
-    final Map<String, int> ratings = <String, int>{};
-
-    for (Map<String, dynamic> row in response) {
-      ratings[row['star']!.toString()] = row['count']!;
-    }
-
-    final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success("Successfully fetched the ratings by stars for \"$title\" from Supabase: "
-                       "{5★: ${ratings["5"]}}, "
-                       "{4★: ${ratings["4"]}}, "
-                       "{3★: ${ratings["3"]}}, "
-                       "{2★: ${ratings["2"]}}, "
-                       "{1★: ${ratings["1"]}}.",
-    );
-
-    return ratings;
-  }
-
-  /// Fetches the total number of ratings for a given [Game].
-  /// 
-  /// This method calls a remote function `count_total_ratings` to get the total count of ratings for the provided game.
-  /// The response is a single [int] representing the total number of ratings for the game.
-  Future<int> getGameRatingsCount(Game game) async {
+  Future<int> getOrInsertGameDownloads(Game game) async {
     final int response = await supabase.client.rpc(
-      'game_ratings_count',
+      "get_or_insert_game_downloads",
       params: <String, dynamic> {
-        'game_id_input': game.identifier,
+        "p_game_key": game.identifier,
       },
     );
 
-    final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success("Successfully fetched the total ratings for \"$title\" from Supabase: $response.");
+    final String title = game.fTitle;
+
+    Logger.success("Successfully fetched the downloads count for \"$title\" from Supabase: $response.");
 
     return response;
   }
 
-  /// Fetches the current user's rating for a given [Game].
-  /// 
-  /// This method calls a remote function `get_user_rating_for_game` to fetch the user's rating for the provided game.
-  /// The response is an [int] representing the user's rating for the game, or `0` if the user has not rated the game.
   Future<int> getUserRatingForGame(Game game) async {
     final int? response = await supabase.client.rpc(
-      'user_rating_for_game',
+      "get_user_rating_for_game",
       params: <String, dynamic> {
-        'user_id_input': supabase.currentUserID,
-        'game_id_input': game.identifier,
+        "p_game_key": game.identifier,
       },
     );
 
@@ -104,35 +44,79 @@ class SupabaseRepository {
     return response ?? 0;
   }
 
-  /// Fetches the total number of downloads for a given [Game] and inserts a value if it does not exist.
-  /// 
-  /// This method calls a remote function `get_or_insert_downloads_count` to get the total count of downloads for the provided game.
-  /// The response is a single [int] representing the total number of downloads for the game.
-  /// If the value does not exist, it is inserted with a value of 0.
-  Future<int> getOrInsertGameDownloads(Game game) async {
+  Future<int> getGameRatingsCount(Game game) async {
     final int response = await supabase.client.rpc(
-      'get_or_insert_downloads_count',
+      "count_ratings_for_game",
       params: <String, dynamic> {
-        'game_id_input': game.identifier,
+        "p_game_key": game.identifier,
       },
     );
 
     final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success("Successfully fetched the downloads count for \"$title\" from Supabase: $response.");
+    Logger.success("Successfully fetched the total ratings for \"$title\" from Supabase: $response.");
 
     return response;
   }
-  
-  /// Inserts or updates the user's rating for a given [Game].
-  /// 
-  /// This method calls a remote function `upsert_user_rating` to either insert or update the user's rating for the specified game.
+
+  Future<double> getAverageRatingForGame(Game game) async {
+    final double? response = await supabase.client.rpc(
+      "get_average_rating_for_game",
+      params: <String, dynamic> {
+        "p_game_key": game.identifier,
+      },
+    );
+
+    final String title = game.title.replaceAll(' - ', ': ');
+    Logger.success("Successfully fetched the average rating for \"$title\" from Supabase: ${response ?? 0}.");
+
+    return (response ?? 0.0).toDouble();
+  }
+
+  Future<Map<String, int>> getGameRatingsByStarsCount(Game game) async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "count_ratings_by_star_for_game",
+      params: <String, dynamic> {
+        "p_game_key": game.identifier,
+      },
+    );
+
+    final Map<String, int> ratings = <String, int> {};
+
+    for (final Map<String, dynamic> row in response) {
+      ratings[row['star']!.toString()] = row['count']!;
+    }
+
+    final String title = game.title.replaceAll(' - ', ': ');
+    Logger.success(
+      "Successfully fetched the ratings by stars for \"$title\" from Supabase: "
+      "{5★: ${ratings["5"]}}, "
+      "{4★: ${ratings["4"]}}, "
+      "{3★: ${ratings["3"]}}, "
+      "{2★: ${ratings["2"]}}, "
+      "{1★: ${ratings["1"]}}.",
+    );
+
+    return ratings;
+  }
+
+  Future<void> upsertFirebaseToken(String token, String locale) async {
+    await supabase.client.rpc(
+      "upsert_fcm_token",
+      params: <String, dynamic> {
+        "p_token": token,
+        "p_locale": locale,
+      },
+    );
+
+    Logger.success("Successfully registered the Firebase Cloud Messaging token on the Supabase.");
+  }
+
   Future<void> upsertGameRating(Game game, int rating) async {
     await supabase.client.rpc(
-      'upsert_game_rating',
+      "upsert_game_rating",
       params: <String, dynamic> {
-        'user_id_input': supabase.currentUserID,
-        'game_id_input': game.identifier,
-        'rating_input': rating,
+        "p_game_key": game.identifier,
+        "p_rating": rating,
       },
     );
 
@@ -140,20 +124,19 @@ class SupabaseRepository {
     Logger.success("Successfully upserted the rating for \"$title\" on Supabase: $rating★.");
   }
 
-  /// Inserts or updates the user's FCM token in the `fcm_tokens` table.
+  /// Increments the download count for the specified [Game].
   ///
-  /// This method ensures that the current device's FCM token is stored and associated with the authenticated user in Supabase.
-  /// If the token already exists, the record is updated with the current locale and timestamp.
-  Future<void> upsertFCMToken(String token, Locale locale) async {
-    await supabase.client.from('fcm_tokens').upsert({
-      'user_id': supabase.currentUserID,
-      'token': token,
-      'locale': "$locale",
-      'last_seen': DateTime.now().toIso8601String(),
-    },
-      onConflict: 'token',
+  /// This method calls the Supabase RPC function `increment_game_downloads` to increment the download count.
+  /// If the game doesn't exist in the metadata table, it will be inserted with an initial download count of 1.
+  Future<void> incrementGameDownloads(Game game) async {
+    await supabase.client.rpc(
+      "increment_game_downloads",
+      params: <String, dynamic> {
+        "p_game_key": game.identifier,
+      },
     );
 
-    Logger.success("Successfully registered the FCM token.");
+    final String title = game.title.replaceAll(' - ', ': ');
+    Logger.success('Successfully incremented the download count for "$title" on Supabase.');
   }
 }

@@ -31,7 +31,14 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/installation',
-      builder: (BuildContext context, GoRouterState state) => Installation(state.extra as MIDlet),
+      builder: (BuildContext context, GoRouterState state) {
+        final ({Game game, MIDlet midlet}) arguments = state.extra as ({Game game, MIDlet midlet});
+
+        return Installation(
+          game: arguments.game,
+          midlet: arguments.midlet,
+        );
+      }
     ),
     GoRoute(
       path: '/login',
@@ -40,11 +47,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/midlets',
       builder: (BuildContext context, GoRouterState state) {
-        final ({File cover, List<MIDlet> midlets}) arguments = state.extra as ({File cover, List<MIDlet> midlets});
+        final ({File cover, Game game}) arguments = state.extra as ({File cover, Game game});
 
         return MIDlets(
           cover: arguments.cover,
-          midlets: arguments.midlets,
+          game: arguments.game,
         );
       }
     ),

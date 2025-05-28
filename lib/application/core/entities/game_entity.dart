@@ -98,5 +98,5 @@ class Game {
     }
   }
 
-  String get formattedTitle => title.replaceFirst(" -", ":");
+  String get fTitle => title.replaceFirst(" -", ":");
 }

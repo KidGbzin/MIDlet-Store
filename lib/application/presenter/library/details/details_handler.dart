@@ -83,7 +83,7 @@ class _DetailsState extends State<Details> {
   void initState() {
     super.initState();
 
-    Logger.start("Initializing the Details handler of \"${widget.game.formattedTitle}\"...");
+    Logger.start("Initializing the Details handler of \"${widget.game.fTitle}\"...");
 
     cConfetti = ConfettiController(
       duration: const Duration(

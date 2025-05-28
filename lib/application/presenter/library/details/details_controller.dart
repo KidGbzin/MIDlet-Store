@@ -81,7 +81,7 @@ class _Controller {
     );
 
     try {
-      metadata.averageRating ??= await rSupabase.getAverageRatingByGame(game);
+      metadata.averageRating ??= await rSupabase.getAverageRatingForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -172,7 +172,7 @@ class _Controller {
     }
 
     try {
-      metadata.averageRating = await rSupabase.getAverageRatingByGame(game);
+      metadata.averageRating = await rSupabase.getAverageRatingForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -433,7 +433,7 @@ class _Controller {
       identifier: game.identifier,
     );
     try {
-      data.averageRating ??= await rSupabase.getAverageRatingByGame(game);
+      data.averageRating ??= await rSupabase.getAverageRatingForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(

@@ -385,7 +385,7 @@ class _Controller {
     );
 
     try {
-      data.averageRating ??= await rSupabase.getAverageRatingByGame(game);
+      data.averageRating ??= await rSupabase.getAverageRatingForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(

@@ -2,11 +2,18 @@ part of '../installation/installation_handler.dart';
 
 class _Controller {
 
+  /// The game currently being processed, displayed, or interacted with.
+  final Game game;
+
   /// The Java ME application (MIDlet) object.
   final MIDlet midlet;
 
   /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
   final BucketRepository rBucket;
+
+  final HiveRepository rHive;
+
+  final SupabaseRepository rSupabase;
 
   /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
   final ActivityService sActivity;
@@ -15,8 +22,11 @@ class _Controller {
   final AdMobService sAdMob;
 
   _Controller({
+    required this.game,
     required this.midlet,
     required this.rBucket,
+    required this.rHive,
+    required this.rSupabase,
     required this.sAdMob,
     required this.sActivity,
   });
@@ -49,10 +59,21 @@ class _Controller {
   /// This function is used to download the selected MIDlet from the bucket.
   /// It updates the [nInstallationState] based on the result of the download operation.
   Future<void> downloadMIDlet(BuildContext context) async {
-    Logger.information("Started downloading the MIDlet \"${midlet.file}\"...");
+    Logger.download("Downloading the MIDlet \"${midlet.file}\"...");
 
     try {
+      final GameData metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+        identifier: game.identifier,
+      );
+
       _file = await rBucket.midlet(midlet);
+
+      await rSupabase.incrementGameDownloads(game);
+      
+      metadata.downloads ??= 0;
+      metadata.downloads = metadata.downloads! + 1;
+
+      rHive.boxCachedRequests.put(metadata);
 
       if (context.mounted) await _tryInstallMIDlet(context);
     }

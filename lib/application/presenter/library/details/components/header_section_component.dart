@@ -39,7 +39,7 @@ class _HeaderSectionState extends State<_HeaderSection> {
       spacing: 15,
       children: <Widget> [
         Text(
-          widget.controller.game.formattedTitle.toUpperCase(),
+          widget.controller.game.fTitle.toUpperCase(),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
