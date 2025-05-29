@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../entities/game_entity.dart';
+import '../entities/midlet_entity.dart';
 
 extension RouterExtension on BuildContext {
   
-  void showDetails({
+  void gtDetails({
     required Game game,
     bool? replace = false,
   }) {
@@ -23,10 +24,10 @@ extension RouterExtension on BuildContext {
     }
   }
 
-  void showSearch({
-    String? publisher, 
+  void gtSearch({
+    String? publisher,
     bool? replace = false,
-  }) async {
+  }) {
     if (replace == true) {
       pushReplacement(
         '/search',
@@ -40,4 +41,49 @@ extension RouterExtension on BuildContext {
       );
     }
   }
+
+  void gtInstallation({
+    required Game game,
+    required MIDlet midlet,
+    bool? replace = false,
+  }) {
+    final ({Game game, MIDlet midlet}) arguments = (
+      game: game,
+      midlet: midlet,
+    );
+
+    if (replace == true) {
+      pushReplacement(
+        '/installation',
+        extra: arguments,
+      );
+    }
+    else {
+      push(
+        '/installation',
+        extra: arguments,
+      );
+    }
+  }
+
+  void gtMIDlets(Game game, {
+    bool? replace = false,
+  }) {
+    if (replace == true) {
+      pushReplacement(
+        '/midlets',
+        extra: game,
+      );
+    }
+    else {
+      push(
+        '/midlets',
+        extra: game,
+      );
+    }
+  }
+
+  void gtUpdate() => pushReplacement('/update');
+
+  void gtLogin() => pushReplacement('/login');
 }

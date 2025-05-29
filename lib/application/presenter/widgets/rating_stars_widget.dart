@@ -3,8 +3,6 @@ import 'package:hugeicons/hugeicons.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 
-// RATING STARS WIDGET 🧩: ====================================================================================================================================================== //
-
 /// A [Widget] that displays a row of stars to represent a game's rating.
 /// 
 /// The number of filled stars is determined by the [rating] score, with empty stars filling up the rest.
@@ -56,8 +54,6 @@ class RatingStarsWidget extends StatelessWidget {
   }
 }
 
-// STAR WIDGET 🧩: ============================================================================================================================================================= //
-
 /// A widget representing an individual star, either filled or empty.
 ///
 /// This widget uses predefined icons and colors to indicate whether the star is filled (gold) or empty (grey).
@@ -65,12 +61,12 @@ class _Star extends StatelessWidget {
 
   /// Creates an empty star with a grey outline.
   _Star.empty(this.starSize)
-      : color = ColorEnumeration.disabled.value,
+      : color = Palettes.disabled.value,
         icon = HugeIcons.strokeRoundedStar;
 
   /// Creates a filled star with a gold color.
   _Star.filled(this.starSize)
-      : color = ColorEnumeration.gold.value,
+      : color = Palettes.gold.value,
         icon = HugeIcons.strokeRoundedStar;
 
   /// The color of the star icon.

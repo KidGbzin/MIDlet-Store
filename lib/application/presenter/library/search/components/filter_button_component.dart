@@ -40,7 +40,7 @@ class _FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: ColorEnumeration.transparent.value,
+      color: Palettes.transparent.value,
       child: InkWell(
         borderRadius: gBorderRadius,
         onTap: onTap,
@@ -57,11 +57,11 @@ class _FilterButton extends StatelessWidget {
               children: <Widget> [
                 Text(
                   title,
-                  style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+                  style: TypographyEnumeration.body(Palettes.elements).style,
                 ),
                 HugeIcon(
                   icon: icon,
-                  color: ColorEnumeration.elements.value,
+                  color: Palettes.elements.value,
                   size: 15,
                 ),
               ],

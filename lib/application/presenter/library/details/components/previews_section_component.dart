@@ -1,31 +1,31 @@
 part of '../details_handler.dart';
 
-/// Creates a [Widget] that displays a section of the game's preview images.
 class _PreviewsSection extends StatefulWidget {
+
+  /// Controls the handler’s state and behavior logic.
+  final _Controller controller;
+
+  /// Provides localized strings and messages based on the user’s language and region.
+  final AppLocalizations localizations;
 
   const _PreviewsSection({
     required this.controller,
+    required this.localizations,
   });
-
-  /// The [Details] controller.
-  ///
-  /// The controller that manages the state of the preview images.
-  final _Controller controller;
 
   @override
   State<_PreviewsSection> createState() => _PreviewsSectionState();
 }
 
 class _PreviewsSectionState extends State<_PreviewsSection> {
-  late final double _coverHeight;
-  late final double _coverWidth;
+  late final double coverHeight;
+  late final double coverWidth;
 
   @override
   void didChangeDependencies() {
-  
-     // Calculate cover dimensions based on screen width, maintaining a 4:3 aspect ratio.
-    _coverWidth = (MediaQuery.sizeOf(context).width - 60) / 3;
-    _coverHeight = _coverWidth / 0.75;
+    // Calculate cover dimensions based on screen width, maintaining a 4:3 aspect ratio.
+    coverWidth = (MediaQuery.sizeOf(context).width - 60) / 3;
+    coverHeight = coverWidth / 0.75;
     
     super.didChangeDependencies();
   }
@@ -33,36 +33,29 @@ class _PreviewsSectionState extends State<_PreviewsSection> {
   @override
   Widget build(BuildContext context) {
     return Section(
-      description: AppLocalizations.of(context)!.sectionPreviewsDescription,
-      title: AppLocalizations.of(context)!.sectionPreviews,
+      description: widget.localizations.scPreviewsDescription,
+      title: widget.localizations.scPreviews,
       child: FutureBuilder<List<Uint8List>>(
         future: widget.controller.previews,
         builder: (BuildContext context, AsyncSnapshot<List<Uint8List>> snapshot) {
           Widget child = SizedBox(
-            height: _coverHeight,
+            height: coverHeight,
             child: Align(
               alignment: Alignment.center,
               child: Icon(
                 Icons.downloading_rounded,
-                color: ColorEnumeration.elements.value,
+                color: Palettes.elements.value,
               ),
             ),
           );
 
-          // SUCCESS:
           if (snapshot.hasData) {
-            child = _buildPreviews(snapshot.data!);
+            child = previews(snapshot.data!);
           } 
 
-          // FAILURE:
           else if (snapshot.hasError) {
-            Logger.error.print(
-              label: 'Details | Previews',
-              message: '${snapshot.error}',
-              stackTrace: snapshot.stackTrace,
-            );
             child = Container(
-              height: _coverHeight,
+              height: coverHeight,
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
               width: double.infinity,
               child: Column(
@@ -72,11 +65,11 @@ class _PreviewsSectionState extends State<_PreviewsSection> {
                 children: <Widget> [
                   Icon(
                     Icons.broken_image_rounded,
-                    color: ColorEnumeration.grey.value,
+                    color: Palettes.grey.value,
                   ),
                   Text(
-                    AppLocalizations.of(context)!.sectionPreviewsError,
-                    style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                    widget.localizations.scPreviewsError,
+                    style: TypographyEnumeration.body(Palettes.grey).style,
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -93,34 +86,28 @@ class _PreviewsSectionState extends State<_PreviewsSection> {
     );
   }
 
-  /// Creates a widget displaying a row of preview images.
-  ///
-  /// The function takes a list of preview images, decodes the first one to get the aspect ratio, and returns a row of three preview thumbnails.
-  /// It automatically calculates the height based on the screen width and the aspect ratio of the first preview image.
-  Widget _buildPreviews(List<Uint8List> previews) {
-
-    // Decode the first preview image to extract its aspect ratio.
+  Widget previews(List<Uint8List> previews) {
     final image.Image? frame = image.decodeImage(previews.first);
     final double aspectRatio = frame!.width / frame.height;
 
     return Container(
-      height: (MediaQuery.of(context).size.width - 60) / 3 / aspectRatio, // Calculate height based on aspect ratio
+      height: (MediaQuery.of(context).size.width - 60) / 3 / aspectRatio,
       margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: <Widget> [
-          _buildThumbnail(
+          thumbnail(
             aspectRatio: aspectRatio,
             index: 0,
             previews: previews,
           ),
-          _buildThumbnail(
+          thumbnail(
             aspectRatio: aspectRatio,
             index: 1,
             previews: previews,
           ),
-          _buildThumbnail(
+          thumbnail(
             aspectRatio: aspectRatio,
             index: 2,
             previews: previews,
@@ -130,10 +117,7 @@ class _PreviewsSectionState extends State<_PreviewsSection> {
     );
   }
 
-  /// Creates a preview thumbnail widget.
-  ///
-  /// This widget represents a single preview thumbnail in the row. It displays the image and allows the user to tap on it to show a larger preview in a dialog.
-  Widget _buildThumbnail({
+  Widget thumbnail({
     required double aspectRatio,
     required int index,
     required List<Uint8List> previews,
@@ -142,13 +126,36 @@ class _PreviewsSectionState extends State<_PreviewsSection> {
       aspectRatio: aspectRatio,
       image: MemoryImage(previews[index]),
       onTap: () {
-        showDialog(
+        showGeneralDialog(
           context: context,
-          builder: (BuildContext context) {
-            return _PreviewsDialog(
-              aspectRatio: aspectRatio,
-              initialPage: index,
-              previews: previews,
+          barrierDismissible: true,
+          barrierLabel: "Previews Dialog",
+          transitionDuration: gAnimationDuration,
+          pageBuilder: (BuildContext context, Animation<double> _, Animation<double> __) {
+            return Align(
+              alignment: Alignment.bottomCenter,
+              child: _PreviewsDialog(
+                aspectRatio: aspectRatio,
+                startIndex: index,
+                previews: previews,
+              )
+            );
+          },
+          transitionBuilder: (BuildContext context, Animation<double> animation, Animation<double> __, Widget child) {
+            final CurvedAnimation curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            );
+
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(curvedAnimation),
+              child: FadeTransition(
+                opacity: curvedAnimation,
+                child: child,
+              ),
             );
           },
         );

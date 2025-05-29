@@ -10,25 +10,22 @@ class _Controller {
   
   _Controller({
     required this.rBucket,
-    required this.rSupabase,
     required this.rHive,
+    required this.rSupabase,
+    required this.sAdMob,
   });
 
-  /// A repository for managing data retrieval and storage within the bucket.
-  ///
-  /// Responsible for handling interactions with external storage systems, including retrieving and caching assets such as game previews and thumbnails.
-  late final BucketRepository rBucket;
+  /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisementss.
+  final AdMobService sAdMob;
 
-  /// Local database service for data operations.
-  /// 
-  /// Manages local data, such as game details, ratings, and user preferences.
-  late final HiveRepository rHive;
+  /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
+  final BucketRepository rBucket;
 
-  /// The database service for handling broader data interactions.
-  /// 
-  /// This service interacts with the main database.
-  /// Responsible for fetching and updating game data, including average ratings, game details, and other important game-related information.
-  late final SupabaseRepository rSupabase;
+  /// Manages local database operations, including storing game details, ratings, and user preferences.
+  final HiveRepository rHive;
+
+  /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
+  final SupabaseRepository rSupabase;
 
   /// The complete list of all games available, loaded from the database.
   ///
@@ -90,7 +87,7 @@ class _Controller {
 
     try {
       final List<Game> games = await execute(() async {
-        _allGames = List.unmodifiable(rHive.games.all());
+        _allGames = List.unmodifiable(rHive.boxGames.all());
 
         if (nSelectedPublisher.value == null) {
           return _allGames;
@@ -101,12 +98,11 @@ class _Controller {
       });
 
       nGames.value = (games, false);
-      nSuggestions.value = rHive.recentGames.all();
+      nSuggestions.value = rHive.boxRecentGames.all();
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        label: 'Search Controller | Initialize',
-        message: '$error',
+      Logger.error(
+        "$error",
         stackTrace: stackTrace,
       );
     }
@@ -175,8 +171,8 @@ class _Controller {
     final List<(TagEnumeration, String, int)> categories = <(TagEnumeration, String, int)> [];
     final Map<String, int> table = <String, int>{};
   
-    for (int index = 0; index < rHive.games.length; index++) {
-      final List<String> tags = rHive.games.fromIndex(index).tags;
+    for (int index = 0; index < rHive.boxGames.length; index++) {
+      final List<String> tags = rHive.boxGames.fromIndex(index).tags;
   
       for (int tagIndex = 0; tagIndex < tags.length; tagIndex++) {
         final String tag = tags[tagIndex];
@@ -213,8 +209,8 @@ class _Controller {
 
     final Map<String, int> publishers = <String, int> {};
 
-    for (int index = 0; index < rHive.games.length; index ++) {
-      final String publisher = rHive.games.fromIndex(index).publisher;
+    for (int index = 0; index < rHive.boxGames.length; index ++) {
+      final String publisher = rHive.boxGames.fromIndex(index).publisher;
 
       if (!publishers.containsKey(publisher)) {
         publishers[publisher] = 1;
@@ -240,8 +236,8 @@ class _Controller {
 
     final Map<int, int> years = <int, int> {};
 
-    for (int index = 0; index < rHive.games.length; index ++) {
-      final int year = rHive.games.fromIndex(index).release;
+    for (int index = 0; index < rHive.boxGames.length; index ++) {
+      final int year = rHive.boxGames.fromIndex(index).release;
 
       if (!years.containsKey(year)) {
         years[year] = 1;
@@ -279,14 +275,14 @@ class _Controller {
     final String message;
 
     if (nSelectedPublisher.value == null && nSelectedTags.value.isEmpty && nSelectedReleaseYear.value == null) {
-      message = localizations.messageFiltersEmpty.replaceFirst('\$1', '${rHive.games.length}');
+      message = localizations.messageFiltersEmpty.replaceFirst('\$1', '${rHive.boxGames.length}');
     }
 
     else {
       message = localizations.messageFiltersApplied.replaceAllMapped(RegExp(r'\$1|\$2'), (match) {
         return <String, String> {
           "\$1": games.length.toString(),
-          "\$2": rHive.games.length.toString(),
+          "\$2": rHive.boxGames.length.toString(),
         } [match[0]]!;
       });
     }
@@ -384,19 +380,19 @@ class _Controller {
   /// - `Average-Rating`: The average rating of the game.
   /// - `Downloads`: The total number of downloads for the game.
   Future<Map<String, dynamic>> getGameData(Game game) async {
-    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
+    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
     );
 
     try {
-      data.averageRating ??= await rSupabase.getAverageRatingByGame(game);
+      data.averageRating ??= await rSupabase.getAverageRatingForGame(game);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: "$error",
-        label: "Search Controller | Average Rating",
+      Logger.error(
+        "$error",
         stackTrace: stackTrace,
       );
+
       data.averageRating = 0.0;
     }
 
@@ -404,15 +400,15 @@ class _Controller {
       data.downloads ??= await rSupabase.getOrInsertGameDownloads(game);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: "$error",
-        label: "Search Controller | Average Rating",
+      Logger.error(
+        "$error",
         stackTrace: stackTrace,
       );
+
       data.downloads = 0;
     }
 
-    rHive.cachedRequests.put(data);
+    rHive.boxCachedRequests.put(data);
 
     return <String, dynamic> {
       "Average-Rating": data.averageRating,
@@ -430,9 +426,8 @@ class _Controller {
       return rBucket.cover(title);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: "$error",
-        label: "Search Controller | Cover",
+      Logger.error(
+        "$error",
         stackTrace: stackTrace,
       );
 

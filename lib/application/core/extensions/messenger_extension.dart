@@ -4,8 +4,6 @@ import 'package:hugeicons/hugeicons.dart';
 import '../enumerations/palette_enumeration.dart';
 import '../enumerations/typographies_enumeration.dart';
 
-// MESSENGER EXTENSION 🧩: ====================================================================================================================================================== //
-
 /// A custom [SnackBar] extension for displaying event messages to the user.
 ///
 /// The [MessengerExtension] provides a structured and visually consistent way to display notifications.
@@ -24,17 +22,23 @@ import '../enumerations/typographies_enumeration.dart';
 /// ```
 class MessengerExtension extends SnackBar {
 
+  /// The icon displayed to the left of the message.
+  final IconData icon;
+  
+  /// The message text displayed in the [SnackBar].
+  final String message;
+
   MessengerExtension({
     required this.message,
     required this.icon,
     super.key,
   }) : super(
-    backgroundColor: ColorEnumeration.transparent.value,
+    backgroundColor: Palettes.transparent.value,
     elevation: 0,
     padding: EdgeInsets.zero,
     content: Container(
       decoration: BoxDecoration(
-        color: ColorEnumeration.foreground.value,
+        color: Palettes.foreground.value,
       ),
       padding: EdgeInsets.fromLTRB(15, 25, 15, 25),
       child: Row(
@@ -43,23 +47,17 @@ class MessengerExtension extends SnackBar {
         children: <Widget> [
           HugeIcon(
             icon: icon,
-            color: ColorEnumeration.elements.value,
+            color: Palettes.elements.value,
             size: 25,
           ),
           Expanded(
             child: Text(
               message,
-              style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+              style: TypographyEnumeration.body(Palettes.elements).style,
             ),
           ),
         ],
       ),
     ),
   );
-
-  /// The icon displayed to the left of the message.
-  final IconData icon;
-  
-  /// The message text displayed in the [SnackBar].
-  final String message;
 }

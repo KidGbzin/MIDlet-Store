@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../presenter/library/details/details_handler.dart';
+import '../../presenter/library/installation/installation_handler.dart';
 import '../../presenter/library/launcher/launcher_handler.dart';
+import '../../presenter/library/login/login_handler.dart';
+import '../../presenter/library/midlets/midlets_handler.dart';
 import '../../presenter/library/search/search_handler.dart';
+import '../../presenter/library/update/update_handler.dart';
 
 import '../entities/game_entity.dart';
-
-// ROUTER CONFIGURATION ⚙️: ===================================================================================================================================================== //
+import '../entities/midlet_entity.dart';
 
 /// The application's routes.
 /// 
@@ -18,16 +21,30 @@ final GoRouter router = GoRouter(
   routes: <RouteBase> [
     GoRoute(
       path: '/',
-      builder: (BuildContext context, GoRouterState _) {
-        return const Launcher();
-      },
+      builder: (BuildContext context, GoRouterState _) => const Launcher(),
     ),
     GoRoute(
       path: '/details',
+      builder: (BuildContext context, GoRouterState state) => Details(state.extra as Game),
+    ),
+    GoRoute(
+      path: '/installation',
       builder: (BuildContext context, GoRouterState state) {
-        final Game game = state.extra as Game;
-        return Details(game);
-      },
+        final ({Game game, MIDlet midlet}) arguments = state.extra as ({Game game, MIDlet midlet});
+
+        return Installation(
+          game: arguments.game,
+          midlet: arguments.midlet,
+        );
+      }
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (BuildContext context, GoRouterState _) => const Login(),
+    ),
+    GoRoute(
+      path: '/midlets',
+      builder: (BuildContext context, GoRouterState state) => MIDlets(state.extra as Game),
     ),
     GoRoute(
       path: '/search',
@@ -37,6 +54,10 @@ final GoRouter router = GoRouter(
           publisher: publisher,
         );
       },
+    ),
+    GoRoute(
+      path: '/update',
+      builder: (BuildContext context, GoRouterState _) => const Update(),
     ),
   ],
 );

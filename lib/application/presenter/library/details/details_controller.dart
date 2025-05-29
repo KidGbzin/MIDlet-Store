@@ -1,84 +1,213 @@
 part of '../details/details_handler.dart';
 
-// CONTROLLER 🧩: =============================================================================================================================================================== //
-
-/// The controller responsible for handling the [Details] state and managing the associated data.
-///
-/// This controller is responsible for fetching, updating, and disposing of data related to a specific game.
 class _Controller {
 
-  _Controller({
-    required this.sActivity,
-    required this.rBucket,
-    required this.rDatabase,
-    required this.game,
-    required this.rHive,
-  });
+  /// Controls and triggers confetti animations for visual feedback or celebration effects.
+  final ConfettiController cConfetti;
 
-  /// The service responsible for handling Android native activity functions, including opening the emulator activity.
-  ///
-  /// This instance is used to interact with the Android operating system, allowing the application to perform actions such as opening specific activities or services.
+  /// The game currently being processed, displayed, or interacted with.
+  final Game game;
+
+  /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
   final ActivityService sActivity;
 
-  /// A repository for managing data retrieval and storage within the bucket.
-  ///
-  /// Responsible for handling interactions with external storage systems, including retrieving and caching assets such as game previews and thumbnails.
+  /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
   final BucketRepository rBucket;
 
-  /// The service responsible for interacting with the database for data operations.
-  ///
-  /// This instance provides methods for reading, writing, and querying data from the database. 
-  final SupabaseRepository rDatabase;
+  /// Handles backend operations using Supabase, including user authentication, data syncing, and remote queries.
+  final SupabaseRepository rSupabase;
 
-  /// The service used for data operations with the local database.
-  /// 
-  /// This instance handles interactions with the local storage (Hive), providing methods for reading, writing, and querying game data or related information.
+  /// Manages local storage operations, including games, favorites, recent games, and cached requests.
   final HiveRepository rHive;
 
-  /// The game whose data is to be displayed or manipulated.
-  /// 
-  /// This instance holds all relevant information about the current game, such as title, description, ratings, and associated assets like previews and thumbnails.
-  final Game game;
- 
-  /// Initializes the details controller by setting up favorite status and updating recent games.
+  _Controller({
+    required this.cConfetti,
+    required this.game,
+    required this.rBucket,
+    required this.rHive,
+    required this.rSupabase,
+    required this.sActivity,
+  });
+  
+  late final ValueNotifier<bool> nFavorite;
+  late final ValueNotifier<GameData?> nGameMetadata;
+  late final ValueNotifier<File?> nThumbnail;
+
+  /// Initializes the handler’s core services and state notifiers.
   ///
-  /// This function is responsible for initializing key state values related to a game.
-  /// It checks if the current game is marked as a favorite and updates the recent games list.
-  /// If an error occurs during initialization, it logs the error and its stack trace.
+  /// This method must be called from the `initState` of the handler widget.
+  /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
+    nGameMetadata = ValueNotifier<GameData?>(null);
+    nThumbnail = ValueNotifier<File?>(null);
+
     try {
       playAudio();
       fetchThumbnail();
-      _updateGameData();
-      isFavoriteState = ValueNotifier(rHive.favorites.contains(game));
-      rHive.recentGames.put(game);
+      _fetchGameMetadata();
+      nFavorite = ValueNotifier(rHive.boxFavorites.contains(game));
+      rHive.boxRecentGames.put(game);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        label: 'Details Controller • Initialize',
-        message: '$error',
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
     }
   }
 
-  /// Discards the resources used by the controller and cleans up allocated memory.
+  /// Disposes the handler’s resources and notifiers.
   ///
-  /// This method should be called when the controller is no longer needed to free up resources and prevent memory leaks.
-  /// It disposes of all [ValueNotifier] instances that the controller is using.
+  /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
   void dispose() {
+    cConfetti.dispose();
+    nFavorite.dispose();
+    nGameMetadata.dispose();
+    nThumbnail.dispose();
+    
     _player.dispose();
-  
-    averageRatingState.dispose();
-    isFavoriteState.dispose();
-    myRatingState.dispose();
-    starsCountState.dispose();
-    thumbnailState.dispose();
-    totalRatingsState.dispose();
   }
 
-  // AUDIO RELATED 🎵: =========================================================================================================================================================== //
+  /// Fetch all the game data needed and updates its listeners.
+  /// 
+  /// This function retrieves various types of game data from the database, such as average ratings, user ratings, total ratings, and ratings by star count.
+  /// It updates the corresponding reactive variables and caches the data for future use.
+  /// 
+  /// This function is initialized within the `initialize` function.
+  Future<void> _fetchGameMetadata() async {
+    final GameData metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+      identifier: game.identifier,
+    );
+
+    try {
+      metadata.averageRating ??= await rSupabase.getAverageRatingForGame(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.averageRating = 0.0;
+    }
+
+    try {
+      metadata.myRating ??= await rSupabase.getUserRatingForGame(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.myRating = 0;
+    }
+
+    try {
+      metadata.totalRatings ??= await rSupabase.getGameRatingsCount(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.totalRatings = 0;
+    }
+
+    try {
+      metadata.stars ??= await rSupabase.getGameRatingsByStarsCount(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.stars = <String, int> {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0,
+      };
+    }
   
+    rHive.boxCachedRequests.put(metadata);
+    nGameMetadata.value = metadata;
+  }
+
+  /// Inserts or updates the user's rating for a game.
+  ///
+  /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
+  Future<void> submitRating(BuildContext context, int rating) async {
+    final GameData metadata = nGameMetadata.value!;
+
+    try {
+      await rSupabase.upsertGameRating(game, rating);
+
+      metadata.myRating = rating;
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      return;
+    }
+
+    try {
+      metadata.totalRatings = await rSupabase.getGameRatingsCount(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.totalRatings = 0;
+    }
+
+    try {
+      metadata.averageRating = await rSupabase.getAverageRatingForGame(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.averageRating = 0.0;
+    }
+
+    try {
+      metadata.stars = await rSupabase.getGameRatingsByStarsCount(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      metadata.stars = <String, int> {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0,
+      };
+    }
+  
+    rHive.boxCachedRequests.put(metadata);
+    nGameMetadata.value = null; // Force the reactive update.
+    nGameMetadata.value = metadata;
+
+    if (context.mounted) context.pop();
+
+    cConfetti.play();
+  }
+
   /// The audio player used to manage and play the game's theme audio.
   ///
   /// This instance leverages the [`audioplayers`](https://pub.dev/packages/audioplayers) package to handle audio functionalities like play, pause, and stop.
@@ -108,16 +237,6 @@ class _Controller {
   /// Does nothing if the audio is not playing.
   void pauseAudio() => _player.stop();
 
-  // BUCKET REÇATED 🗃️: ========================================================================================================================================================= //
-
-  /// A [ValueNotifier] that tracks the state of the thumbnail.
-  ///
-  /// This notifier is used to display the thumbnail image associated with the current game.
-  /// The value of this notifier is updated whenever the thumbnail image is fetched from the bucket.
-  /// If the thumbnail image is not available, the value is set to [null].
-  /// 
-  /// The [_Cover] component listens to this notifier to update the UI accordingly.
-  final ValueNotifier<File?> thumbnailState = ValueNotifier<File?>(null);
 
   /// Retrieves a [Future] that resolves to a [File] containing the audio file associated with the current game.
   ///
@@ -125,7 +244,7 @@ class _Controller {
   /// The audio file is returned as a [File] object, which can be used to play the audio.
   Future<File> get _audio => rBucket.audio(game.title);
 
-  Future<File> get publisherLogo => rBucket.publisher(game.publisher);
+  Future<File> get logo => rBucket.publisher(game.publisher);
 
   /// Retrieves a [Future] that resolves to a [List] of [Uint8List] objects representing preview images from the bucket.
   ///
@@ -144,20 +263,11 @@ class _Controller {
   /// Fetches the thumbnail image associated with the current game from the bucket and updates the state of the thumbnail.
   ///
   /// This method fetches the thumbnail image associated with the current game from the storage bucket.
-  /// The image is stored as a [File] object, which is used to update the state of the [thumbnailState].
-  /// If the thumbnail image is not available, the [thumbnailState] is set to [null].
+  /// The image is stored as a [File] object, which is used to update the state of the [nThumbnail].
+  /// If the thumbnail image is not available, the [nThumbnail] is set to [null].
   /// 
-  /// The [_Cover] component listens to the [thumbnailState] to update the UI accordingly.
-  Future<void> fetchThumbnail() async {
-    thumbnailState.value = await rBucket.cover(game.title);
-  }
-
-  // FAVORITES RELATED ❤️: ====================================================================================================================================================== //
-
-  /// A [ValueNotifier] that tracks the favorite state of the game.
-  ///
-  /// This notifier is used in the [_BookmarkButton] component to indicate whether the game has been marked as a favorite.
-  late final ValueNotifier<bool> isFavoriteState;
+  /// The [_Cover] component listens to the [nThumbnail] to update the UI accordingly.
+  Future<void> fetchThumbnail() async => nThumbnail.value = await rBucket.cover(game.title);
 
   /// Toggles the bookmark status of the current game and updates the UI.
   ///
@@ -169,16 +279,16 @@ class _Controller {
     late final String message;
     final String title = game.title.replaceFirst(' -', ':');
 
-    if (isFavoriteState.value) {
-      rHive.favorites.remove(game);
+    if (nFavorite.value) {
+      rHive.boxFavorites.remove(game);
       message = localizations.messageFavoritesRemoved.replaceFirst('\$1', title);
     }
     else {
-      rHive.favorites.put(game);
+      rHive.boxFavorites.put(game);
       message = localizations.messageFavoritesAdded.replaceFirst('\$1', title);
     }
 
-    isFavoriteState.value = !isFavoriteState.value;
+    nFavorite.value = !nFavorite.value;
 
     final MessengerExtension messenger = MessengerExtension(
       message: message,
@@ -187,8 +297,6 @@ class _Controller {
 
     ScaffoldMessenger.of(context).showSnackBar(messenger);
   }
-
-  // RECOMENDATIONS RELATED 🧩: ================================================================================================================================================= //
 
   /// A lazily initialized list of recommended games from the same publisher.
   ///
@@ -209,13 +317,13 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topPublisherGames.isEmpty) {
-      _topPublisherGames = rHive.games.fromPublisher(game.publisher);
+      _topPublisherGames = rHive.boxGames.fromPublisher(game.publisher);
       _topPublisherGames.shuffle();
       _topPublisherGames = _topPublisherGames.take(8).toList();
     }
 
     for (Game element in _topPublisherGames) {
-      ratings.add(await getAverageRating(element));
+      ratings.add(await _getAverageRating(element));
       thumbnails.add(await rBucket.cover(element.title).catchError((_) => File('/')));
     }
 
@@ -238,11 +346,11 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topRelatedGames.isEmpty) {
-      _topRelatedGames = await rHive.games.topRelatedGames(game);
+      _topRelatedGames = await rHive.boxGames.topRelatedGames(game);
     }
 
     for (Game element in _topRelatedGames) {
-      ratings.add(await getAverageRating(element));
+      ratings.add(await _getAverageRating(element));
       thumbnails.add(await rBucket.cover(element.title).catchError((_) => File('/')));
     }
 
@@ -255,285 +363,27 @@ class _Controller {
     return record;
   }
 
-  // GAME RELATED 🎮: =================================================================================================================================================================== //
-
-  /// Tracks the current average rating of the game.
-  ///
-  /// This [ValueNotifier] holds the average rating of the game as a [double]. 
-  /// It is initialized to `0` by default, indicating that no ratings have been submitted yet.
-  final ValueNotifier<double> averageRatingState = ValueNotifier(0);
-
-  /// Tracks the user's rating for the current game.
-  ///
-  /// This [ValueNotifier] holds the user's rating as an integer. 
-  /// If no rating has been provided by the user, the default value is `0`.
-  final ValueNotifier<int> myRatingState = ValueNotifier(0);
-
-  /// Tracks the total number of ratings for the current game.
-  ///
-  /// This [ValueNotifier] holds the total count of user ratings submitted for the game. 
-  /// It is initialized to `0` by default, representing no ratings.
-  final ValueNotifier<int> totalRatingsState = ValueNotifier(0);
-
-  /// A [ValueNotifier] containing a [Map] that tracks the count of ratings for each star level.
-  ///
-  /// The [Map] keys represent the star levels (from 1 to 5).
-  /// The values represent the count of ratings for each corresponding star.
-  /// All counts are initialized to `0` by default.
-  final ValueNotifier<Map<String, int>> starsCountState = ValueNotifier(<String, int> {
-    "5": 0,
-    "4": 0,
-    "3": 0,
-    "2": 0,
-    "1": 0,
-  });
-
-  /// Fetch all the game data needed and updates its listeners.
-  /// 
-  /// This function retrieves various types of game data from the database, such as average ratings, user ratings, total ratings, and ratings by star count.
-  /// It updates the corresponding reactive variables and caches the data for future use.
-  /// 
-  /// This function is initialized within the `initialize` function.
-  Future<void> _updateGameData() async {
-    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
-      identifier: game.identifier,
-    );
-
-    // Fetch and update average rating.
-    try {
-      data.averageRating ??= await rDatabase.getAverageRatingByGame(game);
-      averageRatingState.value = data.averageRating!;
-    }
-    catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Average Rating',
-        stackTrace: stackTrace,
-      );
-      data.averageRating = 0.0;
-    }
-
-    // Fetch and update user rating.
-    try {
-      data.myRating ??= await rDatabase.getUserRatingForGame(game);
-      myRatingState.value = data.myRating!;
-    }
-    catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | User Rating',
-        stackTrace: stackTrace,
-      );
-      data.myRating = 0;
-    }
-
-    // Fetch and update total ratings count.
-    try {
-      data.totalRatings ??= await rDatabase.getGameRatingsCount(game);
-      totalRatingsState.value = data.totalRatings!;
-    }
-    catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Total Ratings',
-        stackTrace: stackTrace,
-      );
-      data.totalRatings = 0;
-    }
-
-    // Fetch and update individual star count.
-    try {
-      data.stars ??= await rDatabase.getGameRatingsByStarsCount(game);
-      starsCountState.value = data.stars!;
-    }
-    catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Ratings by Star',
-        stackTrace: stackTrace,
-      );
-      data.stars = <String, int> {
-        "5": 0,
-        "4": 0,
-        "3": 0,
-        "2": 0,
-        "1": 0,
-      };
-    }
-  
-    rHive.cachedRequests.put(data);
-  }
-
-  /// Inserts or updates the user's rating for a game.
-  ///
-  /// This function is primarily used in the [_SubmitRatingModal] to allow users to rate a game.
-  /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
-  Future<void> upsertUserRating(int rating) async {
-    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
-      identifier: game.identifier,
-      myRating: rating,
-    );
-
-    try {
-      await rDatabase.upsertGameRating(game, rating);
-      myRatingState.value = rating;
-    }
-    catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Upsert Rating',
-        stackTrace: stackTrace,
-      );
-      return;
-    }
-
-    // Fetch and update total ratings count.
-    try {
-      data.totalRatings = await rDatabase.getGameRatingsCount(game);
-      totalRatingsState.value = data.totalRatings!;
-    }
-    catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Total Ratings',
-        stackTrace: stackTrace,
-      );
-      data.totalRatings = 0;
-    }
-
-    // Fetch and update average rating.
-    try {
-      data.averageRating = await rDatabase.getAverageRatingByGame(game);
-      averageRatingState.value = data.averageRating!;
-    }
-    catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Average Rating',
-        stackTrace: stackTrace,
-      );
-      data.averageRating = 0.0;
-    }
-
-    // Fetch and update individual star count.
-    try {
-      data.stars = await rDatabase.getGameRatingsByStarsCount(game);
-      starsCountState.value = data.stars!;
-    }
-    catch (error, stackTrace) {
-      Logger.error.print(
-        message: '$error',
-        label: 'Details Controller | Ratings by Star',
-        stackTrace: stackTrace,
-      );
-      data.stars = <String, int> {
-        "5": 0,
-        "4": 0,
-        "3": 0,
-        "2": 0,
-        "1": 0,
-      };
-    }
-  
-    rHive.cachedRequests.put(data);
-  }
-
   /// Retrieves the current average rating of the specified game.
   /// 
   /// This method first attempts to fetch the average rating from the cache using the game's identifier. 
   /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
   /// The fetched or defaulted value is then stored in the cache for future use.
-  Future<double> getAverageRating(Game game) async {
-    final GameData data = rHive.cachedRequests.get('${game.identifier}') ?? GameData(
+  Future<double> _getAverageRating(Game game) async {
+    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
     );
     try {
-      data.averageRating ??= await rDatabase.getAverageRatingByGame(game);
+      data.averageRating ??= await rSupabase.getAverageRatingForGame(game);
     }
     catch (error, stackTrace) {
-      Logger.error.print(
-        message: "$error",
-        label: "Search Controller | Average Rating",
+      Logger.error(
+        '$error',
         stackTrace: stackTrace,
       );
+
       data.averageRating = 0.0;
     }
-    rHive.cachedRequests.put(data);
+    rHive.boxCachedRequests.put(data);
     return data.averageRating!;
-  }
-
-  // INSTALLATION 🧩: =========================================================================================================================================================== //
-  
-  /// The current state of the installation process.
-  ///
-  /// This [ValueNotifier] is used to communicate the state of the installation process to the user.
-  /// It is updated by the [getMIDlet] and [tryInstallMIDlet] functions.
-  final ValueNotifier<ProgressEnumeration> installationState = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.loading);
-
-  /// The downloaded MIDlet, if any.
-  ///
-  /// This is a temporary variable that is used to store the downloaded MIDlet file.
-  /// It is used by the [tryInstallMIDlet] function to install the MIDlet.
-  late File? _midlet;
-
-  /// Opens the GitHub repository for the emulator in the browser.
-  ///
-  /// This function is used to allow users to download the emulator from the official GitHub repository.
-  Future<void> openGitHub() async => await sActivity.gitHub();
-
-  /// Opens the Play Store to download the emulator.
-  ///
-  /// This function is used to allow users to download the emulator from the Google Play Store.
-  Future<void> openPlayStore() async => await sActivity.playStore();
-
-  /// Downloads the specified MIDlet from the bucket.
-  ///
-  /// This function is used to download the selected MIDlet from the bucket.
-  /// It updates the [installationState] based on the result of the download operation.
-  Future<void> getMIDlet() async {
-    try {
-      _midlet = await rBucket.midlet(game.midlets.firstWhere((midlet) => midlet.isDefault));
-
-      installationState.value = ProgressEnumeration.ready;
-    }
-    catch (error, stackTrace) {
-      installationState.value = ProgressEnumeration.error;
-
-      Logger.error.print(
-        message: "$error",
-        label: "Downloads | GET • MIDlet",
-        stackTrace: stackTrace,
-      );
-    }
-  }
-
-  /// Installs the downloaded MIDlet using the emulator.
-  ///
-  /// This function is used to install the downloaded MIDlet using the emulator.
-  /// It updates the [installationState] based on the result of the installation operation.
-  Future<void> tryInstallMIDlet() async {
-    try {
-      if (_midlet == null) throw Exception("This game does not have a MIDLet available!");
-
-      await sActivity.emulator(_midlet!);
-    }
-    on PlatformException catch (error, stackTrace) {
-      installationState.value = ProgressEnumeration.emulatorNotFound;
-
-      Logger.error.print(
-        message: "$error",
-        label: "Downloads | Install MIDlet",
-        stackTrace: stackTrace,
-      );
-    }
-    catch (error, stackTrace) {
-      installationState.value = ProgressEnumeration.error;
-
-      Logger.error.print(
-        message: "$error",
-        label: "Downloads | Install MIDlet",
-        stackTrace: stackTrace,
-      );
-    }
   }
 }

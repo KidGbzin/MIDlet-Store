@@ -20,6 +20,7 @@ class MIDlet {
     required this.languages,
     required this.resolution,
     required this.size,
+    required this.source,
     required this.title,
     required this.version,
   });
@@ -66,6 +67,8 @@ class MIDlet {
   /// The size of the .JAR package in kilobytes.
   final int size;
 
+  final String source;
+
   /// The title of the [MIDlet].
   final String title;
 
@@ -92,6 +95,7 @@ class MIDlet {
       languages: List<String>.from(json["languages"]),
       resolution: json['resolution'] as String,
       size: json['size'] as int,
+      source: json['source'] as String,
       title: json['title'] as String,
       version: json['version'] as String,
     );
@@ -116,8 +120,15 @@ class MIDlet {
       'languages': languages,
       'resolution': resolution,
       'size': size,
+      'source': source,
       'title': title,
       'version': version,
     };
   }
+
+  String get formattedSize => "${(size / 1024).round()} KB";
+
+  String get formattedResolution => resolution.replaceFirst("x", " x ");
+
+  String get formattedTitle => title.replaceFirst(" -", ":");
 }

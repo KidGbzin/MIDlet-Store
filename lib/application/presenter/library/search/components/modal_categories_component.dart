@@ -1,43 +1,28 @@
 part of '../search_handler.dart';
 
-// CATEGORIES MODAL 🏷️: ========================================================================================================================================================= //
-
-/// A modal widget that displays a list of categories to filter by.
-///
-/// This widget is composed of a list of tiles, each representing a category.
-/// The selected categories are then used to filter the list of games.
-///
-/// The [controller] is responsible for managing the state of the search bar and the filters.
 class _CategoriesModal extends StatefulWidget {
 
-  const _CategoriesModal(this.controller);
-
-  /// The controller that manages the state of the game list.
-  /// 
-  /// This controller is responsible for managing the state of the search bar and the filters.
+  /// Controls the handler’s state and behavior logic.
   final _Controller controller;
+
+  /// Provides localized strings and messages based on the user’s language and region.
+  final AppLocalizations localizations;
+
+  const _CategoriesModal(this.controller, this.localizations);
 
   @override
   State<_CategoriesModal> createState() => _CategoriesModalState();
 }
 
 class _CategoriesModalState extends State<_CategoriesModal> {
-  late final List<String> _initialState;
-  late final AppLocalizations localizations;
+  late final List<String> initialTags = widget.controller.nSelectedTags.value;
+  late final AppLocalizations localizations = widget.localizations;
 
   @override
   void initState() {
-    _initialState = widget.controller.nSelectedTags.value;
+    widget.controller.fetchFiltersTags(localizations);
 
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    localizations = AppLocalizations.of(context)!;
-    widget.controller.fetchFiltersTags(localizations);
-    
-    super.didChangeDependencies();
   }
 
   @override
@@ -48,7 +33,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.nSelectedTags.value = _initialState;
+            widget.controller.nSelectedTags.value = initialTags;
             context.pop();
           },
         ),
@@ -60,38 +45,41 @@ class _CategoriesModalState extends State<_CategoriesModal> {
           },
         ),
       ],
-      child: SingleChildScrollView(
-        child: Section(
-          description: localizations.sectionFilterCategoriesDescription,
-          title: localizations.sectionFilterCategories,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: ValueListenableBuilder(
-              valueListenable: widget.controller.nFiltersTags,
-              builder: (BuildContext context, filters, Widget? _) {
-                if (filters == null) {
-                  return Align(alignment: Alignment.center, child: LoadingAnimation());
-                }
-                return Wrap(
-                  runSpacing: 7.5,
-                  spacing: 7.5,
-                  children: filters.map(_tile).toList(),
-                );
-              }
-            ),
-          ),
+      child: Expanded(
+        child: SingleChildScrollView(
+          child: body(),
         ),
       ),
     );
   }
 
-  /// Builds a tile for each tag that can be selected or deselected.
-  ///
-  /// When tapped, the tile toggles the tag's selection state in the [widget.controller.selectedTagsState].
-  /// The tile displays the tag's icon and name.
-  /// 
-  /// The tile also displays a visual indicator when the tag is selected.
-  Widget _tile((TagEnumeration, String, int) record) {
+  Widget body() {
+    return Section(
+      description: localizations.sectionFilterCategoriesDescription,
+      title: localizations.sectionFilterCategories,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+        child: ValueListenableBuilder(
+          valueListenable: widget.controller.nFiltersTags,
+          builder: (BuildContext context, List<(TagEnumeration, String, int)>? filters, Widget? _) {
+            if (filters == null) {
+              return Align(
+                alignment: Alignment.center,
+                child: LoadingAnimation(),
+              );
+            }
+            return Wrap(
+              runSpacing: 7.5,
+              spacing: 7.5,
+              children: filters.map(tile).toList(),
+            );
+          }
+        ),
+      ),
+    );
+  }
+
+  Widget tile((TagEnumeration, String, int) record) {
     final TagEnumeration tag = record.$1;
     final String name = record.$2;
     final int count = record.$3;
@@ -122,8 +110,8 @@ class _CategoriesModalState extends State<_CategoriesModal> {
               decoration: BoxDecoration(
                 borderRadius: gBorderRadius,
                 color: isSelected
-                  ? ColorEnumeration.primary.value.withAlpha(190)
-                  : ColorEnumeration.foreground.value,
+                  ? Palettes.primary.value.withAlpha(190)
+                  : Palettes.foreground.value,
               ),
               height: 30,
               padding: const EdgeInsets.fromLTRB(12.5, 0, 12.5, 0),
@@ -132,14 +120,14 @@ class _CategoriesModalState extends State<_CategoriesModal> {
                 children: <Widget> [
                   Icon(
                     tag.icon,
-                    color: ColorEnumeration.grey.value,
+                    color: Palettes.grey.value,
                     size: 18,
                   ),
                   Align(
                     alignment: Alignment.center,
                     child: Text(
                       "$name • $count",
-                      style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                      style: TypographyEnumeration.body(Palettes.grey).style,
                     ),
                   ),
                 ],

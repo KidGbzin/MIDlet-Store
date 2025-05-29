@@ -4,8 +4,6 @@ import '../../core/configuration/global_configuration.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 
-// THUMBNAIL WIDGET 🖼️: ========================================================================================================================================================= //
-
 /// A widget that displays a thumbnail image with customizable properties.
 ///
 /// The [ThumbnailWidget] widget is used to render an image with an optional border, border radius, and aspect ratio.
@@ -16,12 +14,15 @@ class ThumbnailWidget extends StatelessWidget {
     this.aspectRatio = 0.75,
     this.border,
     this.filterQuality = FilterQuality.none,
+    this.showShadow = true,
     required this.image,
     this.onTap,
     this.borderRadius,
 
     super.key,
   });
+
+  final bool showShadow;
 
   /// The aspect ratio of the thumbnail image.
   ///
@@ -33,7 +34,7 @@ class ThumbnailWidget extends StatelessWidget {
 
   /// The border surrounding the thumbnail.
   ///
-  /// If not specified, the widget uses a default border with the color defined by [ColorEnumeration.divider].
+  /// If not specified, the widget uses a default border with the color defined by [Palettes.divider].
   final BoxBorder? border;
 
   /// The quality filter applied to the thumbnail image.
@@ -81,9 +82,9 @@ class ThumbnailWidget extends StatelessWidget {
   Widget _decoration() {
     final BoxDecoration decoration = BoxDecoration(
       border: border,
-      boxShadow: kElevationToShadow[3],
+      boxShadow: showShadow ? kElevationToShadow[3] : null,
       borderRadius: borderRadius ?? gBorderRadius,
-      color: ColorEnumeration.foreground.value,
+      color: Palettes.foreground.value,
       image: DecorationImage(
         filterQuality: filterQuality ?? FilterQuality.high,
         fit: BoxFit.cover,

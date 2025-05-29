@@ -3,8 +3,6 @@ import 'package:hugeicons/hugeicons.dart';
 
 import '../../core/enumerations/palette_enumeration.dart';
 
-// LOADING WIDGET 🧩: =========================================================================================================================================================== //
-
 /// A widget that displays a rotating loading icon.
 ///
 /// The [LoadingAnimation] uses an [AnimationController] to rotate the icon continuously, providing a visual indication of loading or processing.
@@ -50,7 +48,7 @@ class _LoadingAnimationState extends State<LoadingAnimation> with SingleTickerPr
       },
       child: HugeIcon(
         icon: HugeIcons.strokeRoundedLoading03,
-        color: ColorEnumeration.elements.value,
+        color: Palettes.elements.value,
         size: 25,
       ),
     );

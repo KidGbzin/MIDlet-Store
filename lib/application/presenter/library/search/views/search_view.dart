@@ -1,29 +1,26 @@
 part of '../search_handler.dart';
 
-// SEARCH VIEW 🧩: ============================================================================================================================================================== //
-
-/// The stateful widget that represents the search view.
-/// 
-/// This widget is responsible for displaying the search interface and handling user interactions.
 class _SearchView extends StatefulWidget {
 
-  const _SearchView(this.controller);
-
-  /// The controller associated with the view.
+  /// Controls the handler’s state and behavior logic.
   final _Controller controller;
+
+  /// Provides localized strings and messages based on the user’s language and region.
+  final AppLocalizations localizations;
+
+  const _SearchView(this.controller, this.localizations);
 
   @override
   State<_SearchView> createState() => _SearchState();
 }
 
 class _SearchState extends State<_SearchView> {
-  late final AppLocalizations localizations;
+  late final AppLocalizations localizations = widget.localizations;
 
   late ScaffoldMessengerState snackbar;
 
   @override
   void didChangeDependencies() {
-    localizations = AppLocalizations.of(context)!;
     snackbar = ScaffoldMessenger.of(context);
 
     super.didChangeDependencies();
@@ -67,7 +64,7 @@ class _SearchState extends State<_SearchView> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget> [
           Container(
-            color: ColorEnumeration.background.value,
+            color: Palettes.background.value,
             padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
             width: MediaQuery.sizeOf(context).width,
             child: Wrap(
@@ -80,13 +77,13 @@ class _SearchState extends State<_SearchView> {
                   valueListenable: widget.controller.nSelectedTags,
                   builder: (BuildContext context, List<String> selectedTags, Widget? _) {
                     return _FilterButton(
-                      color: selectedTags.isEmpty ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
+                      color: selectedTags.isEmpty ? Palettes.foreground.value : Palettes.primary.value.withAlpha(190),
                       icon: HugeIcons.strokeRoundedArrowDown01,
                       title: localizations.chipFilterByCategories,
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) => _CategoriesModal(widget.controller),
+                          builder: (BuildContext context) => _CategoriesModal(widget.controller, localizations),
                         );
                       },
                     );
@@ -96,13 +93,13 @@ class _SearchState extends State<_SearchView> {
                   valueListenable: widget.controller.nSelectedPublisher,
                   builder: (BuildContext context, String? selectedPublisher, Widget? _) {
                     return _FilterButton(
-                      color: selectedPublisher == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
+                      color: selectedPublisher == null ? Palettes.foreground.value : Palettes.primary.value.withAlpha(190),
                       icon: HugeIcons.strokeRoundedArrowDown01,
                       title: localizations.chipFilterByPublisher,
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) => _PublisherModal(widget.controller),
+                          builder: (BuildContext context) => _PublisherModal(widget.controller, localizations),
                         );
                       },
                     );
@@ -112,13 +109,13 @@ class _SearchState extends State<_SearchView> {
                   valueListenable: widget.controller.nSelectedReleaseYear,
                   builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
                     return _FilterButton(
-                      color: selectedReleaseYear == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
+                      color: selectedReleaseYear == null ? Palettes.foreground.value : Palettes.primary.value.withAlpha(190),
                       icon: HugeIcons.strokeRoundedArrowDown01,
                       title: localizations.chipFilterByReleaseYear,
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (BuildContext context) => _ReleaseModal(widget.controller),
+                          builder: (BuildContext context) => _ReleaseModal(widget.controller, localizations),
                         );
                       },
                     );
@@ -131,7 +128,7 @@ class _SearchState extends State<_SearchView> {
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: widget.controller.nGames,
-              builder: (BuildContext context, listener, Widget? _) {
+              builder: (BuildContext context, (List<Game>, bool) listener, Widget? _) {
                 if (listener.$2) {
                   return Align(
                     alignment: Alignment.center,
