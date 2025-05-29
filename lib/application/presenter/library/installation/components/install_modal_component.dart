@@ -23,6 +23,7 @@ class _InstallModalState extends State<_InstallModal> {
   void initState() {
     super.initState();
 
+    widget.controller.nInstallationState.value = ProgressEnumeration.isLoading;
     widget.controller.downloadMIDlet(context);
   }
 
