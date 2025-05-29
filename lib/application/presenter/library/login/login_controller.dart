@@ -2,6 +2,9 @@ part of '../login/login_handler.dart';
 
 class _Controller {
 
+  /// Manages local storage operations, including games, favorites, recent games, and cached requests.
+  final HiveRepository rHive;
+  
   /// Manages Firebase Cloud Messaging operations, including notification handling and token management.
   final FirebaseMessagingService sFirebaseMessaging;
 
@@ -12,6 +15,7 @@ class _Controller {
   final SupabaseService sSupabase;
 
   _Controller({
+    required this.rHive,
     required this.sFirebaseMessaging,
     required this.sGoogleOAuth,
     required this.sSupabase,
@@ -29,10 +33,10 @@ class _Controller {
     try {
       final bool hasCachedSession = await _hasCachedSession();
 
-      if (hasCachedSession && context.mounted) {
-        await sFirebaseMessaging.registerFCMTokenOnSupabase(context);
+      if (hasCachedSession) {
+        await sFirebaseMessaging.registerToken();
 
-        if (context.mounted) sFirebaseMessaging.handlePendingNotification(context);
+        nProgress.value = ProgressEnumeration.isFinished;
 
         return;
       }
@@ -41,13 +45,14 @@ class _Controller {
     }
     catch (error, stackTrace) {
       nProgress.value = ProgressEnumeration.hasError;
-
+      
       Logger.error(
         "$error",
         stackTrace: stackTrace,
       );
     }
   }
+
   /// Disposes the handler’s resources and notifiers.
   ///
   /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
@@ -70,7 +75,6 @@ class _Controller {
     
       return true;
     }
-
     return false;
   }
 
@@ -85,20 +89,16 @@ class _Controller {
       final GoogleSignInAuthentication? authentication = await sGoogleOAuth.signIn();
 
       if (authentication == null) return;
-      
+
       await sSupabase.loginWithGoogle(
         idToken: authentication.idToken!,
         accessToken: authentication.accessToken,
       );
 
-      if (context.mounted) {
-        await sFirebaseMessaging.registerFCMTokenOnSupabase(context);
+      await sFirebaseMessaging.registerToken();
 
-        if (context.mounted) sFirebaseMessaging.handlePendingNotification(context);
-
-        return;
-      }
-    } 
+      nProgress.value = ProgressEnumeration.isFinished;
+    }
     catch (error, stackTrace) {
       nProgress.value = ProgressEnumeration.hasError;
 
@@ -106,6 +106,48 @@ class _Controller {
         "$error",
         stackTrace: stackTrace,
       );
+    }
+  }
+
+  void handleNotificationMessage(BuildContext context) {
+    try {
+      final RemoteMessage? message = sFirebaseMessaging.message;
+  
+      if (message == null) {
+        Logger.information("There's no notification message to handle, opening the default Search view.");
+
+        context.gtSearch(
+          replace: true,
+        );
+
+        return;
+      }
+
+      final String? title = message.data["Game-Title"];
+
+      if (title != null) {
+        context.gtDetails(
+          game: rHive.boxGames.fromTitle(title),
+          replace: true,
+        );
+
+        return;
+      }
+
+      throw Exception("The notification message includes data that has not been handled.\n${message.data}");
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      context.gtSearch(
+        replace: true,
+      );
+    }
+    finally {
+      sFirebaseMessaging.clearNotificationMessage();
     }
   }
 }

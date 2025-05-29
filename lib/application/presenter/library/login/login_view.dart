@@ -45,6 +45,18 @@ class __LoginViewState extends State<_LoginView> {
               ),
             );
           }
+          else if (progress == ProgressEnumeration.isFinished) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              widget.controller.handleNotificationMessage(context);
+            });
+
+            return Center(
+              child: Text(
+                "Redirecting...",
+                style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+              ),
+            );
+          }
           else if (progress == ProgressEnumeration.hasError) {
             // TODO: Place an error widget here!
 

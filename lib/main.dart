@@ -60,10 +60,7 @@ Future<void> main() async {
   final HiveRepository rHive = HiveRepository(sGitHub);
   final SupabaseRepository rSupabase = SupabaseRepository(sSupabase);
 
-  final FirebaseMessagingService sFirebaseMessaging = FirebaseMessagingService(
-    rSupabase: rSupabase,
-    rHive: rHive,
-  );
+  final FirebaseMessagingService sFirebaseMessaging = FirebaseMessagingService(rSupabase);
 
   runApp(MultiProvider(
     providers: <SingleChildWidget> [

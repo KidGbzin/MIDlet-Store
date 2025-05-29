@@ -1,11 +1,8 @@
+import 'dart:ui';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-import '../core/entities/game_entity.dart';
-
-import '../core/extensions/router_extension.dart';
-
-import '../repositories/hive_repository.dart';
 import '../repositories/supabase_repository.dart';
 
 import '../../logger.dart';
@@ -16,20 +13,16 @@ import '../../logger.dart';
 /// It also processes incoming messages when the application is in the foreground, background, or terminated state, and manages the lifecycle of the FCM token as needed.
 class FirebaseMessagingService {
 
-  /// Manages local storage operations, including games, favorites, recent games, and cached requests.
-  final HiveRepository rHive;
-
   /// Manages remote storage operations through Supabase, including database interactions and data synchronization.
   final SupabaseRepository rSupabase;
 
-  FirebaseMessagingService({
-    required this.rHive,
-    required this.rSupabase,
-  });
+  FirebaseMessagingService(this.rSupabase);
 
   final FirebaseMessaging _instance = FirebaseMessaging.instance;
 
   RemoteMessage? _message;
+
+  RemoteMessage? get message => _message;
 
   /// Initializes the Firebase Cloud Messaging (FCM) service.
   ///
@@ -49,12 +42,11 @@ class FirebaseMessagingService {
   /// Retrieves the current FCM device token and registers it with Supabase, associating the token with the device's locale.
   ///
   /// Listens for token refresh events to update the token in Supabase automatically.
-  Future<void> registerFCMTokenOnSupabase(BuildContext context) async {
+  Future<void> registerToken() async {
+    final Locale locale = PlatformDispatcher.instance.locale;
     final String? token = await _instance.getToken();
-    late final Locale locale;
     
-    if (token != null && context.mounted) {
-      locale = Localizations.localeOf(context);
+    if (token != null) {
       await rSupabase.upsertFirebaseToken(token, locale.toString());
     }
     
@@ -63,47 +55,10 @@ class FirebaseMessagingService {
     });
   }
 
-  /// Handles any pending notification message and redirects to the appropriate screen.
-  ///
-  /// If no pending message exists or an error occurs during processing, the user is redirected to the default screen.
-  void handlePendingNotification(BuildContext context) {
-    try {
-      if (_message == null) {
-        Logger.information("There's no notification message to handle, opening the default Search view.");
 
-        context.gtSearch(
-          replace: true,
-        );
+  void clearNotificationMessage() {
+    Logger.information("The notification message has been cleared!");
 
-        return;
-      }
-
-      final Map<String, dynamic> data = _message!.data;
-      final String? title = data["Game-Title"];
-
-      if (title != null) {
-        final Game game = rHive.boxGames.fromTitle(title);
-
-        if (context.mounted) {
-          context.gtDetails(
-            game: game,
-            replace: true,
-          );
-        }
-      }
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      context.gtSearch(
-        replace: true,
-      );
-    }
-    finally {
-      _message = null;
-    }
+    _message == null;
   }
 }
