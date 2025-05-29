@@ -1,99 +1,92 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../application/repositories/bucket_repository.dart';
-import '../application/repositories/database_repository.dart';
 import '../application/repositories/hive_repository.dart';
+import '../application/repositories/supabase_repository.dart';
 
 import '../application/services/activity_service.dart';
+import '../application/services/admob_service.dart';
 import '../application/services/android_service.dart';
-import '../application/services/authentication_service.dart';
+import 'application/services/google_authentication_service.dart';
+import '../application/services/firebase_messaging_service.dart';
 import '../application/services/github_service.dart';
 import '../application/services/supabase_service.dart';
 
 import '../application.dart';
+import '../logger.dart';
 
-// MAIN FUNCTION 🚀: ============================================================================================================================================================ //
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-/// The main entry point of the application.
-/// 
-/// Initializes all the necessary services and repositories that the application needs to function correctly, and then starts the Flutter framework.
-/// This function is responsible for setting up the application's dependency injection, which includes services and repositories.
-/// All the services and repositories are initialized here, and then the [Application] root widget is started.
-void main() {
+  await Logger.initialize();
 
-  // SERVICE INSTANCES 🔧: ====================================================================================================================================================== //
+  Logger.start("Initializing the Firebase enviroment...");
 
-  /// Service responsible for handling Android I/O operations.
-  ///
-  /// Acts as a dependency for the Bucket service.
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: const String.fromEnvironment("GOOGLE_API_KEY"),
+      appId: "1:923401966131:android:74b789539ded6e8e55c946",
+      messagingSenderId: "923401966131",
+      projectId: "midlet-store-52168",
+      storageBucket: "midlet-store-52168.firebasestorage.app",
+    ),
+  );
+
+  final ActivityService sActivity = ActivityService();
+  final AdMobService sAdMob = AdMobService(const String.fromEnvironment("ADVERTISEMENT_UNIT"));
   final AndroidService sAndroid = AndroidService();
 
-  /// Service responsible for user authentication.
-  final AuthenticationService sAuthenticantion = AuthenticationService();
+  final GitHubService sGitHub = GitHubService(
+    client: http.Client(),
+    token: const String.fromEnvironment("GITHUB_BUCKET_TOKEN"),
+  );
 
-  /// Service for managing GitHub repository files.
-  ///
-  /// Handles the file operations and serves as a dependency for Hive and Bucket repositories.
-  final GitHubService sGitHub = GitHubService(http.Client());
+  final SupabaseService sSupabase = SupabaseService(
+    anonKey: const String.fromEnvironment("SUPABASE_KEY"),
+    url: const String.fromEnvironment("SUPABASE_URL"),
+  );
 
-  /// Service for interacting with the Supabase back-end.
-  ///
-  /// Handles data operations and can be accessed via Provider injection.
-  final SupabaseService sSupabase = SupabaseService();
+  final GoogleOAuthService sGoogleOAuth = GoogleOAuthService(const String.fromEnvironment('GOOGLE_SERVER_CLIENT'));
 
-  /// Service for handling Android native activity functions.
-  ///
-  /// Uses method calls to interact with native Kotlin features and can be accessed via Provider injection.
-  final ActivityService sActivity = ActivityService();
-
-  // REPOSITORY INSTANCES 🗃️: =================================================================================================================================================== //
-
-  /// Repository for managing application files.
-  ///
-  /// Handles application files and can be accessed globally via Provider injection.
-  /// Depends on Android and GitHub services.
   final BucketRepository rBucket = BucketRepository(
     sAndroid: sAndroid,
     sGitHub: sGitHub,
   );
 
-  /// Repository for local database management.
-  ///
-  /// Manages the application's cache and depends on the GitHub service.
-  /// Can be accessed globally via Provider injection.
   final HiveRepository rHive = HiveRepository(sGitHub);
-
-  /// Repository for interacting with the Supabase database server.
-  ///
-  /// Handles Supabase operations and depends on the Supabase service.
-  /// Can be accessed globally via Provider injection.
   final SupabaseRepository rSupabase = SupabaseRepository(sSupabase);
 
-  /// Starts the application using the Provider for dependency injection.
-  /// 
-  /// These values can be accessed throughout the application.
+  final FirebaseMessagingService sFirebaseMessaging = FirebaseMessagingService(rSupabase);
+
   runApp(MultiProvider(
     providers: <SingleChildWidget> [
       Provider<ActivityService>.value(
         value: sActivity,
       ),
-      Provider<AuthenticationService>.value(
-        value: sAuthenticantion,
+      Provider<AdMobService>.value(
+        value: sAdMob,
       ),
-      Provider<BucketRepository>.value(
-        value: rBucket,
+      Provider<FirebaseMessagingService>.value(
+        value: sFirebaseMessaging,
+      ),
+      Provider<GoogleOAuthService>.value(
+        value: sGoogleOAuth,
       ),
       Provider<GitHubService>.value(
         value: sGitHub,
       ),
-      Provider<HiveRepository>.value(
-        value: rHive,
-      ),
       Provider<SupabaseService>.value(
         value: sSupabase,
+      ),
+      Provider<BucketRepository>.value(
+        value: rBucket,
+      ),
+      Provider<HiveRepository>.value(
+        value: rHive,
       ),
       Provider<SupabaseRepository>.value(
         value: rSupabase,

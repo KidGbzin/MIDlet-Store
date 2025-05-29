@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum ColorEnumeration {
+enum Palettes {
   accent(Color(0xFF7B83C0)),
   background(Color(0xff1c1d22)),
   divider(Color(0xff2a2a32)),
@@ -15,7 +15,7 @@ enum ColorEnumeration {
   pink(Color(0xFFE91E63)),
   transparent(Color(0x00000000));
 
-  const ColorEnumeration(this.value);
+  const Palettes(this.value);
 
   final Color value;
 }

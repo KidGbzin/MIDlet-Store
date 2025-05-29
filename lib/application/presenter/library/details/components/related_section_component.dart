@@ -1,12 +1,18 @@
 part of '../details_handler.dart';
 
-// RELATED GAMES SECTION 🎮: ==================================================================================================================================================== //
-
-/// A section widget displaying a collection of related games or games from the same publisher.
-///
-/// This widget fetches and displays a list of games that are either related to the current game or belong to the same publisher.
-/// It includes a title, description, and a list of cover images for each game, along with their ratings.
 class _RelatedGamesSection extends StatefulWidget {
+
+  /// The collection of games to display, consisting of a list of games, their ratings, and thumbnail images.
+  final Future<({List<Game> games, List<double> ratings, List<File> thumbnails})> collection;
+
+  /// Controls the handler’s state and behavior logic.
+  final _Controller controller;
+
+  /// The section'a description.
+  final String description;
+
+  /// The section's title.
+  final String title;
 
   const _RelatedGamesSection({
     required this.collection,
@@ -15,37 +21,23 @@ class _RelatedGamesSection extends StatefulWidget {
     required this.title,
   });
 
-  /// The section's title.
-  final String title;
-
-  /// The section'a description.
-  final String description;
-
-  /// The collection of games to display, consisting of a list of games, their ratings, and thumbnail images.
-  final Future<({List<Game> games, List<double> ratings, List<File> thumbnails})> collection;
-
-  /// The [Details] controller.
-  ///
-  /// The controller that manages the state of the related games.
-  final _Controller controller;
-
   @override
   State<_RelatedGamesSection> createState() => _RelatedGamesSectionState();
 }
 
 class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
-  late final double _coverHeight;
-  late final double _coverWidth;
+  late final double coverHeight;
+  late final double coverWidth;
 
-  final double _titleHeight = 29;
-  final double _ratingHeight = 20;
+  final double titleHeight = 29;
+  final double ratingHeight = 20;
 
   @override
   void didChangeDependencies() {
 
     // Calculate the cover image dimensions based on the screen width.
-    _coverWidth = (MediaQuery.sizeOf(context).width - 60) / 3;
-    _coverHeight = _coverWidth / 0.75;
+    coverWidth = (MediaQuery.sizeOf(context).width - 60) / 3;
+    coverHeight = coverWidth / 0.75;
 
     super.didChangeDependencies();
   }
@@ -56,7 +48,7 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
       description: widget.description,
       title: widget.title,
       child: Container(
-        height: _coverHeight + _titleHeight + _ratingHeight,
+        height: coverHeight + titleHeight + ratingHeight,
         margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
         child: FutureBuilder(
           future: widget.collection,
@@ -65,7 +57,7 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
 
             if (snapshot.hasData) {
               for (int index = 0; index < snapshot.data!.games.length; index ++) {
-                children.add(_buildCoverImage(
+                children.add(cover(
                   rating: snapshot.data!.ratings[index],
                   thumbnail: snapshot.data!.thumbnails[index],
                   game: snapshot.data!.games[index],
@@ -78,7 +70,7 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
               separatorBuilder: (BuildContext context, int index) {
                 return VerticalDivider(
                   width: 15,
-                  color: ColorEnumeration.transparent.value,
+                  color: Palettes.transparent.value,
                 );
               },
               physics: const BouncingScrollPhysics(),
@@ -91,10 +83,7 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
     );
   }
 
-  /// Builds the cover image widget for each game, including the image, title, and rating.
-  ///
-  /// If the thumbnail is unavailable, a placeholder icon will be displayed instead of the image.
-  Widget _buildCoverImage({
+  Widget cover({
     required File thumbnail,
     required double rating,
     required Game game,
@@ -102,7 +91,6 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
     Widget? placeholder;
     DecorationImage? decoration;
 
-    // If thumbnail path is not empty, use it as the decoration image.
     if (thumbnail.path != '/') {
       decoration = DecorationImage(
         image: FileImage(thumbnail),
@@ -111,17 +99,17 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
     else {
       placeholder = Icon(
         Icons.broken_image_rounded,
-        color: ColorEnumeration.grey.value,
+        color: Palettes.grey.value,
       );
     }
 
     return SizedBox(
-      width: _coverWidth,
+      width: coverWidth,
       child: Column(
         children: <Widget>[
           InkWell(
             borderRadius: gBorderRadius,
-            onTap: () => context.showDetails(
+            onTap: () => context.gtDetails(
               game: game,
             ),
             child: Ink(
@@ -130,8 +118,8 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
                 boxShadow: kElevationToShadow[3],
                 image: decoration,
               ),
-              height: _coverHeight,
-              width: _coverWidth,
+              height: coverHeight,
+              width: coverWidth,
               child: placeholder,
             ),
           ),
@@ -141,7 +129,7 @@ class _RelatedGamesSectionState extends State<_RelatedGamesSection> {
               game.title.replaceAll(' - ', ': '),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+              style: TypographyEnumeration.body(Palettes.elements).style,
               textAlign: TextAlign.center,
             ),
           ),

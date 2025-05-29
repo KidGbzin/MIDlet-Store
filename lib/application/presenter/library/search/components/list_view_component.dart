@@ -26,23 +26,35 @@ class _ListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemBuilder: (BuildContext context, int index) {
-        return _ListTile(
-          controller: controller,
-          game: games[index],
+
+  return ListView.separated(
+    itemBuilder: (BuildContext context, int index) {
+
+      // Show an advertisement after every 5 games (i.e., at every 6th position).
+      if ((index + 1) % 6 == 0) {
+        return AdvertisementWidget(
+          getAdvertisement: controller.sAdMob.getAdvertisement,
         );
-      },
-      itemCount: games.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return Divider(
-          color: ColorEnumeration.divider.value,
-          height: 1,
-          thickness: 1,
-        );
-      },
-    );
-  }
+      }
+
+      // Calculate the true index of the game by excluding inserted advertisements.
+      final gameIndex = index - (index ~/ 6);
+
+      return _ListTile(
+        controller: controller,
+        game: games[gameIndex],
+      );
+    },
+    itemCount: games.length + (games.length ~/ 5),
+    separatorBuilder: (BuildContext context, int index) {
+      return Divider(
+        color: Palettes.divider.value,
+        height: 1,
+        thickness: 1,
+      );
+    },
+  );
+}
 }
 
 // LIST TILE 🧩: ================================================================================================================================================================ //
@@ -86,7 +98,7 @@ class _ListTileState extends State<_ListTile> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.showDetails(
+      onTap: () => context.gtDetails(
         game: widget.game,
       ),
       child: FutureBuilder(
@@ -114,14 +126,14 @@ class _ListTileState extends State<_ListTile> {
                   widget.game.title.replaceFirst(' -', ':').toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
+                  style: TypographyEnumeration.headline(Palettes.elements).style,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 7.5, 15, 15),
                 child: Text(
                   TagEnumeration.fromList(localizations, widget.game.tags).reduce((x, y) => "$x • $y"),
-                  style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                  style: TypographyEnumeration.body(Palettes.grey).style,
                 ),
               ),
               Padding(
@@ -143,7 +155,7 @@ class _ListTileState extends State<_ListTile> {
                   widget.game.description(Localizations.localeOf(context)) ?? "",
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
-                  style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                  style: TypographyEnumeration.body(Palettes.grey).style,
                 ),
               ),
             ],
@@ -174,7 +186,7 @@ class _ListTileState extends State<_ListTile> {
     else {
       thumbnail = HugeIcon(
         icon: HugeIcons.strokeRoundedImage01,
-        color: ColorEnumeration.grey.value,
+        color: Palettes.grey.value,
         size: 18,
       );
     }
@@ -215,15 +227,15 @@ class _ListTileState extends State<_ListTile> {
           children: <Widget> [
             HugeIcon(
               icon: HugeIcons.strokeRoundedCorporate,
-              color: ColorEnumeration.grey.value,
+              color: Palettes.grey.value,
               size: 18,
             ),
             Expanded(
               child: Text(
-                " ${localizations.labelPublisher}: ${widget.game.publisher}" ,
+                " ${localizations.lbPublisher}: ${widget.game.publisher}" ,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                style: TypographyEnumeration.body(Palettes.grey).style,
               ),
             ),
           ],
@@ -232,15 +244,15 @@ class _ListTileState extends State<_ListTile> {
           children: <Widget> [
             HugeIcon(
               icon: HugeIcons.strokeRoundedCalendar01,
-              color: ColorEnumeration.grey.value,
+              color: Palettes.grey.value,
               size: 18,
             ),
             Expanded(
               child: Text(
-                " ${localizations.labelRelease}: ${widget.game.release}" ,
+                " ${localizations.lbRelease}: ${widget.game.release}" ,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                style: TypographyEnumeration.body(Palettes.grey).style,
               ),
             ),
           ],
@@ -249,7 +261,7 @@ class _ListTileState extends State<_ListTile> {
           children: <Widget> [
             HugeIcon(
               icon: HugeIcons.strokeRoundedJava,
-              color: ColorEnumeration.grey.value,
+              color: Palettes.grey.value,
               size: 18,
             ),
             Expanded(
@@ -257,7 +269,7 @@ class _ListTileState extends State<_ListTile> {
                 " MIDlets: ${widget.game.midlets.length}",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                style: TypographyEnumeration.body(Palettes.grey).style,
               ),
             ),
           ],
@@ -266,15 +278,15 @@ class _ListTileState extends State<_ListTile> {
           children: <Widget> [
             HugeIcon(
               icon: HugeIcons.strokeRoundedDownload01,
-              color: ColorEnumeration.grey.value,
+              color: Palettes.grey.value,
               size: 18,
             ),
             Expanded(
               child: Text(
-                " ${localizations.labelDownloads}: $downloads",
+                " ${localizations.lbDownloads}: $downloads",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                style: TypographyEnumeration.body(Palettes.grey).style,
               ),
             ),
           ],
@@ -283,15 +295,15 @@ class _ListTileState extends State<_ListTile> {
           children: <Widget> [
             HugeIcon(
               icon: HugeIcons.strokeRoundedAward01,
-              color: ColorEnumeration.grey.value,
+              color: Palettes.grey.value,
               size: 18,
             ),
             Expanded(
               child: Text(
-                " ${localizations.labelAchievements}: 0",
+                " ${localizations.lbAchievements}: -",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                style: TypographyEnumeration.body(Palettes.grey).style,
               ),
             ),
           ],

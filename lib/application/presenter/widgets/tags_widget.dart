@@ -6,8 +6,6 @@ import '../../core/enumerations/palette_enumeration.dart';
 import '../../core/enumerations/tag_enumeration.dart';
 import '../../core/enumerations/typographies_enumeration.dart';
 
-// TAGS WIDGET 🏷️: ============================================================================================================================================================== //
-
 /// A widget that displays the tags of a game as labels.
 ///
 /// This widget takes a list of tags and displays each tag as a styled label. 
@@ -43,7 +41,7 @@ class TagsWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: gBorderRadius,
-          color: ColorEnumeration.foreground.value,
+          color: Palettes.foreground.value,
         ),
         height: 35,
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -52,14 +50,14 @@ class TagsWidget extends StatelessWidget {
           children: <Widget>[
             Icon(
               tag.icon,
-              color: ColorEnumeration.grey.value,
+              color: Palettes.grey.value,
               size: 20,
             ),
             Align(
               alignment: Alignment.center,
               child: Text(
                 tag.code,
-                style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                style: TypographyEnumeration.body(Palettes.grey).style,
               ),
             ),
           ],

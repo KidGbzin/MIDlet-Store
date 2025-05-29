@@ -1,10 +1,10 @@
 enum ProgressEnumeration {
-  loading,
-  error,
-  isOutdated,
-  loginRequest,
-  localeRequest,
-  emulatorNotFound,
-  ready,
-  finished;
+  isLoading,
+  isFinished,
+  isReady,
+  isWaiting,
+  hasError,
+  requestEmulator,
+  requestUpdate,
+  requestSignIn,
 }
