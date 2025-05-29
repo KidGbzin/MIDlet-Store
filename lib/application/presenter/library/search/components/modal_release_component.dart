@@ -103,8 +103,8 @@ class _ReleaseModalState extends State<_ReleaseModal> {
             decoration: BoxDecoration(
               borderRadius: gBorderRadius,
               color: selectedReleaseYear == releaseYear
-                ? ColorEnumeration.primary.value.withAlpha(190)
-                : ColorEnumeration.foreground.value,
+                ? Palettes.primary.value.withAlpha(190)
+                : Palettes.foreground.value,
             ),
             
             child: Column(
@@ -116,7 +116,7 @@ class _ReleaseModalState extends State<_ReleaseModal> {
                   alignment: Alignment.center,
                   child: Text(
                     "$releaseYear",
-                    style: TypographyEnumeration.rating(ColorEnumeration.grey).style,
+                    style: TypographyEnumeration.rating(Palettes.grey).style,
                   ),
                 ),
                 Row(
@@ -125,14 +125,14 @@ class _ReleaseModalState extends State<_ReleaseModal> {
                   children: <Widget> [
                     Icon(
                       HugeIcons.strokeRoundedGameController03,
-                      color: ColorEnumeration.grey.value,
+                      color: Palettes.grey.value,
                       size: 18,
                     ),
                     Align(
                       alignment: Alignment.center,
                       child: Text(
                         "$count",
-                        style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                        style: TypographyEnumeration.body(Palettes.grey).style,
                       ),
                     ),
                   ],

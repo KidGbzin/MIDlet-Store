@@ -62,7 +62,7 @@ class _SearchBarState extends State<_SearchBar> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: gBorderRadius,
-        color: ColorEnumeration.foreground.value,
+        color: Palettes.foreground.value,
       ),
       height: 40,
       child: Row(
@@ -100,14 +100,14 @@ class _SearchBarState extends State<_SearchBar> {
                   FocusManager.instance.primaryFocus?.unfocus();
                 }
               },
-              style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+              style: TypographyEnumeration.body(Palettes.elements).style,
             ),
           ),
           SizedBox.square(
             dimension: 40,
             child: HugeIcon(
               icon: HugeIcons.strokeRoundedSearch02,
-              color: ColorEnumeration.elements.value,
+              color: Palettes.elements.value,
               size: 25,
             ),
           ),

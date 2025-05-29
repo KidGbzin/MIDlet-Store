@@ -2,65 +2,92 @@ part of '../details_handler.dart';
 
 class _ActionsSection extends StatefulWidget {
 
+  /// Controls the handler’s state and behavior logic.
+  final _Controller controller;
+
   /// Provides localized strings and messages based on the user’s language and region.
   final AppLocalizations localizations;
 
-  const _ActionsSection(this.localizations);
+  const _ActionsSection({
+    required this.controller,
+    required this.localizations,
+  });
 
   @override
   State<_ActionsSection> createState() => __ActionsSectionState();
 }
 
 class __ActionsSectionState extends State<_ActionsSection> {
+  late final List<MIDlet> midlets = widget.controller.game.midlets;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: ColorEnumeration.foreground.value,
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+    return Ink(
+      color: Palettes.foreground.value,
+      padding: const EdgeInsets.fromLTRB(15, 2.5, 15, 2.5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: 7.5,
         children: <Widget> [
-          //TODO: Translate this section.
-          //TODO: Convert to action buttons.
           Expanded(
-            child: _wActionButton("MIDlets", HugeIcons.strokeRoundedJava),
+            child: InkWell(
+              borderRadius: gBorderRadius,
+              onTap: () {
+                context.gtMIDlets(widget.controller.game);
+              },
+              child: label(
+                icon: HugeIcons.strokeRoundedJava,
+                title: "MIDlets",
+                value: midlets.length.toString(),
+              ),
+            ),
           ),
           Expanded(
-            child: _wActionButton("Soundtrack", HugeIcons.strokeRoundedMusicNote04),
-          ),
-          Expanded(
-            child: _wActionButton("Favourite", HugeIcons.strokeRoundedFavourite),
-          ),
-          Expanded(
-            child: _wActionButton("Share", HugeIcons.strokeRoundedShare03),
+            child: ValueListenableBuilder(
+              valueListenable: widget.controller.nGameMetadata,
+              builder: (BuildContext context, GameData? metadata, Widget? _) {
+                final String downloads = (metadata?.downloads ?? "-").toString();
+
+                return AnimatedSwitcher(
+                  duration: gAnimationDuration,
+                  child: label(
+                    key: ValueKey(downloads),
+                    icon: HugeIcons.strokeRoundedDownload01,
+                    title: widget.localizations.lbDownloads,
+                    value: downloads,
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _wActionButton(String action, IconData icon) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: gBorderRadius,
-        color: ColorEnumeration.foreground.value,
-      ),
-      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+  Widget label({
+    Key? key,
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
+    return Padding(
+      key: key,
+      padding: const EdgeInsets.fromLTRB(0, 15, 0, 12.5),
       child: Column(
         spacing: 7.5,
         children: <Widget> [
           Icon(
             icon,
-            color: ColorEnumeration.elements.value,
+            color: Palettes.elements.value,
             size: 25,
           ),
           Text(
-            action,
-            maxLines: 1,
+            "$title\n$value",
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            style: TypographyEnumeration.body(Palettes.grey).style,
+            textAlign: TextAlign.center,
           ),
         ],
       ),

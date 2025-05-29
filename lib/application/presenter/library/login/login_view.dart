@@ -53,17 +53,14 @@ class __LoginViewState extends State<_LoginView> {
             return Center(
               child: Text(
                 "Redirecting...",
-                style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+                style: TypographyEnumeration.body(Palettes.elements).style,
               ),
             );
           }
           else if (progress == ProgressEnumeration.hasError) {
-            // TODO: Place an error widget here!
-
             return SizedBox();
           }
           else {
-            // TODO: Place an error widget here!
             Logger.error('Encountered an unhandled Login progress state: "${progress.name.toUpperCase()}". This state should be handled explicitly!');
 
             return SizedBox();

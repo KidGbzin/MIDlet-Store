@@ -65,7 +65,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
         else {
           child = Icon(
             HugeIcons.strokeRoundedAlert01,
-            color: ColorEnumeration.grey.value,
+            color: Palettes.grey.value,
             size: 18,
           );
         }
@@ -79,7 +79,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
             ),
           ],
           child: AnimatedSize(
-            duration: Durations.long2,
+            duration: gAnimationDuration,
             curve: Curves.easeOutCubic,
             child: AnimatedSwitcher(
               duration: Durations.long2,
@@ -117,15 +117,15 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
                 ratingWidget: RatingWidget(
                   full: Icon(
                     HugeIcons.strokeRoundedStar,
-                    color: ColorEnumeration.gold.value,
+                    color: Palettes.gold.value,
                   ),
                   half: Icon(
                     HugeIcons.strokeRoundedStarHalf,
-                    color: ColorEnumeration.gold.value,
+                    color: Palettes.gold.value,
                   ),
                   empty: Icon(
                     HugeIcons.strokeRoundedStar,
-                    color: ColorEnumeration.disabled.value,
+                    color: Palettes.disabled.value,
                   ),
                 ),
               ),
@@ -158,8 +158,8 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
       key: Key("Disabled-Button"),
       icon: HugeIcons.strokeRoundedUnavailable,
       onTap: () {},
-      primaryColor: ColorEnumeration.foreground,
-      secondaryColor: ColorEnumeration.foreground,
+      primaryColor: Palettes.foreground,
+      secondaryColor: Palettes.foreground,
       text: localizations.btUpdateYourRating,
     );
   }

@@ -25,7 +25,10 @@ class _InstallationViewState extends State<_InstallationView> {
   late final List<Widget> children = <Widget> [
     _ActionsSection(widget.midlet),
     gDivider,
-    _DetailsSection(widget.midlet),
+    _DetailsSection(
+      localizations: widget.localizations,
+      midlet: widget.midlet,
+    ),
     gDivider,
     AdvertisementWidget(getAdvertisement: widget.controller.sAdMob.getAdvertisement),
     gDivider,
@@ -71,8 +74,8 @@ class _InstallationViewState extends State<_InstallationView> {
         slivers: <Widget> [
           SliverAppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: ColorEnumeration.background.value,
-            surfaceTintColor: ColorEnumeration.background.value,
+            backgroundColor: Palettes.background.value,
+            surfaceTintColor: Palettes.background.value,
             pinned: true,
             titleSpacing: 0,
             flexibleSpace: _HeaderSection(widget.controller, widget.localizations),

@@ -13,7 +13,7 @@ class TypographyEnumeration {
 
   final TextStyle style;
 
-  factory TypographyEnumeration.body(ColorEnumeration palette) {
+  factory TypographyEnumeration.body(Palettes palette) {
     return TypographyEnumeration._internal(GoogleFonts.rajdhani(
       color: palette.value,
       fontSize: 15,
@@ -22,7 +22,7 @@ class TypographyEnumeration {
     ));
   }
 
-  factory TypographyEnumeration.theme(ColorEnumeration palette) {
+  factory TypographyEnumeration.theme(Palettes palette) {
     return TypographyEnumeration._internal(GoogleFonts.rajdhani(
       color: palette.value,
       fontSize: 45,
@@ -32,7 +32,7 @@ class TypographyEnumeration {
     ));
   }
 
-  factory TypographyEnumeration.rating(ColorEnumeration palette) {
+  factory TypographyEnumeration.rating(Palettes palette) {
     return TypographyEnumeration._internal(GoogleFonts.rajdhani(
       color: palette.value,
       fontSize: 35,
@@ -41,7 +41,7 @@ class TypographyEnumeration {
     ));
   }
 
-  factory TypographyEnumeration.headline(ColorEnumeration palette) {
+  factory TypographyEnumeration.headline(Palettes palette) {
     return TypographyEnumeration._internal(GoogleFonts.rajdhani(
       color: palette.value,
       fontSize: 16,

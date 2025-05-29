@@ -22,7 +22,7 @@ class __UpdateButtonState extends State<_UpdateButton> {
   @override
   Widget build(BuildContext context) {
     return ButtonWidget.widget(
-      color: ColorEnumeration.foreground.value,
+      color: Palettes.foreground.value,
       onTap: () {
         widget.controller.openMIDletStoreReleases();
       },
@@ -34,7 +34,7 @@ class __UpdateButtonState extends State<_UpdateButton> {
           child: Text(
             widget.localizations.buttonUpdateAvailable.toUpperCase(),
             maxLines: 1,
-            style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
+            style: TypographyEnumeration.headline(Palettes.elements).style,
           ),
         ),
       ),

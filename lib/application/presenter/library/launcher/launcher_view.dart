@@ -53,7 +53,7 @@ class _LauncherViewState extends State<_LauncherView> {
                       alignment: Alignment.center,
                       child: HugeIcon(
                         icon: HugeIcons.strokeRoundedAlert01,
-                        color: ColorEnumeration.grey.value,
+                        color: Palettes.grey.value,
                       ),
                     );
                   }

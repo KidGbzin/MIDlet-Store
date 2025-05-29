@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -46,14 +44,7 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/midlets',
-      builder: (BuildContext context, GoRouterState state) {
-        final ({File cover, Game game}) arguments = state.extra as ({File cover, Game game});
-
-        return MIDlets(
-          cover: arguments.cover,
-          game: arguments.game,
-        );
-      }
+      builder: (BuildContext context, GoRouterState state) => MIDlets(state.extra as Game),
     ),
     GoRoute(
       path: '/search',

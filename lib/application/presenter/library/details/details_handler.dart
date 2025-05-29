@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
@@ -36,7 +37,6 @@ import '../../../services/activity_service.dart';
 
 import '../../widgets/button_widget.dart';
 import '../../widgets/confetti_widget.dart';
-import '../../widgets/dialog_widget.dart';
 import '../../widgets/gradient_button_widget.dart';
 import '../../widgets/loading_widget.dart';
 import '../../widgets/modal_widget.dart';
@@ -47,9 +47,9 @@ import '../../widgets/thumbnail_widget.dart';
 part '../details/components/about_section_component.dart';
 part '../details/components/action_section_component.dart';
 part '../details/components/cover_section_component.dart';
-part '../details/components/dialog_components.dart';
 part '../details/components/header_section_component.dart';
 part '../details/components/play_button_component.dart';
+part '../details/components/previews_dialog_component.dart';
 part '../details/components/previews_section_component.dart';
 part '../details/components/rating_section_component.dart';
 part '../details/components/related_section_component.dart';
@@ -137,7 +137,7 @@ class _DetailsState extends State<Details> {
   @override
   Widget build(BuildContext context) => Stack(
     children: <Widget> [
-      _DetailsView(
+      _View(
         controller: controller,
         localizations: localizations,
       ),

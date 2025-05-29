@@ -10,33 +10,33 @@ import '../enumerations/palette_enumeration.dart';
 /// It's used to configure the colors, typography, and other design elements of the application.
 final ThemeData theme = ThemeData(
   appBarTheme: AppBarTheme(
-    backgroundColor: ColorEnumeration.background.value,
+    backgroundColor: Palettes.background.value,
     toolbarHeight: 70,
     titleSpacing: 15,
     shape: Border(
       bottom: BorderSide(
-        color: ColorEnumeration.divider.value,
+        color: Palettes.divider.value,
         width: 1,
       ),
     ),
-    surfaceTintColor: ColorEnumeration.background.value,
+    surfaceTintColor: Palettes.background.value,
   ),
   bottomSheetTheme: BottomSheetThemeData(
-    backgroundColor: ColorEnumeration.background.value,
+    backgroundColor: Palettes.background.value,
     elevation: 0,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(15),
       ),
     ),
-    surfaceTintColor: ColorEnumeration.background.value,
+    surfaceTintColor: Palettes.background.value,
   ),
-  highlightColor: ColorEnumeration.elements.value.withAlpha(25),
+  highlightColor: Palettes.elements.value.withAlpha(25),
   pageTransitionsTheme: const PageTransitionsTheme(
     builders: <TargetPlatform, PageTransitionsBuilder> {
       TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
     },
   ),
-  scaffoldBackgroundColor: ColorEnumeration.background.value,
-  splashColor: ColorEnumeration.splash.value,
+  scaffoldBackgroundColor: Palettes.background.value,
+  splashColor: Palettes.splash.value,
 );

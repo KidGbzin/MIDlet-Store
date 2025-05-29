@@ -106,8 +106,8 @@ class _PublisherModalState extends State<_PublisherModal> {
                 decoration: BoxDecoration(
                   borderRadius: gBorderRadius,
                   color: isSelected == publisher
-                    ? ColorEnumeration.primary.value.withAlpha(190)
-                    : ColorEnumeration.foreground.value,
+                    ? Palettes.primary.value.withAlpha(190)
+                    : Palettes.foreground.value,
                 ),
                 padding: EdgeInsets.all(15),
                 child: logo(publisher),
@@ -135,7 +135,7 @@ class _PublisherModalState extends State<_PublisherModal> {
             publisher,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            style: TypographyEnumeration.body(Palettes.grey).style,
             textAlign: TextAlign.center,
           ),
         );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../logger.dart';
 
@@ -70,9 +71,10 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
           else if (progress == ProgressEnumeration.hasError) {
             return Align(
               alignment: Alignment.center,
-              child: Text(
-                'Unable to load advertisement at the moment.', // TODO: Implement translation for this message.
-                style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+              child: Icon(
+                HugeIcons.strokeRoundedAdvertisiment,
+                size: 18,
+                color: Palettes.grey.value,
               ),
             );
           }
@@ -80,8 +82,8 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
             return Align(
               alignment: Alignment.center,
               child: Text(
-                'Unexpected error. Please try again later.', // TODO: Implement translation for this message.
-                style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                'Unexpected error. Please try again later.',
+                style: TypographyEnumeration.body(Palettes.grey).style,
               ),
             );
           }

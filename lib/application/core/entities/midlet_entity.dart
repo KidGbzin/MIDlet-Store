@@ -95,7 +95,7 @@ class MIDlet {
       languages: List<String>.from(json["languages"]),
       resolution: json['resolution'] as String,
       size: json['size'] as int,
-      source: json['source'] ?? "https://github.com/KidGbzin/MIDlet-Store/issues/55", // TODO: Update the API.
+      source: json['source'] as String,
       title: json['title'] as String,
       version: json['version'] as String,
     );

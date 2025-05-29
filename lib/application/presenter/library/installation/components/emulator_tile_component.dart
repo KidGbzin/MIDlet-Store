@@ -92,7 +92,7 @@ class _EmulatorTileState extends State<_EmulatorTile> with SingleTickerProviderS
               return Ink(
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: ColorEnumeration.divider.value,
+                    color: Palettes.divider.value,
                     width: 1,
                   ),
                   borderRadius: gBorderRadius,
@@ -107,12 +107,12 @@ class _EmulatorTileState extends State<_EmulatorTile> with SingleTickerProviderS
                     Expanded(
                       child: Image.asset(
                         widget.emulator.assetImage,
-                        color: ColorEnumeration.elements.value,
+                        color: Palettes.elements.value,
                       ),
                     ),
                     Text(
                       widget.emulator.title,
-                      style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+                      style: TypographyEnumeration.body(Palettes.elements).style,
                     ),
                   ],
                 ),
@@ -127,7 +127,7 @@ class _EmulatorTileState extends State<_EmulatorTile> with SingleTickerProviderS
   Color? color(isSelected) {
     if (isSelected) return null;
 
-    return ColorEnumeration.background.value;
+    return Palettes.background.value;
   }
 
   LinearGradient? gradient(bool isSelected) {

@@ -1,6 +1,6 @@
 part of '../details/details_handler.dart';
 
-class _DetailsView extends StatefulWidget {
+class _View extends StatefulWidget {
 
   /// Controls the handler’s state and behavior logic.
   final _Controller controller;
@@ -8,44 +8,51 @@ class _DetailsView extends StatefulWidget {
   /// Provides localized strings and messages based on the user’s language and region.
   final AppLocalizations localizations;
 
-  const _DetailsView({
+  const _View({
     required this.controller,
     required this.localizations,
   });
 
   @override
-  State<_DetailsView> createState() => __DetailsViewState();
+  State<_View> createState() => _ViewState();
 }
 
-class __DetailsViewState extends State<_DetailsView> {
+class _ViewState extends State<_View> {
+  late final double padding = MediaQuery.of(context).padding.top;
+
   late final List<Widget> children = <Widget> [
     _RatingSection(
       controller: widget.controller,
       localizations: widget.localizations,
     ),
     gDivider,
-    _ActionsSection(widget.localizations),    
+    _ActionsSection(
+      controller: widget.controller,
+      localizations: widget.localizations,
+    ),    
     gDivider,
     _About(
       description: widget.controller.game.description(Localizations.localeOf(context)),
+      localizations: widget.localizations,
     ),
     gDivider,
     _PreviewsSection(
       controller: widget.controller,
+      localizations: widget.localizations,
     ),
     gDivider,
     _RelatedGamesSection(
       collection: widget.controller.getTopPublisherGames(),
       controller: widget.controller,
-      description: widget.localizations.sectionPublisherDescription.replaceFirst('\$1', widget.controller.game.publisher),
+      description: widget.localizations.scRelatedPublisherDescription.replaceFirst("@publisher", widget.controller.game.publisher),
       title: widget.controller.game.publisher,
     ),
     gDivider,
     _RelatedGamesSection(
       collection: widget.controller.getTopRelatedGames(),
       controller: widget.controller,
-      description: widget.localizations.sectionRelatedGamesDescription.replaceFirst('\$1', widget.controller.game.title.replaceFirst(' -', ':')),
-      title: widget.localizations.sectionRelatedGames,
+      description: widget.localizations.scRelatedGamesDescription.replaceFirst("@title", widget.controller.game.fTitle),
+      title: widget.localizations.scRelatedGames,
     ),
   ]; 
 
@@ -62,8 +69,8 @@ class __DetailsViewState extends State<_DetailsView> {
         slivers: <Widget> [
           SliverAppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: ColorEnumeration.background.value,
-            surfaceTintColor: ColorEnumeration.background.value,
+            backgroundColor: Palettes.background.value,
+            surfaceTintColor: Palettes.background.value,
             pinned: true,
             title: Row(
               mainAxisSize: MainAxisSize.max,
@@ -82,21 +89,21 @@ class __DetailsViewState extends State<_DetailsView> {
                 ),
               ],
             ),
-            expandedHeight: (MediaQuery.sizeOf(context).width / 0.75) - MediaQuery.of(context).padding.top,
+            expandedHeight: (MediaQuery.sizeOf(context).width / 0.75) - padding,
             flexibleSpace: FlexibleSpaceBar(
               background: _CoverSection(widget.controller),
             ),
           ),
           SliverAppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: ColorEnumeration.background.value,
-            surfaceTintColor: ColorEnumeration.background.value,
-            pinned: true,
-            titleSpacing: 0,
+            backgroundColor: Palettes.background.value,
+            collapsedHeight: 102 - padding,
+            expandedHeight: 102 - padding,
             flexibleSpace: _HeaderSection(widget.controller),
-            toolbarHeight: 102 - MediaQuery.of(context).padding.top,
-            expandedHeight: 102 - MediaQuery.of(context).padding.top,
-            collapsedHeight: 102 - MediaQuery.of(context).padding.top,
+            pinned: true,
+            surfaceTintColor: Palettes.background.value,
+            titleSpacing: 0,
+            toolbarHeight: 102 - padding,
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(

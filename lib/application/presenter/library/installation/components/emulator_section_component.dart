@@ -22,8 +22,8 @@ class _SelectEmulatorSectionState extends State<_SelectEmulatorSection> {
   @override
   Widget build(BuildContext context) {
     return Section(
-      title: "SELECT EMULATOR", // TODO: Translate.
-      description: "Please select which emulator you'd like to install.",
+      title: widget.localizations.scSelectEmulator,
+      description: widget.localizations.scSelectEmulatorDescription,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
         child: Row(
@@ -40,12 +40,6 @@ class _SelectEmulatorSectionState extends State<_SelectEmulatorSection> {
                 controller: widget.controller,
                 emulator: Emulators.jlMod,
               ),
-            ),
-            ButtonWidget.icon(
-              icon: HugeIcons.strokeRoundedHelpCircle,
-              onTap: () {
-                // TODO: Create a help modal.
-              },
             ),
           ],
         ),
@@ -65,11 +59,11 @@ class _SelectEmulatorSectionState extends State<_SelectEmulatorSection> {
           return Ink(
             decoration: BoxDecoration(
               border: Border.all(
-                color: ColorEnumeration.divider.value,
+                color: Palettes.divider.value,
                 width: 1,
               ),
               borderRadius: gBorderRadius,
-              color: emulator == selectedEmulator ? emulator.primaryColor : ColorEnumeration.background.value,
+              color: emulator == selectedEmulator ? emulator.primaryColor : Palettes.background.value,
             ),
             height: 100,
             padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
@@ -81,7 +75,7 @@ class _SelectEmulatorSectionState extends State<_SelectEmulatorSection> {
                 ),
                 Text(
                   emulator.title,
-                  style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+                  style: TypographyEnumeration.body(Palettes.elements).style,
                 ),
               ],
             ),

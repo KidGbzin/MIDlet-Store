@@ -2,7 +2,6 @@
     "@@author": "KidGbzin",
     "@@locale": "pt",
 
-    "buttonPlay": "JOGAR",
     "buttonCommingSoon": "EM BREVE",
     "buttonLoginWithGoogle": "ENTRAR COM O GOOGLE",
     "buttonReadyToInstall": "PRONTO PARA A INSTALAÇÃO",
@@ -10,20 +9,6 @@
     "chipFilterByCategories": "Categorias",
     "chipFilterByPublisher": "Publicadora",
     "chipFilterByReleaseYear": "Ano de Lançamento",
-    "label3DVersion": "Versão 3D",
-    "labelAchievements": "Conquistas",
-    "labelCensored": "Versão Censurada",
-    "labelDownloads": "Downloads",
-    "labelLandscape": "Orientação Paisagem",
-    "labelMultiplayerBluetooth": "Multiplayer Bluetooth",
-    "labelMultiplayerLocal": "Multiplayer Local",
-    "labelMultiplayerOnline": "Online",
-    "labelMultiscreen": "Multitelas",
-    "labelPublisher": "Publicadora",
-    "labelRelease": "Lançamento",
-    "labelSize": "Tamanho",
-    "labelTouchscreen": "Tela sensível ao toque",
-    "labelVersion": "Versão",
     "launcherErrorMessage01": "Ocorreu um erro, impedindo a inicialização do aplicativo.",
     "launcherErrorMessage02": "Falha na conexão com o servidor, tente novamente mais tarde.",
     "launcherLoadingMessage01": "Conectando ao banco de dados, aguarde...",
@@ -35,27 +20,12 @@
     "messageFiltersEmpty": "Nenhum filtro aplicado, exibindo todos os $1 jogos.",
     "messageFavoritesAdded": "Você adicionou $1 à sua lista de favoritos.",
     "messageFavoritesRemoved": "Você removeu $1 da sua lista de favoritos.",
-    "sectionAbout": "SOBRE",
-    "sectionEmulatorNotFound": "ALGO DEU ERRADO",
-    "sectionEmulatorNotFoundDescription": "Nenhum emulador disponível foi encontrado no seu dispositivo. Certifique-se de que há um emulador instalado.",
-    "sectionEmulatorNotFoundText01": "Você também pode instalar o emulador J2ME Loader em uma das opções abaixo.",
-    "sectionEmulatorNotFoundText02": "Quando houver um emulador instalado, ele será iniciado automaticamente da próxima vez.",
     "sectionFilterCategories": "FILTRAR POR CATEGORIAS",
     "sectionFilterCategoriesDescription": "Refine sua pesquisa selecionando até três categorias.",
     "sectionFilterPublisher": "FILTRAR POR PUBLICADORA",
     "sectionFilterPublisherDescription": "Filtre sua pesquisa selecionando uma publicadora específica.",
     "sectionFilterReleaseYear": "FILTRAR POR ANO DE LANÇAMENTO",
     "sectionFilterReleaseYearDescription": "Filtre sua pesquisa selecionando um ano de lançamento especifico.",
-    "sectionInstallation": "INSTALAÇÂO",
-    "sectionInstallationDescription": "Ao clicar em \"Jogar\", o menu de instalação de MIDlets será aberto, exibindo informações relevantes sobre a versão do jogo que será instalada no seu emulador. O emulador será iniciado automaticamente após a instalação.\n\nEm breve, várias versões de um mesmo jogo estarão disponíveis para seleção.",
-    "sectionPreviews": "PRÉVIAS",
-    "sectionPreviewsDescription": "As características e prévias do jogo podem variar conforme o modelo do seu telefone.",
-    "sectionPreviewsError": "Este jogo não possui prévias disponíveis.",
-    "sectionPublisherDescription": "Descubra mais jogos da $1 que você pode gostar.",
-    "sectionReadyToInstall": "PRONTO PARA INSTALAR",
-    "sectionReadyToInstallDescription": "O jogo foi baixado e está pronto para ser instalado no emulador.",
-    "sectionRelatedGames": "RECOMENDADO PARA VOCÊ",
-    "sectionRelatedGamesDescription": "Se você gostou de $1, pode gostar também destes outros jogos.",
     "tag3D": "3D",
     "tagAction": "Ação",
     "tagAdventure": "Aventura",
@@ -85,9 +55,139 @@
     "tagTerror": "Terror",
     "tagTowerDefense": "Tower Defense",
 
+    "btInstallOnEmulator": "INSTALAR NO EMULADOR",
+    "@btInstallOnEmulator": {
+        "description": "Rótulo do botão usado para instalar o jogo no emulador selecionado."
+    },
+
     "btOpenOnBrowser": "ABRIR NO NAVEGADOR",
     "@btOpenOnBrowser": {
         "description": "Texto do botão para abrir o link no navegador."
+    },
+
+    "btPlayGame": "JOGAR",
+    "@btPlayGame": {
+        "description": "Rótulo do botão para iniciar ou executar o jogo."
+    },
+
+    "lb3D": "3D",
+    "@lb3D": {
+        "description": "Rótulo que indica se o jogo utiliza uma versão ou tecnologia 3D."
+    },
+
+    "lbAchievements": "Conquistas",
+    "@lbAchievements": {
+        "description": "Rótulo que indica se o jogo possui sistema de conquistas ou recompensas."
+    },
+
+    "lbCensored": "Censurado",
+    "@lbCensored": {
+        "description": "Rótulo que indica que o conteúdo do jogo foi censurado."
+    },
+
+    "lbDownloads": "Downloads",
+    "@lbDownloads": {
+        "description": "Rótulo que mostra o número total de downloads do jogo."
+    },
+
+    "lbLandscape": "Paisagem",
+    "@lbLandscape": {
+        "description": "Rótulo que indica que o jogo suporta ou requer orientação paisagem."
+    },
+
+    "lbPortrait": "Retrato",
+    "@lbPortrait": {
+        "description": "Rótulo que indica que o jogo suporta ou requer orientação retrato."
+    },
+
+    "lbMultiplayerBluetooth": "Multiplayer Bluetooth",
+    "@lbMultiplayerBluetooth": {
+        "description": "Rótulo que indica que o jogo suporta multiplayer via conexão Bluetooth."
+    },
+
+    "lbMultiplayerLocal": "Multiplayer Local",
+    "@lbMultiplayerLocal": {
+        "description": "Rótulo que indica que o jogo suporta multiplayer local no mesmo dispositivo ou rede."
+    },
+
+    "lbMultiplayerOnline": "Online",
+    "@lbMultiplayerOnline": {
+        "description": "Rótulo que indica que o jogo suporta partidas multiplayer online."
+    },
+
+    "lbMultiscreen": "Multitela",
+    "@lbMultiscreen": {
+        "description": "Rótulo que indica que o jogo é compatível com várias resoluções ou proporções de tela."
+    },
+
+    "lbPublisher": "Publicadora",
+    "@lbPublisher": {
+        "description": "Rótulo que exibe o nome da publicadora ou desenvolvedora do jogo."
+    },
+    
+    "lbRelease": "Lançamento",
+    "@lbRelease": {
+        "description": "Rótulo que mostra a data de lançamento original ou da versão do jogo."
+    },
+
+    "lbSize": "Tamanho",
+    "@lbSize": {
+        "description": "Rótulo que mostra o tamanho do arquivo do jogo."
+    },
+
+    "lbTouchscreen": "Toque",
+    "@lbTouchscreen": {
+        "description": "Rótulo que indica que o jogo suporta entrada por toque."
+    },
+
+    "lbVersion": "Versão",
+    "@lbVersion": {
+        "description": "Rótulo que exibe o número da versão do jogo."
+    },
+
+    "scEmulatorNotFound": "ALGO DEU ERRADO",
+    "@scEmulatorNotFound": {
+        "description": "Título exibido quando o emulador não pôde ser encontrado ou iniciado."
+    },
+
+    "scEmulatorNotFoundDescription": "Não conseguimos encontrar o emulador @emulator no seu dispositivo. Verifique se ele está instalado antes de tentar novamente.",
+    "@scEmulatorNotFoundDescription": {
+        "description": "Mensagem informando que o emulador selecionado não está instalado. @emulator será substituído pelo nome do emulador."
+    },
+
+    "scEmulatorNotFoundText01": "Você também pode instalar o emulador @emulator usando uma das opções abaixo.",
+    "@scEmulatorNotFoundText01": {
+        "description": "Mensagem sugerindo a instalação do emulador, com opções exibidas abaixo. @emulator será substituído pelo nome do emulador."
+    },
+
+    "scEmulatorNotFoundText02": "Quando houver um emulador instalado, ele será iniciado automaticamente na próxima vez.",
+    "@scEmulatorNotFoundText02": {
+        "description": "Mensagem tranquilizando o usuário de que, ao instalar um emulador, ele será iniciado automaticamente na próxima vez."
+    },
+
+    "scPreviews": "PRÉVIAS",
+    "@scPreviews": {
+        "description": "Título da seção que exibe capturas de tela ou prévias do jogo."
+    },
+
+    "scPreviewsDescription": "As características e prévias do jogo podem variar de acordo com o modelo do seu celular.",
+    "@scPreviewsDescription": {
+        "description": "Texto exibido para avisar que as prévias ou o comportamento do jogo podem variar conforme o celular do usuário."
+    },
+
+    "scPreviewsError": "Este jogo não possui prévias disponíveis.",
+    "@scPreviewsError": {
+        "description": "Mensagem exibida quando não há imagens de prévia do jogo."
+    },
+
+    "scSelectEmulator": "SELECIONE O EMULADOR",
+    "@scSelectEmulator": {
+        "description": "Título da seção solicitando ao usuário que escolha um emulador para instalar."
+    },
+
+    "scSelectEmulatorDescription": "Por favor, selecione em qual emulador você deseja instalar.",
+    "@scSelectEmulatorDescription": {
+        "description": "Texto de instrução pedindo ao usuário que escolha o emulador preferido."
     },
 
     "btSubmitRating": "ENVIAR AVALIAÇÃO",
@@ -100,6 +200,11 @@
         "description": "Exibido quando o usuário não definiu uma nota válida."
     },
 
+    "scAbout": "SOBRE",
+    "@scAbout": {
+        "description": "Título da seção que exibe informações sobre o jogo."
+    },
+
     "scExternalSource": "VOCÊ ESTÁ SENDO REDIRECIONADO",
     "@scExternalSource": {
         "description": "Título exibido ao redirecionar o usuário para um site externo."
@@ -108,6 +213,21 @@
     "scExternalSourceDescription": "Este arquivo MIDlet está disponível em @source. Para visualizar o arquivo original, abra o link em seu navegador.\n\nAtenção: Este é um site externo, sem afiliação oficial ao projeto MIDlet Store.",
     "@scExternalSourceDescription": {
         "description": "Descrição exibida ao redirecionar o usuário para um site externo."
+    },
+
+    "scRelatedGames": "RECOMENDADOS PARA VOCÊ",
+    "@scRelatedGames": {
+        "description": "Título da seção que exibe jogos relacionados ou recomendados com base no atual."
+    },
+
+    "scRelatedGamesDescription": "Se você gostou de @title, talvez também goste destes outros jogos.",
+    "@scRelatedGamesDescription": {
+        "description": "Mensagem exibida para introduzir uma lista de jogos parecidos com o atual."
+    },
+
+    "scRelatedPublisherDescription": "Descubra mais jogos da @publisher que você pode gostar.",
+    "@scRelatedPublisherDescription": {
+        "description": "Texto que convida o usuário a explorar outros jogos do mesmo publicador, onde @publisher é o nome da publicadora."
     },
 
     "scSubmitRating": "ENVIAR AVALIAÇÃO",

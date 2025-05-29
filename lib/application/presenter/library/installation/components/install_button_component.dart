@@ -36,7 +36,7 @@ class _InstallButtonState extends State<_InstallButton> {
             );
           },
           icon: HugeIcons.strokeRoundedDownload01,
-          text: "INSTALL ON EMULATOR", // TODO: Translate.
+          text: widget.localizations.btInstallOnEmulator,
         ),
       ),
     );

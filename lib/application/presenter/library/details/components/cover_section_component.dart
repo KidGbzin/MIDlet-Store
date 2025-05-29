@@ -12,7 +12,7 @@ class _CoverSection extends StatelessWidget {
     return SizedBox(
       height: MediaQuery.sizeOf(context).width / 0.75,
       child: ValueListenableBuilder(
-        valueListenable: controller.thumbnailState,
+        valueListenable: controller.nThumbnail,
         builder: (BuildContext context, File? file, Widget? _) {
           if (file != null) {
             return ThumbnailWidget(
@@ -23,7 +23,7 @@ class _CoverSection extends StatelessWidget {
           }
           return Icon(
             HugeIcons.strokeRoundedImage01,
-            color: ColorEnumeration.elements.value,
+            color: Palettes.elements.value,
           );
         },
       ),

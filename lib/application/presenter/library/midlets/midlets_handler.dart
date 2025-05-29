@@ -19,6 +19,7 @@ import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../core/extensions/router_extension.dart';
 
+import '../../../repositories/bucket_repository.dart';
 import '../../../services/admob_service.dart';
 
 import '../../widgets/advertisement_widget.dart';
@@ -34,16 +35,9 @@ part '../midlets/midlets_view.dart';
 
 class MIDlets extends StatefulWidget {
 
-  final File cover;
-
   final Game game;
 
-  const MIDlets({
-    required this.cover,
-    required this.game,
-    
-    super.key,
-  });
+  const MIDlets(this.game, {super.key});
 
   @override
   State<MIDlets> createState() => _MIDletsState();
@@ -53,6 +47,7 @@ class _MIDletsState extends State<MIDlets> {
   late final _Controller controller;
   late final AppLocalizations localizations;
 
+  late final BucketRepository rBucket;
   late final AdMobService sAdMob;
 
   @override
@@ -61,14 +56,18 @@ class _MIDletsState extends State<MIDlets> {
 
     Logger.start("Initializing the MIDlets handler...");
 
+    rBucket = Provider.of<BucketRepository>(
+      context,
+      listen: false,
+    );
     sAdMob = Provider.of<AdMobService>(
       context,
       listen: false,
     );
 
     controller = _Controller(
-      cover: widget.cover,
       game: widget.game,
+      rBucket: rBucket,
       sAdMob: sAdMob,
     );
     controller.initialize();

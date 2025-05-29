@@ -33,7 +33,7 @@ class _ApplicationState extends State<Application> {
     );
     SystemChrome.setPreferredOrientations(<DeviceOrientation> [DeviceOrientation.portraitUp]); // Set the orientation mode to freeze at portrait mode only.
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: ColorEnumeration.background.value,
+      systemNavigationBarColor: Palettes.background.value,
     ));
   
     super.initState();

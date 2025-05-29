@@ -32,7 +32,7 @@ class _PlayButtonState extends State<_PlayButton> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: ColorEnumeration.transparent.value,
+      color: Palettes.transparent.value,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
         child: Ink(
@@ -51,13 +51,10 @@ class _PlayButtonState extends State<_PlayButton> {
               else {
                 Logger.error("There's no default MIDlet, redirecting to the MIDlets view...");
           
-                context.gtMIDlets(
-                  cover: widget.controller.thumbnailState.value!,
-                  midlets: widget.controller.game.midlets,
-                );
+                context.gtMIDlets(widget.controller.game);
               }
             },
-            text: "PLAY GAME", // TODO: Translate
+            text: widget.localizations.btPlayGame,
             width: (MediaQuery.sizeOf(context).width - 45) / 2,
           ),
         ),

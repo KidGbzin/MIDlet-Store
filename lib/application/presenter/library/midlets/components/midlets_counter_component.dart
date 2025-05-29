@@ -19,7 +19,7 @@ class _MIDletsCounter extends StatelessWidget {
             child: Text(
               "$length",
               textAlign: TextAlign.center,
-              style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+              style: TypographyEnumeration.body(Palettes.elements).style,
             ),
           ),
         );

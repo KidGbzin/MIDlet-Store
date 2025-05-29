@@ -4,13 +4,19 @@ class _DetailsSection extends StatefulWidget {
 
   final MIDlet midlet;
 
-  const _DetailsSection(this.midlet);
+  final AppLocalizations localizations;
+
+  const _DetailsSection({
+    required this.localizations,
+    required this.midlet,
+  });
 
   @override
   State<_DetailsSection> createState() => _DetailsSectionState();
 }
 
 class _DetailsSectionState extends State<_DetailsSection> {
+  late final AppLocalizations localizations = widget.localizations;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +41,7 @@ class _DetailsSectionState extends State<_DetailsSection> {
       height: 75,
       decoration: BoxDecoration(
         borderRadius: gBorderRadius,
-        color: ColorEnumeration.foreground.value,
+        color: Palettes.foreground.value,
       ),
       width: (MediaQuery.sizeOf(context).width - 45) / 3,
       padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -45,14 +51,14 @@ class _DetailsSectionState extends State<_DetailsSection> {
         children: <Widget> [
           Icon(
             icon,
-            color: ColorEnumeration.elements.value,
+            color: Palettes.elements.value,
             size: 18,
           ),
           Text(
             description,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+            style: TypographyEnumeration.body(Palettes.elements).style,
           ),
         ],
       )
@@ -70,7 +76,7 @@ class _DetailsSectionState extends State<_DetailsSection> {
           height: 75,
           decoration: BoxDecoration(
             borderRadius: gBorderRadius,
-            color: ColorEnumeration.foreground.value,
+            color: Palettes.foreground.value,
           ),
           width: (MediaQuery.sizeOf(context).width - 45) / 3,
           padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -89,7 +95,7 @@ class _DetailsSectionState extends State<_DetailsSection> {
                 flag.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+                style: TypographyEnumeration.body(Palettes.elements).style,
               ),
             ],
           ),
@@ -107,17 +113,15 @@ class _DetailsSectionState extends State<_DetailsSection> {
   }
 
   Widget details() {
-    // TODO: Translate.
-
     final List<Widget> children = <Widget> [];
 
-    if (widget.midlet.isLandscape) children.add(information(HugeIcons.strokeRoundedSmartPhoneLandscape, "Landscape"));
-    if (!widget.midlet.isLandscape) children.add(information(HugeIcons.strokeRoundedSmartPhone01, "Portrait"));
-    if (widget.midlet.isThreeD) children.add(information(HugeIcons.strokeRoundedCodesandbox, "3D Engine"));
-    if (widget.midlet.isMultiplayerB) children.add(information(HugeIcons.strokeRoundedBluetooth, "Bluetooth Multiplayer"));
-    if (widget.midlet.isMultiplayerL) children.add(information(HugeIcons.strokeRoundedUserMultiple, "Multiplayer Local"));
+    if (widget.midlet.isLandscape) children.add(information(HugeIcons.strokeRoundedSmartPhoneLandscape, localizations.lbLandscape));
+    if (!widget.midlet.isLandscape) children.add(information(HugeIcons.strokeRoundedSmartPhone01, localizations.lbPortrait));
+    if (widget.midlet.isThreeD) children.add(information(HugeIcons.strokeRoundedCodesandbox, localizations.lb3D));
+    if (widget.midlet.isMultiplayerB) children.add(information(HugeIcons.strokeRoundedBluetooth, localizations.lbMultiplayerBluetooth));
+    if (widget.midlet.isMultiplayerL) children.add(information(HugeIcons.strokeRoundedUserMultiple, localizations.lbMultiplayerLocal));
     if (widget.midlet.isOnline) children.add(information(HugeIcons.strokeRoundedCellularNetwork, "Online"));
-    if (widget.midlet.isCensored) children.add(information(HugeIcons.strokeRoundedUnavailable, "Censored"));
+    if (widget.midlet.isCensored) children.add(information(HugeIcons.strokeRoundedUnavailable, localizations.lbCensored));
     
     return Column(
       spacing: 7.5,
@@ -132,13 +136,13 @@ class _DetailsSectionState extends State<_DetailsSection> {
       children: <Widget> [
         Icon(
           icon,
-          color: ColorEnumeration.grey.value,
+          color: Palettes.grey.value,
           size: 18,
         ),
         Expanded(
           child: Text(
             text,
-            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            style: TypographyEnumeration.body(Palettes.grey).style,
           ),
         ),
       ],
@@ -155,14 +159,12 @@ class _ActionsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Ink(
-      color: ColorEnumeration.foreground.value,
+      color: Palettes.foreground.value,
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: 7.5,
         children: <Widget> [
-          //TODO: Translate this section.
-          //TODO: Convert to action buttons.
           Expanded(
             child: button(midlet.formattedResolution, HugeIcons.strokeRoundedModernTv),
           ),
@@ -184,7 +186,7 @@ class _ActionsSection extends StatelessWidget {
     return Ink(
       decoration: BoxDecoration(
         borderRadius: gBorderRadius,
-        color: ColorEnumeration.foreground.value,
+        color: Palettes.foreground.value,
       ),
       padding: EdgeInsets.fromLTRB(7.5, 15, 7.5, 15),
       child: Column(
@@ -192,14 +194,14 @@ class _ActionsSection extends StatelessWidget {
         children: <Widget> [
           Icon(
             icon,
-            color: ColorEnumeration.grey.value,
+            color: Palettes.grey.value,
             size: 25,
           ),
           Text(
             action,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            style: TypographyEnumeration.body(Palettes.grey).style,
           ),
         ],
       ),

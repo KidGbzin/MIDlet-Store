@@ -42,13 +42,13 @@ class _HeaderSectionState extends State<_HeaderSection> {
           widget.controller.game.fTitle.toUpperCase(),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
+          style: TypographyEnumeration.headline(Palettes.elements).style,
         ),
         Text(
           "${widget.controller.game.release} • ${widget.controller.game.publisher}",
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+          style: TypographyEnumeration.body(Palettes.grey).style,
         ),
       ],
     );
@@ -56,7 +56,7 @@ class _HeaderSectionState extends State<_HeaderSection> {
 
   Widget logo() {
     return FutureBuilder(
-      future: widget.controller.publisherLogo,
+      future: widget.controller.logo,
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
         if (snapshot.hasData) {
           return Image.file(
@@ -67,7 +67,7 @@ class _HeaderSectionState extends State<_HeaderSection> {
         if (snapshot.hasError) {
           return Icon(
             HugeIcons.strokeRoundedImage02,
-            color: ColorEnumeration.grey.value,
+            color: Palettes.grey.value,
             size: 18,
           );
         }

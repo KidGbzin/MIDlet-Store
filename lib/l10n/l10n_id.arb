@@ -2,7 +2,6 @@
     "@@author": "KidGbzin",
     "@@locale": "id",
 
-    "buttonPlay": "MAIN",
     "buttonCommingSoon": "SEGERA HADIR",
     "buttonLoginWithGoogle": "MASUK DENGAN GOOGLE",
     "buttonReadyToInstall": "SIAP UNTUK DIPASANG",
@@ -10,20 +9,6 @@
     "chipFilterByCategories": "Kategori",
     "chipFilterByPublisher": "Penerbit",
     "chipFilterByReleaseYear": "Tahun Rilis",
-    "label3DVersion": "Versi 3D",
-    "labelAchievements": "Pencapaian",
-    "labelCensored": "Versi Disensor",
-    "labelDownloads": "Unduhan",
-    "labelLandscape": "Orientasi Lanskap",
-    "labelMultiplayerBluetooth": "Multipemain Bluetooth",
-    "labelMultiplayerLocal": "Multipemain Lokal",
-    "labelMultiplayerOnline": "Daring",
-    "labelMultiscreen": "Multilayar",
-    "labelPublisher": "Penerbit",
-    "labelRelease": "Rilis",
-    "labelSize": "Ukuran",
-    "labelTouchscreen": "Layar Sentuh",
-    "labelVersion": "Versi",
     "launcherErrorMessage01": "Terjadi kesalahan yang mencegah aplikasi berjalan.",
     "launcherErrorMessage02": "Gagal terhubung ke server, coba lagi nanti.",
     "launcherLoadingMessage01": "Menghubungkan ke database, harap tunggu...",
@@ -35,27 +20,12 @@
     "messageFavoritesAdded": "Anda menambahkan $1 ke daftar favorit Anda.",
     "messageFavoritesRemoved": "Anda menghapus $1 dari daftar favorit Anda.",
     "messageFiltersEmpty": "Tidak ada filter yang diterapkan, menampilkan semua $1 permainan.",
-    "sectionAbout": "TENTANG",
-    "sectionInstallation": "INSTALASI",
-    "sectionInstallationDescription": "Ketika Anda menekan \"Main\", menu instalasi MIDlet akan terbuka, menampilkan informasi tentang versi gim yang akan dipasang di emulator Anda. Emulator akan diluncurkan secara otomatis setelah instalasi.\n\nSegera, beberapa versi dari gim yang sama akan tersedia untuk dipilih.",
-    "sectionEmulatorNotFound": "TERJADI KESALAHAN",
-    "sectionEmulatorNotFoundDescription": "Tidak ada emulator yang tersedia di perangkat Anda. Pastikan perangkat Anda memiliki emulator yang terpasang.",
-    "sectionEmulatorNotFoundText01": "Anda juga dapat menginstal emulator J2ME Loader dari salah satu opsi di bawah ini.",
-    "sectionEmulatorNotFoundText02": "Ketika ada emulator yang terpasang, emulator akan mulai secara otomatis di waktu berikutnya.",
     "sectionFilterCategories": "FILTER BERDASARKAN KATEGORI",
     "sectionFilterCategoriesDescription": "Sempurnakan pencarian Anda dengan memilih hingga tiga tag kategori.",
     "sectionFilterPublisher": "FILTER BERDASARKAN PENERBIT",
     "sectionFilterPublisherDescription": "Filter pencarian Anda dengan memilih penerbit tertentu.",
     "sectionFilterReleaseYear": "FILTER BERDASARKAN TAHUN RILIS",
     "sectionFilterReleaseYearDescription": "Filter pencarian Anda dengan memilih tahun rilis tertentu.",
-    "sectionPreviews": "PRATINJAU",
-    "sectionPreviewsDescription": "Karakteristik dan pratinjau gim dapat bervariasi sesuai dengan model ponsel Anda.",
-    "sectionPreviewsError": "Gim ini tidak memiliki pratinjau yang tersedia.",
-    "sectionPublisherDescription": "Temukan lebih banyak gim dari $1 yang mungkin Anda sukai.",
-    "sectionReadyToInstall": "SIAP UNTUK DIPASANG",
-    "sectionReadyToInstallDescription": "Gim telah selesai diunduh dan siap untuk dipasang di emulator.",
-    "sectionRelatedGames": "REKOMENDASI UNTUK ANDA",
-    "sectionRelatedGamesDescription": "Jika Anda menikmati $1, Anda mungkin juga akan menikmati gim-gim lainnya ini.",
     "tag3D": "3D",
     "tagAction": "Aksi",
     "tagAdventure": "Petualangan",
@@ -84,10 +54,130 @@
     "tagTakedown": "Menjatuhkan",
     "tagTerror": "Teror",
     "tagTowerDefense": "Pertahanan Menara",
+
+    "btInstallOnEmulator": "INSTAL DI EMULATOR",
+    "@btInstallOnEmulator": {
+        "description": "Label tombol untuk memasang game di emulator yang dipilih."
+    },
     
     "btOpenOnBrowser": "BUKA DI PERAMBAN",
     "@btOpenOnBrowser": {
         "description": "Teks tombol untuk membuka tautan di peramban."
+    },
+
+    "btPlayGame": "MAIN",
+    "@btPlayGame": {
+        "description": "Label tombol untuk memulai atau menjalankan game."
+    },
+
+    "lb3D": "3D",
+    "@lb3D": {
+        "description": "Label yang menunjukkan apakah game menggunakan versi atau teknologi 3D."
+    },
+
+    "lbAchievements": "Prestasi",
+    "@lbAchievements": {
+        "description": "Label yang menunjukkan apakah game memiliki sistem prestasi atau hadiah."
+    },
+
+    "lbCensored": "Disensor",
+    "@lbCensored": {
+        "description": "Label yang menunjukkan bahwa konten game telah disensor."
+    },
+
+    "lbDownloads": "Unduhan",
+    "@lbDownloads": {
+        "description": "Label yang menunjukkan jumlah total unduhan game."
+    },
+
+    "lbLandscape": "Lanskap",
+    "@lbLandscape": {
+        "description": "Label yang menunjukkan bahwa game mendukung atau memerlukan orientasi lanskap."
+    },
+
+    "lbMultiplayerBluetooth": "Multipemain Bluetooth",
+    "@lbMultiplayerBluetooth": {
+        "description": "Label yang menunjukkan bahwa game mendukung multipemain melalui koneksi Bluetooth."
+    },
+
+    "lbMultiplayerLocal": "Multipemain Lokal",
+    "@lbMultiplayerLocal": {
+        "description": "Label yang menunjukkan bahwa game mendukung multipemain lokal pada perangkat atau jaringan yang sama."
+    },
+
+    "lbMultiplayerOnline": "Online",
+    "@lbMultiplayerOnline": {
+        "description": "Label yang menunjukkan bahwa game mendukung permainan multipemain secara online."
+    },
+
+    "lbMultiscreen": "Layar Ganda",
+    "@lbMultiscreen": {
+        "description": "Label yang menunjukkan bahwa game mendukung berbagai resolusi atau rasio layar."
+    },
+
+    "lbPortrait": "Potret",
+    "@lbPortrait": {
+        "description": "Label yang menunjukkan bahwa game mendukung atau memerlukan orientasi potret."
+    },
+
+    "lbPublisher": "Penerbit",
+    "@lbPublisher": {
+        "description": "Label yang menunjukkan nama penerbit atau pengembang game."
+    },
+    
+    "lbRelease": "Rilis",
+    "@lbRelease": {
+        "description": "Label yang menunjukkan tanggal rilis asli atau versi dari game."
+    },
+
+    "lbSize": "Ukuran",
+    "@lbSize": {
+        "description": "Label yang menunjukkan ukuran file game."
+    },
+
+    "lbTouchscreen": "Layar Sentuh",
+    "@lbTouchscreen": {
+        "description": "Label yang menunjukkan bahwa game mendukung input layar sentuh."
+    },
+
+    "lbVersion": "Versi",
+    "@lbVersion": {
+        "description": "Label yang menunjukkan nomor versi game."
+    },
+
+    "scEmulatorNotFound": "ADA YANG SALAH",
+    "@scEmulatorNotFound": {
+        "description": "Judul yang ditampilkan saat emulator tidak ditemukan atau gagal dijalankan."
+    },
+
+    "scEmulatorNotFoundDescription": "Kami tidak menemukan emulator @emulator di perangkatmu. Pastikan emulator sudah terinstal sebelum mencoba lagi.",
+    "@scEmulatorNotFoundDescription": {
+        "description": "Pesan yang memberitahu pengguna bahwa emulator yang dipilih belum terinstal. @emulator akan diganti dengan nama emulator."
+    },
+
+    "scEmulatorNotFoundText01": "Kamu juga bisa menginstal emulator @emulator dari salah satu opsi di bawah ini.",
+    "@scEmulatorNotFoundText01": {
+        "description": "Pesan yang menyarankan pengguna untuk menginstal emulator, dengan opsi yang tersedia di bawah. @emulator akan diganti dengan nama emulator."
+    },
+
+    "scEmulatorNotFoundText02": "Jika emulator telah terinstal, maka akan diluncurkan secara otomatis lain kali.",
+    "@scEmulatorNotFoundText02": {
+        "description": "Pesan yang menjelaskan bahwa emulator akan berjalan otomatis di kesempatan berikutnya setelah diinstal."
+    },
+
+    "scPreviews": "PRATINJAU",
+    "@scPreviews": {
+        "description": "Judul bagian yang menampilkan tangkapan layar atau pratinjau game."
+    },
+
+    "scPreviewsDescription": "Karakteristik dan pratinjau game dapat berbeda tergantung pada model ponsel Anda.",
+    "@scPreviewsDescription": {
+        "description": "Teks yang memberi tahu pengguna bahwa pratinjau atau perilaku game dapat berbeda tergantung pada perangkat."
+    },
+
+    "scPreviewsError": "Game ini tidak memiliki pratinjau yang tersedia.",
+    "@scPreviewsError": {
+        "description": "Pesan yang ditampilkan saat tidak ada gambar pratinjau untuk game tersebut."
     },
 
     "btSubmitRating": "KIRIM PENILAIAN",
@@ -100,6 +190,11 @@
         "description": "Ditampilkan saat pengguna belum memberikan penilaian yang benar."
     },
 
+    "scAbout": "TENTANG",
+    "@scAbout": {
+        "description": "Judul bagian yang menampilkan informasi tentang game."
+    },
+
     "scExternalSource": "ANDA SEDANG DIALIHKAN",
     "@scExternalSource": {
         "description": "Judul yang ditampilkan saat mengarahkan pengguna ke situs web eksternal."
@@ -108,6 +203,31 @@
     "scExternalSourceDescription": "Berkas MIDlet ini tersedia di @source. Untuk melihat berkas aslinya, silakan buka tautan tersebut di peramban Anda.\n\nHarap dicatat: Ini adalah situs eksternal yang tidak memiliki afiliasi resmi dengan proyek MIDlet Store.",
     "@scExternalSourceDescription": {
         "description": "Deskripsi yang ditampilkan saat mengarahkan pengguna ke situs web eksternal."
+    },
+
+    "scRelatedGames": "REKOMENDASI UNTUKMU",
+    "@scRelatedGames": {
+        "description": "Judul bagian yang menampilkan game yang terkait atau direkomendasikan berdasarkan game saat ini."
+    },
+
+    "scRelatedGamesDescription": "Jika kamu menyukai @title, kamu mungkin juga akan menyukai game-game ini.",
+    "@scRelatedGamesDescription": {
+        "description": "Pesan yang ditampilkan untuk memperkenalkan daftar game yang mirip dengan yang sedang dilihat."
+    },
+
+    "scRelatedPublisherDescription": "Temukan lebih banyak game dari @publisher yang mungkin kamu sukai.",
+    "@scRelatedPublisherDescription": {
+        "description": "Teks yang mengajak pengguna menjelajahi game lain dari penerbit yang sama, di mana @publisher adalah nama penerbit."
+    },
+
+    "scSelectEmulator": "PILIH EMULATOR",
+    "@scSelectEmulator": {
+        "description": "Judul bagian yang meminta pengguna memilih emulator untuk dipasang."
+    },
+
+    "scSelectEmulatorDescription": "Silakan pilih emulator yang ingin kamu pasang.",
+    "@scSelectEmulatorDescription": {
+        "description": "Teks instruksi yang meminta pengguna memilih emulator yang diinginkan."
     },
 
     "scSubmitRating": "KIRIM PENILAIAN",

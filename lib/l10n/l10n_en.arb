@@ -2,9 +2,6 @@
     "@@author": "KidGbzin",
     "@@locale": "en",
 
-    "buttonPlay": "PLAY",
-    "@buttonPlay": {},
-
     "buttonCommingSoon": "COMMING SOON",
     "@buttonCommingSoon": {},
 
@@ -25,48 +22,6 @@
 
     "chipFilterByReleaseYear": "Release Year",
     "@chipFilterByReleaseYear": {},
-
-    "label3DVersion": "3D Version",
-    "@label3DVersion": {},
-
-    "labelAchievements": "Achievements",
-    "@labelAchievements": {},
-
-    "labelCensored": "Censored Version",
-    "@labelCensored": {},
-
-    "labelDownloads": "Downloads",
-    "@labelDownloads": {},
-
-    "labelLandscape": "Landscape Orientation",
-    "@labelLandscape": {},
-
-    "labelMultiplayerBluetooth": "Multiplayer Bluetooth",
-    "@labelMultiplayerBluetooth": {},
-
-    "labelMultiplayerLocal": "Multiplayer Local",
-    "@labelMultiplayerLocal": {},
-
-    "labelMultiplayerOnline": "Online",
-    "@labelMultiplayerOnline": {},
-
-    "labelMultiscreen": "Multiscreen",
-    "@labelMultiscreen": {},
-
-    "labelPublisher": "Publisher",
-    "@labelPublisher": {},
-    
-    "labelRelease": "Release",
-    "@labelRelease": {},
-
-    "labelSize": "Size",
-    "@labelSize": {},
-
-    "labelTouchscreen": "Touchscreen",
-    "@labelTouchscreen": {},
-
-    "labelVersion": "Version",
-    "@labelVersion": {},
 
     "launcherErrorMessage01": "An error occurred, preventing the application from initializing.",
     "@launcherErrorMessage01": {},
@@ -101,27 +56,6 @@
     "messageFavoritesRemoved": "You removed $1 from your favorites list.",
     "@messageFavoritesRemoved": {},
 
-    "sectionAbout": "ABOUT",
-    "@sectionAbout": {},
-
-    "sectionInstallation": "INSTALLATION",
-    "@sectionInstallation": {},
-
-    "sectionInstallationDescription": "When you click \"Play\", the MIDlet installation menu will open, displaying relevant information about the game version that will be installed on your emulator. The emulator will launch automatically after installation.\n\nSoon, multiple versions of the same game will be available for selection.",
-    "@sectionInstallationDescription": {},
-
-    "sectionEmulatorNotFound": "SOMETHING WENT WRONG",
-    "@sectionEmulatorNotFound": {},
-
-    "sectionEmulatorNotFoundDescription": "There is no emulator available to launch on your device. Please make sure that your device has an emulator installed.",
-    "@sectionEmulatorNotFoundDescription": {},
-
-    "sectionEmulatorNotFoundText01": "You can also install the J2ME Loader emulator from one of the options below.",
-    "@sectionEmulatorNotFoundText01": {},
-
-    "sectionEmulatorNotFoundText02": "When there is an emulator installed, it will start automatically next time.",
-    "@sectionEmulatorNotFoundText02": {},
-
     "sectionFilterCategories": "FILTER BY CATEGORIES",
     "@sectionFilterCategories": {},
 
@@ -139,30 +73,6 @@
 
     "sectionFilterReleaseYearDescription": "Filter your search by selecting a specific release year.",
     "@sectionFilterReleaseYearDescription": {},
-
-    "sectionPreviews": "PREVIEWS",
-    "@sectionPreviews": {},
-
-    "sectionPreviewsDescription": "The game's characteristics and previews may vary according to the model of your phone.",
-    "@sectionPreviewsDescription": {},
-
-    "sectionPreviewsError": "This game doesn't have any previews available.",
-    "@sectionPreviewsError": {},
-
-    "sectionPublisherDescription": "Discover more games from $1 that you might enjoy.",
-    "@sectionPublisherDescription": {},
-
-    "sectionReadyToInstall": "READY TO INSTALL",
-    "@sectionReadyToInstall": {},
-
-    "sectionReadyToInstallDescription": "The game has finished downloading and is now ready for installation on the emulator.",
-    "@sectionReadyToInstallDescription": {},
-
-    "sectionRelatedGames": "RECOMMENDED FOR YOU",
-    "@sectionRelatedGames": {},
-
-    "sectionRelatedGamesDescription": "If you enjoyed $1, you might also enjoy these other games.",
-    "@sectionRelatedGamesDescription": {},
 
     "tag3D": "3D",
     "@tag3D": {},
@@ -248,9 +158,19 @@
     "tagTowerDefense": "Tower Defense",
     "@tagTowerDefense": {},
 
+    "btInstallOnEmulator": "INSTALL ON EMULATOR",
+    "@btInstallOnEmulator": {
+        "description": "Button label used to install the game on the selected emulator."
+    },
+
     "btOpenOnBrowser": "OPEN ON BROWSER",
     "@btOpenOnBrowser": {
         "description": "Button text to open the link in the browser."
+    },
+
+    "btPlayGame": "PLAY GAME",
+    "@btPlayGame": {
+        "description": "Button label to start or launch the game."
     },
 
     "btSubmitRating": "SUBMIT RATING",
@@ -263,6 +183,106 @@
         "description": "Shown when the user has not set a correct rating."
     },
 
+    "lb3D": "3D",
+    "@lb3D": {
+        "description": "Label indicating whether the game uses a 3D engine or technology."
+    },
+
+    "lbAchievements": "Achievements",
+    "@lbAchievements": {
+        "description": "Label indicating whether the game has an achievement or rewards system."
+    },
+
+    "lbCensored": "Censored",
+    "@lbCensored": {
+        "description": "Label indicating that the game contains censored content."
+    },
+
+    "lbDownloads": "Downloads",
+    "@lbDownloads": {
+        "description": "Label showing the total number of downloads the game has."
+    },
+
+    "lbLandscape": "Landscape",
+    "@lbLandscape": {
+        "description": "Label indicating that the game supports or requires landscape orientation."
+    },
+
+    "lbMultiplayerBluetooth": "Multiplayer Bluetooth",
+    "@lbMultiplayerBluetooth": {
+        "description": "Label indicating that the game supports multiplayer mode over Bluetooth connection."
+    },
+
+    "lbMultiplayerLocal": "Multiplayer Local",
+    "@lbMultiplayerLocal": {
+        "description": "Label indicating that the game supports local multiplayer on the same device or network."
+    },
+
+    "lbMultiplayerOnline": "Online",
+    "@lbMultiplayerOnline": {
+        "description": "Label indicating that the game supports online multiplayer gameplay."
+    },
+
+    "lbMultiscreen": "Multiscreen",
+    "@lbMultiscreen": {
+        "description": "Label indicating that the game supports multiple screen resolutions or aspect ratios."
+    },
+
+    "lbPortrait": "Portrait",
+    "@lbPortrait": {
+        "description": "Label indicating that the game supports or requires portrait orientation."
+    },
+
+    "lbPublisher": "Publisher",
+    "@lbPublisher": {
+        "description": "Label showing the name of the publisher or developer of the game."
+    },
+    
+    "lbRelease": "Release",
+    "@lbRelease": {
+        "description": "Label showing the original release date or version launch date of the game."
+    },
+
+    "lbSize": "Size",
+    "@lbSize": {
+        "description": "Label showing the file size of the game."
+    },
+
+    "lbTouchscreen": "Touchscreen",
+    "@lbTouchscreen": {
+        "description": "Label indicating that the game supports touchscreen input."
+    },
+
+    "lbVersion": "Version",
+    "@lbVersion": {
+        "description": "Label showing the version number of the game."
+    },
+
+    "scAbout": "ABOUT",
+    "@scAbout": {
+        "description": "Section title that displays information about the game."
+    },
+
+    "scEmulatorNotFound": "SOMETHING WENT WRONG",
+    "@scEmulatorNotFound": {
+        "description": "Title shown when the emulator could not be found or started."
+    },
+
+    "scEmulatorNotFoundDescription": "We couldn't find the @emulator emulator on your device. Please ensure it's installed before trying again.",
+    "@scEmulatorNotFoundDescription": {
+        "description": "Message informing the user that the selected emulator is not installed. @emulator will be replaced by the emulator name."
+    },
+
+    "scEmulatorNotFoundText01": "You can also install the @emulator emulator from one of the options below.",
+    "@scEmulatorNotFoundText01": {
+        "description": "Message suggesting installation of the emulator, with options listed below. @emulator will be replaced by the emulator name."
+    },
+
+    "scEmulatorNotFoundText02": "When there is an emulator installed, it will start automatically next time.",
+    "@scEmulatorNotFoundText02": {
+        "description": "Message reassuring the user that once an emulator is installed, it will launch automatically next time."
+    },
+
     "scExternalSource": "YOU ARE BEING REDIRECTED",
     "@scExternalSource": {
         "description": "Title shown when redirecting the user to an external source website."
@@ -271,6 +291,46 @@
     "scExternalSourceDescription": "This MIDlet file is available at @source. To view the original file, please open the link in your web browser.\n\nPlease note: This is an external website with no official affiliation to the MIDlet Store project.",
     "@scExternalSourceDescription": {
         "description": "Description shown when redirecting the user to an external source website."
+    },
+
+    "scPreviews": "PREVIEWS",
+    "@scPreviews": {
+        "description": "Section title that displays game screenshots or previews."
+    },
+
+    "scPreviewsDescription": "The game's characteristics and previews may vary according to the model of your phone.",
+    "@scPreviewsDescription": {
+        "description": "Text shown to warn the user that the preview or behavior may vary depending on their phone."
+    },
+
+    "scPreviewsError": "This game doesn't have any previews available.",
+    "@scPreviewsError": {
+        "description": "Message shown when there are no preview images for the game."
+    },
+
+    "scRelatedGames": "RECOMMENDED FOR YOU",
+    "@scRelatedGames": {
+        "description": "Section title that shows related or recommended games based on the current one."
+    },
+
+    "scRelatedGamesDescription": "If you enjoyed @title, you might also enjoy these other games.",
+    "@scRelatedGamesDescription": {
+        "description": "Message shown to introduce a list of games similar to the one currently being viewed."
+    },
+
+    "scRelatedPublisherDescription": "Discover more games from @publisher that you might enjoy.",
+    "@scRelatedPublisherDescription": {
+        "description": "Text inviting the user to explore other games from the same publisher, where @publisher is the publisher's name."
+    },
+
+    "scSelectEmulator": "SELECT EMULATOR",
+    "@scSelectEmulator": {
+        "description": "Section title prompting the user to choose an emulator to install."
+    },
+
+    "scSelectEmulatorDescription": "Please select which emulator you'd like to install.",
+    "@scSelectEmulatorDescription": {
+        "description": "Instructional text asking the user to choose their preferred emulator."
     },
 
     "scSubmitRating": "SUBMIT RATING",

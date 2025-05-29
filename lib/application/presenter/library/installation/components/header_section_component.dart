@@ -38,13 +38,13 @@ class _HeaderSection extends StatelessWidget {
           controller.midlet.formattedTitle.toUpperCase(),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
+          style: TypographyEnumeration.headline(Palettes.elements).style,
         ),
         Text(
           controller.midlet.brand,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+          style: TypographyEnumeration.body(Palettes.grey).style,
         ),
       ],
     );
@@ -57,7 +57,7 @@ class _HeaderSection extends StatelessWidget {
         return Icon(
           HugeIcons.strokeRoundedImage02,
           size: 18,
-          color: ColorEnumeration.grey.value,
+          color: Palettes.grey.value,
         );
       },
     );

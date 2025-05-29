@@ -35,7 +35,7 @@ class _ListTile extends StatelessWidget {
               midlet.title.replaceFirst(' -', ':').toUpperCase(),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
+              style: TypographyEnumeration.headline(Palettes.elements).style,
             ),
           ),
           Padding(
@@ -44,9 +44,9 @@ class _ListTile extends StatelessWidget {
               spacing: 15,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget> [
-                _wLeading(),
+                leading(),
                 Expanded(
-                  child: _wDetails(),
+                  child: details(),
                 ),
               ],
             ),
@@ -54,10 +54,10 @@ class _ListTile extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 25),
             child: Text(
-              "See details and start playing — just tap!", // TODO: Translate.
+              "",
               maxLines: 5,
               overflow: TextOverflow.ellipsis,
-              style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+              style: TypographyEnumeration.body(Palettes.grey).style,
             ),
           ),
         ],
@@ -65,17 +65,17 @@ class _ListTile extends StatelessWidget {
     );
   }
 
-  Widget _wLeading() {
+  Widget leading() {
     final List<Widget> icons = <Widget> [];
 
-    if (midlet.isThreeD) icons.add(_wIconLabel(HugeIcons.strokeRoundedCodesandbox));
-    if (midlet.isLandscape) icons.add(_wIconLabel(HugeIcons.strokeRoundedSmartPhoneLandscape));
-    if (midlet.isMultiplayerB) icons.add(_wIconLabel(HugeIcons.strokeRoundedBluetooth));
-    if (midlet.isMultiplayerL) icons.add(_wIconLabel(HugeIcons.strokeRoundedUserMultiple));
-    if (midlet.isOnline) icons.add(_wIconLabel(HugeIcons.strokeRoundedCellularNetwork));
-    if (midlet.isCensored) icons.add(_wIconLabel(HugeIcons.strokeRoundedUnavailable));
+    if (midlet.isThreeD) icons.add(iconLabel(HugeIcons.strokeRoundedCodesandbox));
+    if (midlet.isLandscape) icons.add(iconLabel(HugeIcons.strokeRoundedSmartPhoneLandscape));
+    if (midlet.isMultiplayerB) icons.add(iconLabel(HugeIcons.strokeRoundedBluetooth));
+    if (midlet.isMultiplayerL) icons.add(iconLabel(HugeIcons.strokeRoundedUserMultiple));
+    if (midlet.isOnline) icons.add(iconLabel(HugeIcons.strokeRoundedCellularNetwork));
+    if (midlet.isCensored) icons.add(iconLabel(HugeIcons.strokeRoundedUnavailable));
 
-    if (icons.isEmpty) icons.add(_wIconLabel(HugeIcons.strokeRoundedDashedLine01));
+    if (icons.isEmpty) icons.add(iconLabel(HugeIcons.strokeRoundedDashedLine01));
 
     return Column(
       spacing: 7.5,
@@ -84,8 +84,20 @@ class _ListTile extends StatelessWidget {
           height: 142.5,
           child: AspectRatio(
             aspectRatio: 0.75,
-            child: ThumbnailWidget(
-              image: FileImage(controller.cover),
+            child: ValueListenableBuilder(
+              valueListenable: controller.nThumbnail,
+              builder: (BuildContext context, File? thumbnail, Widget? _) {
+                if (thumbnail == null) {
+                  return Icon(
+                    HugeIcons.strokeRoundedImage02,
+                    color: Palettes.grey.value,
+                    size: 18,
+                  );
+                }
+                return ThumbnailWidget(
+                  image: FileImage(thumbnail),
+                );
+              }
             ),
           ),
         ),
@@ -97,20 +109,19 @@ class _ListTile extends StatelessWidget {
     );
   }
 
-  Widget _wDetails() {
-    // TODO> Translate.
+  Widget details() {
     String multiscreen = "";
     String touchscreen = "Keyboard";
 
-    if (midlet.isMultiscreen) multiscreen = " & Multiscreen";
-    if (midlet.isTouchscreen) touchscreen = "Touchscreen";
+    if (midlet.isMultiscreen) multiscreen = " & ${localizations.lbMultiscreen}";
+    if (midlet.isTouchscreen) touchscreen = localizations.lbTouchscreen;
 
     final List<Widget> children = <Widget> [
-      _wInformationLabel(HugeIcons.strokeRoundedModernTv, " Resolution: ${midlet.resolution.replaceAll("x", " x ")}$multiscreen"),
-      _wInformationLabel(HugeIcons.strokeRoundedPackage, " Size: ${(midlet.size / 1024).round()} KB"),
-      _wInformationLabel(HugeIcons.strokeRoundedGlobe02, " ${midlet.languages.reduce((x, y) => "$x • $y")}"),
-      _wInformationLabel(HugeIcons.strokeRoundedSmartPhone01, " Phone: ${midlet.brand}"),
-      _wInformationLabel(HugeIcons.strokeRoundedTouch01, " $touchscreen"),
+      informationLabel(HugeIcons.strokeRoundedModernTv, " ${midlet.resolution.replaceAll("x", " x ")}$multiscreen"),
+      informationLabel(HugeIcons.strokeRoundedPackage, " ${localizations.lbSize}: ${(midlet.size / 1024).round()} KB"),
+      informationLabel(HugeIcons.strokeRoundedGlobe02, " ${midlet.languages.reduce((x, y) => "$x • $y")}"),
+      informationLabel(HugeIcons.strokeRoundedSmartPhone01, " ${midlet.brand}"),
+      informationLabel(HugeIcons.strokeRoundedTouch01, " $touchscreen"),
     ];
 
     return Column(
@@ -121,20 +132,20 @@ class _ListTile extends StatelessWidget {
     );
   }
 
-  Widget _wIconLabel(IconData icon) {
+  Widget iconLabel(IconData icon) {
     return Icon(
       icon,
       size: 18,
-      color: ColorEnumeration.grey.value,
+      color: Palettes.grey.value,
     );
   }
 
-  Widget _wInformationLabel(IconData icon, String text) {
+  Widget informationLabel(IconData icon, String text) {
     return Row(
       children: <Widget> [
         HugeIcon(
           icon: icon,
-          color: ColorEnumeration.grey.value,
+          color: Palettes.grey.value,
           size: 18,
         ),
         Expanded(
@@ -142,7 +153,7 @@ class _ListTile extends StatelessWidget {
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            style: TypographyEnumeration.body(Palettes.grey).style,
           ),
         ),
       ],

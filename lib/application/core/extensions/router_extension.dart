@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -68,26 +66,19 @@ extension RouterExtension on BuildContext {
     }
   }
 
-  void gtMIDlets({
-    required File cover,
-    required List<MIDlet> midlets,
+  void gtMIDlets(Game game, {
     bool? replace = false,
   }) {
-    final ({File cover, List<MIDlet> midlets}) arguments = (
-      cover: cover,
-      midlets: midlets,
-    );
-
     if (replace == true) {
       pushReplacement(
         '/midlets',
-        extra: arguments,
+        extra: game,
       );
     }
     else {
       push(
         '/midlets',
-        extra: arguments,
+        extra: game,
       );
     }
   }

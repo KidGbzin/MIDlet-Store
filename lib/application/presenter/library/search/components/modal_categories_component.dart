@@ -110,8 +110,8 @@ class _CategoriesModalState extends State<_CategoriesModal> {
               decoration: BoxDecoration(
                 borderRadius: gBorderRadius,
                 color: isSelected
-                  ? ColorEnumeration.primary.value.withAlpha(190)
-                  : ColorEnumeration.foreground.value,
+                  ? Palettes.primary.value.withAlpha(190)
+                  : Palettes.foreground.value,
               ),
               height: 30,
               padding: const EdgeInsets.fromLTRB(12.5, 0, 12.5, 0),
@@ -120,14 +120,14 @@ class _CategoriesModalState extends State<_CategoriesModal> {
                 children: <Widget> [
                   Icon(
                     tag.icon,
-                    color: ColorEnumeration.grey.value,
+                    color: Palettes.grey.value,
                     size: 18,
                   ),
                   Align(
                     alignment: Alignment.center,
                     child: Text(
                       "$name • $count",
-                      style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+                      style: TypographyEnumeration.body(Palettes.grey).style,
                     ),
                   ),
                 ],

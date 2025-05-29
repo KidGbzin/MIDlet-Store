@@ -49,7 +49,7 @@ class _SuggestionOverlayState extends State<_SuggestionOverlay> with WidgetsBind
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.5),
-        color: ColorEnumeration.foreground.value,
+        color: Palettes.foreground.value,
       ),
       key: _key,
       child: ValueListenableBuilder(
@@ -101,8 +101,8 @@ class _SuggestionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: ColorEnumeration.transparent.value,
-      surfaceTintColor: ColorEnumeration.transparent.value,
+      color: Palettes.transparent.value,
+      surfaceTintColor: Palettes.transparent.value,
       child: InkWell(
         onTap: () {
           context.push(
@@ -123,7 +123,7 @@ class _SuggestionTile extends StatelessWidget {
                   game.title.replaceAll(' - ', ': '),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+                  style: TypographyEnumeration.body(Palettes.elements).style,
                 ),
               ),
             ),
@@ -131,7 +131,7 @@ class _SuggestionTile extends StatelessWidget {
               dimension: 40,
               child: HugeIcon(
                 icon: HugeIcons.strokeRoundedClock04,
-                color: ColorEnumeration.elements.value,
+                color: Palettes.elements.value,
               ),
             ),
           ],

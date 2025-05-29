@@ -30,7 +30,7 @@ class Confetti extends StatelessWidget {
           minimumSize: const Size(25, 25),
           minBlastForce: 1,
           colors: <Color> [
-            ColorEnumeration.gold.value,
+            Palettes.gold.value,
           ],
           gravity: 0.25,
           createParticlePath: star,

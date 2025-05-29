@@ -64,7 +64,7 @@ class _SearchState extends State<_SearchView> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget> [
           Container(
-            color: ColorEnumeration.background.value,
+            color: Palettes.background.value,
             padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
             width: MediaQuery.sizeOf(context).width,
             child: Wrap(
@@ -77,7 +77,7 @@ class _SearchState extends State<_SearchView> {
                   valueListenable: widget.controller.nSelectedTags,
                   builder: (BuildContext context, List<String> selectedTags, Widget? _) {
                     return _FilterButton(
-                      color: selectedTags.isEmpty ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
+                      color: selectedTags.isEmpty ? Palettes.foreground.value : Palettes.primary.value.withAlpha(190),
                       icon: HugeIcons.strokeRoundedArrowDown01,
                       title: localizations.chipFilterByCategories,
                       onTap: () {
@@ -93,7 +93,7 @@ class _SearchState extends State<_SearchView> {
                   valueListenable: widget.controller.nSelectedPublisher,
                   builder: (BuildContext context, String? selectedPublisher, Widget? _) {
                     return _FilterButton(
-                      color: selectedPublisher == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
+                      color: selectedPublisher == null ? Palettes.foreground.value : Palettes.primary.value.withAlpha(190),
                       icon: HugeIcons.strokeRoundedArrowDown01,
                       title: localizations.chipFilterByPublisher,
                       onTap: () {
@@ -109,7 +109,7 @@ class _SearchState extends State<_SearchView> {
                   valueListenable: widget.controller.nSelectedReleaseYear,
                   builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
                     return _FilterButton(
-                      color: selectedReleaseYear == null ? ColorEnumeration.foreground.value : ColorEnumeration.primary.value.withAlpha(190),
+                      color: selectedReleaseYear == null ? Palettes.foreground.value : Palettes.primary.value.withAlpha(190),
                       icon: HugeIcons.strokeRoundedArrowDown01,
                       title: localizations.chipFilterByReleaseYear,
                       onTap: () {

@@ -29,7 +29,9 @@ class _Controller {
     required this.sActivity,
   });
   
+  late final ValueNotifier<bool> nFavorite;
   late final ValueNotifier<GameData?> nGameMetadata;
+  late final ValueNotifier<File?> nThumbnail;
 
   /// Initializes the handler’s core services and state notifiers.
   ///
@@ -37,12 +39,13 @@ class _Controller {
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
     nGameMetadata = ValueNotifier<GameData?>(null);
+    nThumbnail = ValueNotifier<File?>(null);
 
     try {
       playAudio();
       fetchThumbnail();
       _fetchGameMetadata();
-      isFavoriteState = ValueNotifier(rHive.boxFavorites.contains(game));
+      nFavorite = ValueNotifier(rHive.boxFavorites.contains(game));
       rHive.boxRecentGames.put(game);
     }
     catch (error, stackTrace) {
@@ -58,15 +61,11 @@ class _Controller {
   /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
   void dispose() {
     cConfetti.dispose();
+    nFavorite.dispose();
+    nGameMetadata.dispose();
+    nThumbnail.dispose();
     
     _player.dispose();
-  
-    averageRatingState.dispose();
-    isFavoriteState.dispose();
-    myRatingState.dispose();
-    starsCountState.dispose();
-    thumbnailState.dispose();
-    totalRatingsState.dispose();
   }
 
   /// Fetch all the game data needed and updates its listeners.
@@ -140,7 +139,6 @@ class _Controller {
 
   /// Inserts or updates the user's rating for a game.
   ///
-  /// This function is primarily used in the [_SubmitRatingModal] to allow users to rate a game.
   /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
   Future<void> submitRating(BuildContext context, int rating) async {
     final GameData metadata = nGameMetadata.value!;
@@ -210,8 +208,6 @@ class _Controller {
     cConfetti.play();
   }
 
-  // AUDIO RELATED 🎵: =========================================================================================================================================================== //
-  
   /// The audio player used to manage and play the game's theme audio.
   ///
   /// This instance leverages the [`audioplayers`](https://pub.dev/packages/audioplayers) package to handle audio functionalities like play, pause, and stop.
@@ -241,16 +237,6 @@ class _Controller {
   /// Does nothing if the audio is not playing.
   void pauseAudio() => _player.stop();
 
-  // BUCKET REÇATED 🗃️: ========================================================================================================================================================= //
-
-  /// A [ValueNotifier] that tracks the state of the thumbnail.
-  ///
-  /// This notifier is used to display the thumbnail image associated with the current game.
-  /// The value of this notifier is updated whenever the thumbnail image is fetched from the bucket.
-  /// If the thumbnail image is not available, the value is set to [null].
-  /// 
-  /// The [_Cover] component listens to this notifier to update the UI accordingly.
-  final ValueNotifier<File?> thumbnailState = ValueNotifier<File?>(null);
 
   /// Retrieves a [Future] that resolves to a [File] containing the audio file associated with the current game.
   ///
@@ -258,7 +244,7 @@ class _Controller {
   /// The audio file is returned as a [File] object, which can be used to play the audio.
   Future<File> get _audio => rBucket.audio(game.title);
 
-  Future<File> get publisherLogo => rBucket.publisher(game.publisher);
+  Future<File> get logo => rBucket.publisher(game.publisher);
 
   /// Retrieves a [Future] that resolves to a [List] of [Uint8List] objects representing preview images from the bucket.
   ///
@@ -277,20 +263,11 @@ class _Controller {
   /// Fetches the thumbnail image associated with the current game from the bucket and updates the state of the thumbnail.
   ///
   /// This method fetches the thumbnail image associated with the current game from the storage bucket.
-  /// The image is stored as a [File] object, which is used to update the state of the [thumbnailState].
-  /// If the thumbnail image is not available, the [thumbnailState] is set to [null].
+  /// The image is stored as a [File] object, which is used to update the state of the [nThumbnail].
+  /// If the thumbnail image is not available, the [nThumbnail] is set to [null].
   /// 
-  /// The [_Cover] component listens to the [thumbnailState] to update the UI accordingly.
-  Future<void> fetchThumbnail() async {
-    thumbnailState.value = await rBucket.cover(game.title);
-  }
-
-  // FAVORITES RELATED ❤️: ====================================================================================================================================================== //
-
-  /// A [ValueNotifier] that tracks the favorite state of the game.
-  ///
-  /// This notifier is used in the [_BookmarkButton] component to indicate whether the game has been marked as a favorite.
-  late final ValueNotifier<bool> isFavoriteState;
+  /// The [_Cover] component listens to the [nThumbnail] to update the UI accordingly.
+  Future<void> fetchThumbnail() async => nThumbnail.value = await rBucket.cover(game.title);
 
   /// Toggles the bookmark status of the current game and updates the UI.
   ///
@@ -302,7 +279,7 @@ class _Controller {
     late final String message;
     final String title = game.title.replaceFirst(' -', ':');
 
-    if (isFavoriteState.value) {
+    if (nFavorite.value) {
       rHive.boxFavorites.remove(game);
       message = localizations.messageFavoritesRemoved.replaceFirst('\$1', title);
     }
@@ -311,7 +288,7 @@ class _Controller {
       message = localizations.messageFavoritesAdded.replaceFirst('\$1', title);
     }
 
-    isFavoriteState.value = !isFavoriteState.value;
+    nFavorite.value = !nFavorite.value;
 
     final MessengerExtension messenger = MessengerExtension(
       message: message,
@@ -320,8 +297,6 @@ class _Controller {
 
     ScaffoldMessenger.of(context).showSnackBar(messenger);
   }
-
-  // RECOMENDATIONS RELATED 🧩: ================================================================================================================================================= //
 
   /// A lazily initialized list of recommended games from the same publisher.
   ///
@@ -348,7 +323,7 @@ class _Controller {
     }
 
     for (Game element in _topPublisherGames) {
-      ratings.add(await getAverageRating(element));
+      ratings.add(await _getAverageRating(element));
       thumbnails.add(await rBucket.cover(element.title).catchError((_) => File('/')));
     }
 
@@ -375,7 +350,7 @@ class _Controller {
     }
 
     for (Game element in _topRelatedGames) {
-      ratings.add(await getAverageRating(element));
+      ratings.add(await _getAverageRating(element));
       thumbnails.add(await rBucket.cover(element.title).catchError((_) => File('/')));
     }
 
@@ -388,47 +363,12 @@ class _Controller {
     return record;
   }
 
-  // GAME RELATED 🎮: =================================================================================================================================================================== //
-
-  /// Tracks the current average rating of the game.
-  ///
-  /// This [ValueNotifier] holds the average rating of the game as a [double]. 
-  /// It is initialized to `0` by default, indicating that no ratings have been submitted yet.
-  final ValueNotifier<double> averageRatingState = ValueNotifier(0);
-
-  /// Tracks the user's rating for the current game.
-  ///
-  /// This [ValueNotifier] holds the user's rating as an integer. 
-  /// If no rating has been provided by the user, the default value is `0`.
-  final ValueNotifier<int> myRatingState = ValueNotifier(0);
-
-  /// Tracks the total number of ratings for the current game.
-  ///
-  /// This [ValueNotifier] holds the total count of user ratings submitted for the game. 
-  /// It is initialized to `0` by default, representing no ratings.
-  final ValueNotifier<int> totalRatingsState = ValueNotifier(0);
-
-  /// A [ValueNotifier] containing a [Map] that tracks the count of ratings for each star level.
-  ///
-  /// The [Map] keys represent the star levels (from 1 to 5).
-  /// The values represent the count of ratings for each corresponding star.
-  /// All counts are initialized to `0` by default.
-  final ValueNotifier<Map<String, int>> starsCountState = ValueNotifier(<String, int> {
-    "5": 0,
-    "4": 0,
-    "3": 0,
-    "2": 0,
-    "1": 0,
-  });
-
-  
-
   /// Retrieves the current average rating of the specified game.
   /// 
   /// This method first attempts to fetch the average rating from the cache using the game's identifier. 
   /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
   /// The fetched or defaulted value is then stored in the cache for future use.
-  Future<double> getAverageRating(Game game) async {
+  Future<double> _getAverageRating(Game game) async {
     final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
       identifier: game.identifier,
     );

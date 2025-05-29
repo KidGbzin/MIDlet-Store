@@ -90,7 +90,7 @@ class __RatingSectionState extends State<_RatingSection> {
         children: <Widget> [
           Text(
             averageRating == 0 ? '-' : '$averageRating',
-            style: TypographyEnumeration.rating(ColorEnumeration.elements).style,
+            style: TypographyEnumeration.rating(Palettes.elements).style,
           ),
           RatingStarsWidget(
             rating: averageRating,
@@ -98,7 +98,7 @@ class __RatingSectionState extends State<_RatingSection> {
           ),
           Text(
             '$ratingsCount',
-            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            style: TypographyEnumeration.body(Palettes.grey).style,
           ),
         ],
       ),
@@ -156,7 +156,7 @@ class __RatingSectionState extends State<_RatingSection> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
-        color: ColorEnumeration.foreground.value,
+        color: Palettes.foreground.value,
       ),
       height: 10,
     );
@@ -176,14 +176,14 @@ class __RatingSectionState extends State<_RatingSection> {
               borderRadius: BorderRadius.circular(100),
               gradient: LinearGradient(
                 colors: <Color> [
-                  ColorEnumeration.primary.value,
-                  ColorEnumeration.accent.value,
+                  Palettes.primary.value,
+                  Palettes.accent.value,
                 ],
               ),
             ),
           ),
         );
-      }
+      },
     );
   }
 }

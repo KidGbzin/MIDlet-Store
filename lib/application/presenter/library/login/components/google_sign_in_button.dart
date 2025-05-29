@@ -22,7 +22,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
   @override
   Widget build(BuildContext context) {
     return ButtonWidget.widget(
-      color: ColorEnumeration.foreground.value,
+      color: Palettes.foreground.value,
       onTap: () {
         widget.controller.nProgress.value = ProgressEnumeration.isLoading;
         widget.controller.googleSignIn(context);
@@ -46,7 +46,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
               child: Text(
                 widget.localizations.buttonLoginWithGoogle.toUpperCase(),
                 maxLines: 1,
-                style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
+                style: TypographyEnumeration.headline(Palettes.elements).style,
               ),
             ),
           ],

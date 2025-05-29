@@ -60,19 +60,15 @@ class _InstallModalState extends State<_InstallModal> {
   Widget downloading() => const LoadingAnimation();
 
   Widget error() {
-    // TODO: Implement an error widget!
-
     return Center(
       child: Text(
         "Internal error!",
-        style: TypographyEnumeration.body(ColorEnumeration.elements).style,
+        style: TypographyEnumeration.body(Palettes.elements).style,
       ),
     );
   }
 
   Widget requestEmulator() {
-    // TODO: Translate this section to the new Emulator too.
-
     late final List<Widget> badges;
 
     final Emulators emulator = widget.controller.nEmulator.value;
@@ -98,19 +94,19 @@ class _InstallModalState extends State<_InstallModal> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget> [
         Section(
-          description: AppLocalizations.of(context)!.sectionEmulatorNotFoundDescription,
-          title: AppLocalizations.of(context)!.sectionEmulatorNotFound,
+          description: widget.localizations.scEmulatorNotFoundDescription.replaceFirst("@emulator", emulator.title),
+          title: widget.localizations.scEmulatorNotFound,
         ),
         Divider(
-          color: ColorEnumeration.divider.value,
+          color: Palettes.divider.value,
           height: 1,
           thickness: 1,
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(15, 22.5, 15, 15),
           child: Text(
-            AppLocalizations.of(context)!.sectionEmulatorNotFoundText01,
-            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            widget.localizations.scEmulatorNotFoundText01.replaceFirst("@emulator", emulator.title),
+            style: TypographyEnumeration.body(Palettes.grey).style,
           ),
         ),
         Padding(
@@ -123,8 +119,8 @@ class _InstallModalState extends State<_InstallModal> {
         Padding(
           padding: const EdgeInsets.fromLTRB(15, 15, 15, 25),
           child: Text(
-            AppLocalizations.of(context)!.sectionEmulatorNotFoundText02,
-            style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+            widget.localizations.scEmulatorNotFoundText02,
+            style: TypographyEnumeration.body(Palettes.grey).style,
           ),
         ),
       ],

@@ -47,14 +47,14 @@ class Section extends StatelessWidget {
               title.toUpperCase(),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TypographyEnumeration.headline(ColorEnumeration.elements).style,
+              style: TypographyEnumeration.headline(Palettes.elements).style,
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
             child: Text(
               description,
-              style: TypographyEnumeration.body(ColorEnumeration.grey).style,
+              style: TypographyEnumeration.body(Palettes.grey).style,
             ),
           ),
           child ?? const SizedBox.shrink(),

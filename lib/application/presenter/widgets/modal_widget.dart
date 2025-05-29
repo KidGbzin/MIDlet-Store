@@ -44,7 +44,7 @@ class ModalWidget extends StatelessWidget {
 
             // The Material widget is used here to prevent splash effects from overflowing onto other children of the Column.
             Material(
-              color: ColorEnumeration.background.value,
+              color: Palettes.background.value,
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Row(
@@ -54,7 +54,7 @@ class ModalWidget extends StatelessWidget {
               ),
             ),
             Divider(
-              color: ColorEnumeration.divider.value,
+              color: Palettes.divider.value,
               height: 1,
               thickness: 1,
             ),
