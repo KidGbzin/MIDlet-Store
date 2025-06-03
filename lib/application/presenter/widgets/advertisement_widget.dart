@@ -8,6 +8,8 @@ import '../../core/enumerations/palette_enumeration.dart';
 import '../../core/enumerations/progress_enumeration.dart';
 import '../../core/enumerations/typographies_enumeration.dart';
 
+import '../../services/admob_service.dart';
+
 import '../widgets/loading_widget.dart';
 
 /// A widget that displays a native advertisement using [google_mobile_ads](https://pub.dev/packages/google_mobile_ads) package.
@@ -15,13 +17,10 @@ import '../widgets/loading_widget.dart';
 /// It manages the advertisement lifecycle and renders different UI states based on the progress of the advertisement loading process.
 class AdvertisementWidget extends StatefulWidget {
 
-  /// Callback that provides a [NativeAd] and receives a [ValueNotifier] to monitor the advertisement's loading state, such as loading, ready, or error.
-  final NativeAd Function(ValueNotifier<ProgressEnumeration> nProgress) getAdvertisement;
+  /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisementss.
+  final AdMobService sAdMob;
 
-  const AdvertisementWidget({
-    required this.getAdvertisement,
-    super.key,
-  });
+  const AdvertisementWidget(this.sAdMob, {super.key});
 
   @override
   State<AdvertisementWidget> createState() => _AdvertisementWidgetState();
@@ -30,7 +29,7 @@ class AdvertisementWidget extends StatefulWidget {
 class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   late final ValueNotifier<ProgressEnumeration> nProgress;
 
-  late NativeAd advertisement;
+  late BannerAd advertisement;
 
   @override
   void initState() {
@@ -39,7 +38,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
     Logger.start("Initializing advertisement...");
 
     nProgress = ValueNotifier(ProgressEnumeration.isLoading);
-    advertisement = widget.getAdvertisement(nProgress);
+    advertisement = widget.sAdMob.banner(nProgress);
     advertisement.load();
   }
 
@@ -55,39 +54,42 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 242.5 + 50, // Extra padding is included directly in the height to prevent layout issues with the advertisement.
-      child: ValueListenableBuilder(
-        valueListenable: nProgress,
-        builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
-          if (progress == ProgressEnumeration.isReady) {
-            return AdWidget(
-              ad: advertisement,
-            );
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 25, 0, 25),
+      child: SizedBox(
+        height: 250,
+        child: ValueListenableBuilder(
+          valueListenable: nProgress,
+          builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
+            if (progress == ProgressEnumeration.isReady) {
+              return AdWidget(
+                ad: advertisement,
+              );
+            }
+            else if (progress == ProgressEnumeration.isLoading) {
+              return LoadingAnimation();
+            }
+            else if (progress == ProgressEnumeration.hasError) {
+              return Align(
+                alignment: Alignment.center,
+                child: Icon(
+                  HugeIcons.strokeRoundedAdvertisiment,
+                  size: 18,
+                  color: Palettes.grey.value,
+                ),
+              );
+            }
+            else {
+              return Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Unexpected error. Please try again later.',
+                  style: TypographyEnumeration.body(Palettes.grey).style,
+                ),
+              );
+            }
           }
-          else if (progress == ProgressEnumeration.isLoading) {
-            return LoadingAnimation();
-          }
-          else if (progress == ProgressEnumeration.hasError) {
-            return Align(
-              alignment: Alignment.center,
-              child: Icon(
-                HugeIcons.strokeRoundedAdvertisiment,
-                size: 18,
-                color: Palettes.grey.value,
-              ),
-            );
-          }
-          else {
-            return Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Unexpected error. Please try again later.',
-                style: TypographyEnumeration.body(Palettes.grey).style,
-              ),
-            );
-          }
-        }
+        ),
       ),
     );
   }

@@ -32,9 +32,7 @@ class _ListView extends StatelessWidget {
 
       // Show an advertisement after every 5 games (i.e., at every 6th position).
       if ((index + 1) % 6 == 0) {
-        return AdvertisementWidget(
-          getAdvertisement: controller.sAdMob.getAdvertisement,
-        );
+        return AdvertisementWidget(controller.sAdMob);
       }
 
       // Calculate the true index of the game by excluding inserted advertisements.

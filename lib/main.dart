@@ -11,7 +11,7 @@ import '../application/repositories/supabase_repository.dart';
 import '../application/services/activity_service.dart';
 import '../application/services/admob_service.dart';
 import '../application/services/android_service.dart';
-import 'application/services/google_authentication_service.dart';
+import '../application/services/google_authentication_service.dart';
 import '../application/services/firebase_messaging_service.dart';
 import '../application/services/github_service.dart';
 import '../application/services/supabase_service.dart';
@@ -37,7 +37,7 @@ Future<void> main() async {
   );
 
   final ActivityService sActivity = ActivityService();
-  final AdMobService sAdMob = AdMobService(const String.fromEnvironment("ADVERTISEMENT_UNIT"));
+  final AdMobService sAdMob = AdMobService(const String.fromEnvironment("ADVERTISEMENT_BANNER_UNIT"));
   final AndroidService sAndroid = AndroidService();
 
   final GitHubService sGitHub = GitHubService(
