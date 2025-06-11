@@ -5,6 +5,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://unity-mediation.s3.amazonaws.com/release")
     }
 }
 

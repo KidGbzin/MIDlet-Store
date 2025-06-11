@@ -34,6 +34,7 @@ import '../../../repositories/hive_repository.dart';
 import '../../../repositories/supabase_repository.dart';
 
 import '../../../services/activity_service.dart';
+import '../../../services/admob_service.dart';
 
 import '../../widgets/button_widget.dart';
 import '../../widgets/confetti_widget.dart';
@@ -74,10 +75,11 @@ class _DetailsState extends State<Details> {
   late final AppLocalizations localizations;
 
   late final ConfettiController cConfetti;
-  late final ActivityService sActivity;
   late final BucketRepository rBucket;
   late final HiveRepository rHive;
   late final SupabaseRepository rSupabase;
+  late final ActivityService sActivity;
+  late final AdMobService sAdMob;
 
   @override
   void initState() {
@@ -89,10 +91,6 @@ class _DetailsState extends State<Details> {
       duration: const Duration(
         seconds: 3,
       ),
-    );
-    sActivity = Provider.of<ActivityService>(
-      context,
-      listen: false,
     );
     rBucket = Provider.of<BucketRepository>(
       context,
@@ -106,14 +104,23 @@ class _DetailsState extends State<Details> {
       context,
       listen: false,
     );
+    sActivity = Provider.of<ActivityService>(
+      context,
+      listen: false,
+    );
+    sAdMob = Provider.of<AdMobService>(
+      context,
+      listen: false,
+    );
     
     controller = _Controller(
       cConfetti: cConfetti,
       game: widget.game,
-      sActivity: sActivity,
       rBucket: rBucket,
       rHive: rHive,
       rSupabase: rSupabase,
+      sActivity: sActivity,
+      sAdMob: sAdMob,
     );
     controller.initialize();
   }

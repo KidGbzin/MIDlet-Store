@@ -30,14 +30,10 @@ class _InstallationViewState extends State<_InstallationView> {
       midlet: widget.midlet,
     ),
     gDivider,
-    AdvertisementWidget(widget.controller.sAdMob),
-    gDivider,
     _SelectEmulatorSection(
       controller: widget.controller,
       localizations: widget.localizations,
     ),
-    gDivider,
-    AdvertisementWidget(widget.controller.sAdMob),
     gDivider,
     _InstallButton(
       controller: widget.controller,

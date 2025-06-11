@@ -1,58 +1,39 @@
 part of '../search_handler.dart';
 
-// LIST VIEW 🧩: ================================================================================================================================================================ //
-
-/// Creates a [Widget] that lists the given game collection.
-///
-/// This widget uses a [ListView] to display a list of games.
-/// It accepts a collection of [games] and a [controller] that handles the state of the list view.
-/// Each game in the collection is displayed using a [ListTile] widget, which shows the game cover, title, description, and other details.
 class _ListView extends StatelessWidget {
+
+  final _Controller controller;
+
+  final List<Game> games;
 
   const _ListView({
     required this.controller,
     required this.games,
   });
 
-  /// The [Search] controller that manages the state of the [ListView].
-  /// 
-  /// The controller is responsible for managing the actions and state of the list, including filtering and updating the displayed games.
-  final _Controller controller;
-
-  /// The collection of [games] to be shown in the list.
-  /// 
-  /// This is a list of [Game] objects that will be displayed in the list, one for each item.
-  final List<Game> games;
-
   @override
   Widget build(BuildContext context) {
+    return ListView.separated(
+      itemBuilder: (BuildContext context, int index) {
+        controller.sAdMob.preloadNearbyAdvertisements(index, AdSize.mediumRectangle);
 
-  return ListView.separated(
-    itemBuilder: (BuildContext context, int index) {
+        if ((index + 1) % 6 == 0) {
+          return Advertisement.banner(
+            advertisement: controller.sAdMob.getAdvertisementByIndex(index),
+          );
+        }
 
-      // Show an advertisement after every 5 games (i.e., at every 6th position).
-      if ((index + 1) % 6 == 0) {
-        return AdvertisementWidget(controller.sAdMob);
-      }
+        final int iGame = index - (index ~/ 6);
 
-      // Calculate the true index of the game by excluding inserted advertisements.
-      final gameIndex = index - (index ~/ 6);
-
-      return _ListTile(
-        controller: controller,
-        game: games[gameIndex],
-      );
-    },
-    itemCount: games.length + (games.length ~/ 5),
-    separatorBuilder: (BuildContext context, int index) {
-      return Divider(
-        color: Palettes.divider.value,
-        height: 1,
-        thickness: 1,
-      );
-    },
-  );
-}
+        return _ListTile(
+          controller: controller,
+          game: games[iGame],
+        );
+      },
+      itemCount: games.length + (games.length ~/ 5),
+      separatorBuilder: (BuildContext _, int __) => gDivider
+    );
+  }
 }
 
 // LIST TILE 🧩: ================================================================================================================================================================ //

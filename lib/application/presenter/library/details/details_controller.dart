@@ -2,14 +2,13 @@ part of '../details/details_handler.dart';
 
 class _Controller {
 
+  // MARK: Constructor ⮟
+
   /// Controls and triggers confetti animations for visual feedback or celebration effects.
   final ConfettiController cConfetti;
 
   /// The game currently being processed, displayed, or interacted with.
   final Game game;
-
-  /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
-  final ActivityService sActivity;
 
   /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
   final BucketRepository rBucket;
@@ -20,6 +19,12 @@ class _Controller {
   /// Manages local storage operations, including games, favorites, recent games, and cached requests.
   final HiveRepository rHive;
 
+  /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
+  final ActivityService sActivity;
+
+  /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisementss.
+  final AdMobService sAdMob;
+
   _Controller({
     required this.cConfetti,
     required this.game,
@@ -27,6 +32,7 @@ class _Controller {
     required this.rHive,
     required this.rSupabase,
     required this.sActivity,
+    required this.sAdMob,
   });
   
   late final ValueNotifier<bool> nFavorite;
@@ -38,11 +44,11 @@ class _Controller {
   /// This method must be called from the `initState` of the handler widget.
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
-    nGameMetadata = ValueNotifier<GameData?>(null);
-    nThumbnail = ValueNotifier<File?>(null);
-
     try {
+      nGameMetadata = ValueNotifier<GameData?>(null);
+      nThumbnail = ValueNotifier<File?>(null);
       playAudio();
+      
       fetchThumbnail();
       _fetchGameMetadata();
       nFavorite = ValueNotifier(rHive.boxFavorites.contains(game));
@@ -64,6 +70,7 @@ class _Controller {
     nFavorite.dispose();
     nGameMetadata.dispose();
     nThumbnail.dispose();
+    sAdMob.clear();
     
     _player.dispose();
   }

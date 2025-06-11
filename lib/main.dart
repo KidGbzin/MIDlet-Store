@@ -20,10 +20,14 @@ import '../application.dart';
 import '../logger.dart';
 
 Future<void> main() async {
+
+  // MARK: Initialization ⮟
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await Logger.initialize();
 
+  Logger.start("The application has been started!");
   Logger.start("Initializing the Firebase enviroment...");
 
   await Firebase.initializeApp(
@@ -36,9 +40,16 @@ Future<void> main() async {
     ),
   );
 
+  // MARK: Provider Instances ⮟
+
   final ActivityService sActivity = ActivityService();
-  final AdMobService sAdMob = AdMobService(const String.fromEnvironment("ADVERTISEMENT_BANNER_UNIT"));
   final AndroidService sAndroid = AndroidService();
+  final GoogleOAuthService sGoogleOAuth = GoogleOAuthService(const String.fromEnvironment('GOOGLE_SERVER_CLIENT'));
+
+  final AdMobService sAdMob = AdMobService(
+    bannerRectangleUnit: const String.fromEnvironment("ADMOB_BANNER_RECTANGLE"),
+    bannerUnit: const String.fromEnvironment("ADMOB_BANNER"),
+  );
 
   final GitHubService sGitHub = GitHubService(
     client: http.Client(),
@@ -50,8 +61,6 @@ Future<void> main() async {
     url: const String.fromEnvironment("SUPABASE_URL"),
   );
 
-  final GoogleOAuthService sGoogleOAuth = GoogleOAuthService(const String.fromEnvironment('GOOGLE_SERVER_CLIENT'));
-
   final BucketRepository rBucket = BucketRepository(
     sAndroid: sAndroid,
     sGitHub: sGitHub,
@@ -59,8 +68,9 @@ Future<void> main() async {
 
   final HiveRepository rHive = HiveRepository(sGitHub);
   final SupabaseRepository rSupabase = SupabaseRepository(sSupabase);
-
   final FirebaseMessagingService sFirebaseMessaging = FirebaseMessagingService(rSupabase);
+
+  // MARK: Run Application ⮟
 
   runApp(MultiProvider(
     providers: <SingleChildWidget> [

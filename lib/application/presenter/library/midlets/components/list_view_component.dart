@@ -25,8 +25,12 @@ class _ListViewState extends State<_ListView> {
     return ListView.separated(
       itemCount: midlets.length + (midlets.length ~/ 5),
       itemBuilder: (BuildContext context, int index) {
+        widget.controller.sAdMob.preloadNearbyAdvertisements(index, AdSize.mediumRectangle);
+
         if ((index + 1) % 6 == 0) {
-          return AdvertisementWidget(widget.controller.sAdMob);
+          return Advertisement.banner(
+            advertisement: widget.controller.sAdMob.getAdvertisementByIndex(index),
+          );
         }
         final int iMIDlet = index - (index ~/ 6);
 
