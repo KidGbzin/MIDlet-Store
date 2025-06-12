@@ -43,6 +43,19 @@ class __ActionsSectionState extends State<_ActionsSection> {
             ),
           ),
           Expanded(
+            child: InkWell(
+              borderRadius: gBorderRadius,
+              onTap: () {
+                context.gtReviews(widget.controller.game);
+              },
+              child: label(
+                icon: HugeIcons.strokeRoundedStar,
+                title: "Reviews",
+                value: "0",
+              ),
+            ),
+          ),
+          Expanded(
             child: ValueListenableBuilder(
               valueListenable: widget.controller.nGameMetadata,
               builder: (BuildContext context, GameMetadata? metadata, Widget? _) {

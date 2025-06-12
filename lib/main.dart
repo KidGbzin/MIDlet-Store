@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:timeago/timeago.dart';
 
 import '../application/repositories/bucket_repository.dart';
 import '../application/repositories/hive_repository.dart';
@@ -24,6 +25,10 @@ Future<void> main() async {
   // MARK: Initialization ⮟
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  setLocaleMessages('pt', PtBrMessages());
+  setLocaleMessages('id', IdMessages());
+  setLocaleMessages('en', EnMessages());
 
   await Logger.initialize();
 

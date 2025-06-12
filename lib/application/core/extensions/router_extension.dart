@@ -66,6 +66,23 @@ extension RouterExtension on BuildContext {
     }
   }
 
+  void gtReviews(Game game, {
+    bool? replace = false,
+  }) {
+    if (replace == true) {
+      pushReplacement(
+        '/reviews',
+        extra: game,
+      );
+    }
+    else {
+      push(
+        '/reviews',
+        extra: game,
+      );
+    }
+  }
+
   void gtMIDlets(Game game, {
     bool? replace = false,
   }) {

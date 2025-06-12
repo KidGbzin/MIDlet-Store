@@ -51,6 +51,7 @@ class SupabaseRepository {
         identifier: 0,
         locale: "",
         rating: 0,
+        updatedAt: "",
       );
     }
 
@@ -62,6 +63,7 @@ class SupabaseRepository {
       identifier: row["key"],
       locale: row["locale"],
       rating: row["rating"],
+      updatedAt: row["updated_at"]
     );
   }
 
@@ -120,6 +122,19 @@ class SupabaseRepository {
     return ratings;
   }
 
+  Future<List<Review>> getGameReviews(Game game) async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "get_reviews_for_game",
+      params: <String, dynamic> {
+        "p_game_key": game.identifier,
+      }
+    );
+
+    Logger.success("Successfully fetched the ${game.fTitle} reviews.");
+
+    return response.map((review) => Review.fromJson(review as Map<String, dynamic>)).toList();
+  }
+
   Future<void> upsertFirebaseToken(String token) async {
     await supabase.client.rpc(
       "upsert_fcm_token",
@@ -151,6 +166,7 @@ class SupabaseRepository {
       identifier: 0,
       locale: PlatformDispatcher.instance.locale.toString(),
       rating: rating,
+      updatedAt: "",
     );
   }
 
