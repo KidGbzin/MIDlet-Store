@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import 'package:midlet_store/application/core/entities/review_entity.dart';
+
 import '../../logger.dart';
 
 import '../core/entities/game_entity.dart';
@@ -30,18 +34,35 @@ class SupabaseRepository {
     return response;
   }
 
-  Future<int> getUserRatingForGame(Game game) async {
-    final int? response = await supabase.client.rpc(
-      "get_user_rating_for_game",
+  Future<Review?> getGameReviewFromUser(Game game) async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "get_game_review_from_user",
       params: <String, dynamic> {
         "p_game_key": game.identifier,
       },
     );
 
-    final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success("Successfully fetched the user rating for \"$title\" from Supabase: ${response ?? 0}.");
+    Logger.success("Successfully fetched the user review for \"${game.fTitle}\" from Supabase.");
 
-    return response ?? 0;
+    if (response.isEmpty) {
+      return Review(
+        author: supabase.client.auth.currentUser!.id,
+        body: null,
+        identifier: 0,
+        locale: "",
+        rating: 0,
+      );
+    }
+
+    final Map<String, dynamic> row = response.first;
+
+    return Review(
+      author: supabase.client.auth.currentUser!.id,
+      body: row["review"],
+      identifier: row["key"],
+      locale: row["locale"],
+      rating: row["rating"],
+    );
   }
 
   Future<int> getGameRatingsCount(Game game) async {
@@ -99,29 +120,38 @@ class SupabaseRepository {
     return ratings;
   }
 
-  Future<void> upsertFirebaseToken(String token, String locale) async {
+  Future<void> upsertFirebaseToken(String token) async {
     await supabase.client.rpc(
       "upsert_fcm_token",
       params: <String, dynamic> {
         "p_token": token,
-        "p_locale": locale,
+        "p_locale": PlatformDispatcher.instance.locale.toString(),
       },
     );
 
     Logger.success("Successfully registered the Firebase Cloud Messaging token on the Supabase.");
   }
 
-  Future<void> upsertGameRating(Game game, int rating) async {
+  Future<Review> upsertGameReview(Game game, int rating, String review) async {
     await supabase.client.rpc(
       "upsert_game_rating",
       params: <String, dynamic> {
         "p_game_key": game.identifier,
         "p_rating": rating,
+        "p_review": review,
+        "p_locale": PlatformDispatcher.instance.locale.toString(),
       },
     );
 
-    final String title = game.title.replaceAll(' - ', ': ');
-    Logger.success("Successfully upserted the rating for \"$title\" on Supabase: $rating★.");
+    Logger.success("Successfully upserted the rating for \"${game.fTitle}\" on Supabase");
+
+    return Review(
+      author: supabase.client.auth.currentUser!.id,
+      body: review,
+      identifier: 0,
+      locale: PlatformDispatcher.instance.locale.toString(),
+      rating: rating,
+    );
   }
 
   /// Increments the download count for the specified [Game].

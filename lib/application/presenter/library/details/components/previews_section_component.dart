@@ -18,8 +18,8 @@ class _PreviewsSection extends StatefulWidget {
 }
 
 class _PreviewsSectionState extends State<_PreviewsSection> {
-  late final double coverHeight;
-  late final double coverWidth;
+  late double coverHeight;
+  late double coverWidth;
 
   @override
   void didChangeDependencies() {

@@ -45,7 +45,7 @@ class __ActionsSectionState extends State<_ActionsSection> {
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: widget.controller.nGameMetadata,
-              builder: (BuildContext context, GameData? metadata, Widget? _) {
+              builder: (BuildContext context, GameMetadata? metadata, Widget? _) {
                 final String downloads = (metadata?.downloads ?? "-").toString();
 
                 return AnimatedSwitcher(

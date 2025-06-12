@@ -36,7 +36,7 @@ class _Controller {
   });
   
   late final ValueNotifier<bool> nFavorite;
-  late final ValueNotifier<GameData?> nGameMetadata;
+  late final ValueNotifier<GameMetadata?> nGameMetadata;
   late final ValueNotifier<File?> nThumbnail;
 
   /// Initializes the handler’s core services and state notifiers.
@@ -45,7 +45,7 @@ class _Controller {
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
     try {
-      nGameMetadata = ValueNotifier<GameData?>(null);
+      nGameMetadata = ValueNotifier<GameMetadata?>(null);
       nThumbnail = ValueNotifier<File?>(null);
       playAudio();
       
@@ -82,7 +82,7 @@ class _Controller {
   /// 
   /// This function is initialized within the `initialize` function.
   Future<void> _fetchGameMetadata() async {
-    final GameData metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+    final GameMetadata metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
       identifier: game.identifier,
     );
 
@@ -99,7 +99,7 @@ class _Controller {
     }
 
     try {
-      metadata.myRating ??= await rSupabase.getUserRatingForGame(game);
+      metadata.myReview = await rSupabase.getGameReviewFromUser(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -107,7 +107,7 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      metadata.myRating = 0;
+      metadata.myReview = null;
     }
 
     try {
@@ -147,13 +147,13 @@ class _Controller {
   /// Inserts or updates the user's rating for a game.
   ///
   /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
-  Future<void> submitRating(BuildContext context, int rating) async {
-    final GameData metadata = nGameMetadata.value!;
+  Future<void> submitRating(BuildContext context, int rating, String body) async {
+    final GameMetadata metadata = nGameMetadata.value!;
 
     try {
-      await rSupabase.upsertGameRating(game, rating);
+      final Review review = await rSupabase.upsertGameReview(game, rating, body);
 
-      metadata.myRating = rating;
+      metadata.myReview = review;
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -376,7 +376,7 @@ class _Controller {
   /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
   /// The fetched or defaulted value is then stored in the cache for future use.
   Future<double> _getAverageRating(Game game) async {
-    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+    final GameMetadata data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
       identifier: game.identifier,
     );
     try {

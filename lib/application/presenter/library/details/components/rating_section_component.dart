@@ -23,7 +23,7 @@ class __RatingSectionState extends State<_RatingSection> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: widget.controller.nGameMetadata,
-      builder: (BuildContext context, GameData? metadata, Widget? _) {
+      builder: (BuildContext context, GameMetadata? metadata, Widget? _) {
         final Map<String, int> emptyStars = <String, int> {
           "5": 0,
           "4": 0,
@@ -37,7 +37,7 @@ class __RatingSectionState extends State<_RatingSection> {
             if (metadata != null) {
               showModalBottomSheet(
                 context: context,
-                isScrollControlled: false,
+                isScrollControlled: true,
                 builder: (BuildContext context) => _SubmitRatingModal(
                   controller: widget.controller,
                   localizations: widget.localizations

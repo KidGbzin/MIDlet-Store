@@ -62,7 +62,7 @@ class _Controller {
     Logger.download("Downloading the MIDlet \"${midlet.file}\"...");
 
     try {
-      final GameData metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+      final GameMetadata metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
         identifier: game.identifier,
       );
 

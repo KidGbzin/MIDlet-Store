@@ -12,7 +12,7 @@ import '../../../../logger.dart';
 
 import '../../../core/configuration/global_configuration.dart';
 
-import '../../../core/entities/game_data_entity.dart';
+import '../../../core/entities/game_metadata_entity.dart';
 import '../../../core/entities/game_entity.dart';
 
 import '../../../core/enumerations/palette_enumeration.dart';

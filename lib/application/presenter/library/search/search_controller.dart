@@ -388,7 +388,7 @@ class _Controller {
   /// - `Average-Rating`: The average rating of the game.
   /// - `Downloads`: The total number of downloads for the game.
   Future<Map<String, dynamic>> getGameData(Game game) async {
-    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+    final GameMetadata data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
       identifier: game.identifier,
     );
 
