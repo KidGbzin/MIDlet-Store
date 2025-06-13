@@ -25,43 +25,44 @@ class __ActionsSectionState extends State<_ActionsSection> {
     return Ink(
       color: Palettes.foreground.value,
       padding: const EdgeInsets.fromLTRB(15, 2.5, 15, 2.5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 7.5,
-        children: <Widget> [
-          Expanded(
-            child: InkWell(
-              borderRadius: gBorderRadius,
-              onTap: () {
-                context.gtMIDlets(widget.controller.game);
-              },
-              child: label(
-                icon: HugeIcons.strokeRoundedJava,
-                title: "MIDlets",
-                value: midlets.length.toString(),
-              ),
-            ),
-          ),
-          Expanded(
-            child: InkWell(
-              borderRadius: gBorderRadius,
-              onTap: () {
-                context.gtReviews(widget.controller.game);
-              },
-              child: label(
-                icon: HugeIcons.strokeRoundedStar,
-                title: "Reviews",
-                value: "0",
-              ),
-            ),
-          ),
-          Expanded(
-            child: ValueListenableBuilder(
-              valueListenable: widget.controller.nGameMetadata,
-              builder: (BuildContext context, GameMetadata? metadata, Widget? _) {
-                final String downloads = (metadata?.downloads ?? "-").toString();
+      child: ValueListenableBuilder(
+        valueListenable: widget.controller.nGameMetadata,
+        builder: (BuildContext context, GameMetadata? metadata, Widget? _) {
+          final String reviews = (metadata?.totalRatings ?? "-").toString();
+          final String downloads = (metadata?.downloads ?? "-").toString();
 
-                return AnimatedSwitcher(
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 7.5,
+            children: <Widget> [
+              Expanded(
+                child: InkWell(
+                  borderRadius: gBorderRadius,
+                  onTap: () {
+                    context.gtMIDlets(widget.controller.game);
+                  },
+                  child: label(
+                    icon: HugeIcons.strokeRoundedJava,
+                    title: "MIDlets",
+                    value: midlets.length.toString(),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: InkWell(
+                  borderRadius: gBorderRadius,
+                  onTap: () {
+                    context.gtReviews(widget.controller.game);
+                  },
+                  child: label(
+                    icon: HugeIcons.strokeRoundedStar,
+                    title: "Reviews",
+                    value: reviews,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: AnimatedSwitcher(
                   duration: gAnimationDuration,
                   child: label(
                     key: ValueKey(downloads),
@@ -69,11 +70,11 @@ class __ActionsSectionState extends State<_ActionsSection> {
                     title: widget.localizations.lbDownloads,
                     value: downloads,
                   ),
-                );
-              },
-            ),
-          ),
-        ],
+                ),
+              ),
+            ],
+          );
+        }
       ),
     );
   }

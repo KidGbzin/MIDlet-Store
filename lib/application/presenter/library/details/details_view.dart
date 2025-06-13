@@ -64,7 +64,7 @@ class _ViewState extends State<_View> {
         localizations: widget.localizations,
       ),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
-      floatingActionButtonLocation: _NoPaddingFABLocation(),
+      floatingActionButtonLocation: gFABPadding,
       body: CustomScrollView(
         slivers: <Widget> [
           SliverAppBar(
@@ -114,16 +114,5 @@ class _ViewState extends State<_View> {
         ],
       ),
     );
-  }
-}
-
-class _NoPaddingFABLocation extends FloatingActionButtonLocation {
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    final double fabX = scaffoldGeometry.scaffoldSize.width - scaffoldGeometry.floatingActionButtonSize.width;
-    final double fabY = scaffoldGeometry.scaffoldSize.height - scaffoldGeometry.floatingActionButtonSize.height;
-
-    return Offset(fabX, fabY);
   }
 }

@@ -68,7 +68,7 @@ class _Controller {
 
       _file = await rBucket.midlet(midlet);
 
-      await rSupabase.incrementGameDownloads(game);
+      await rSupabase.incrementDownloadsForGame(game);
       
       metadata.downloads ??= 0;
       metadata.downloads = metadata.downloads! + 1;

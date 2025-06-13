@@ -185,9 +185,19 @@
         "description": "Teks tombol untuk mengirim penilaian baru pada game."
     },
 
+    "btSubmitReview": "ULAS GAME",
+    "@btSubmitReview": {
+        "description": "Label tombol untuk mengirim ulasan baru untuk game."
+    },
+
     "btUpdateYourRating": "PERBARUI PENILAIAN",
     "@btUpdateYourRating": {
         "description": "Ditampilkan saat pengguna belum memberikan penilaian yang benar."
+    },
+
+    "hdReviews": "ULASAN",
+    "@hdReviews": {
+        "description": "Judul halaman yang ditampilkan di AppBar untuk halaman ulasan."
     },
 
     "scAbout": "TENTANG",
@@ -243,5 +253,35 @@
     "scSubmitRatingDescriptionNotRated": "Anda belum memberi penilaian untuk game ini. Bagikan pendapat Anda dengan memberikan penilaian!",
     "@scSubmitRatingDescriptionNotRated": {
         "description": "Ditampilkan saat pengguna belum memberi penilaian pada game."
+    },
+
+    "txRating1Star": "Sangat mengecewakan. Tidak menikmati sama sekali. 😞",
+    "@txRating1Star": {
+      "description": "Penilaian bintang 1 – pengalaman yang sangat buruk dengan game."
+    },
+
+    "txRating2Star": "Kurang bagus. Banyak kekurangannya. 😕",
+    "@txRating2Star": {
+      "description": "Penilaian bintang 2 – game memiliki banyak kekurangan."
+    },
+
+    "txRating3Star": "Lumayan, tapi masih bisa lebih baik. 😐",
+    "@txRating3Star": {
+      "description": "Penilaian bintang 3 – game cukup oke, tapi tidak istimewa."
+    },
+
+    "txRating4Star": "Bagus banget! Sangat menyenangkan. 👍",
+    "@txRating4Star": {
+      "description": "Penilaian bintang 4 – game yang menyenangkan dan menghibur."
+    },
+
+    "txRating5Star": "Game ini luar biasa, saya suka banget! 😍",
+    "@txRating5Star": {
+      "description": "Penilaian bintang 5 – game yang sangat bagus dan memuaskan."
+    },
+
+    "txSubmitReview": "Tulis ulasan singkat!",
+    "@txSubmitReview": {
+        "description": "Teks yang muncul di bawah kolom teks untuk mendorong pengguna menulis ulasan singkat."
     }
 }

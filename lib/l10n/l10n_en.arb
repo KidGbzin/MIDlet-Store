@@ -178,9 +178,19 @@
         "description": "Button text to submit a new game rating."
     },
 
+    "btSubmitReview": "REVIEW GAME",
+    "@btSubmitReview": {
+        "description": "Button label for submitting a new review for the game."
+    },
+
     "btUpdateYourRating": "UPDATE YOUR RATING",
     "@btUpdateYourRating": {
         "description": "Shown when the user has not set a correct rating."
+    },
+
+    "hdReviews": "REVIEWS",
+    "@hdReviews": {
+        "description": "Screen title shown in the AppBar for the reviews page."
     },
 
     "lb3D": "3D",
@@ -346,5 +356,35 @@
     "scSubmitRatingDescriptionNotRated": "You haven't rated this game yet. Share your opinion by giving it a rating!",
     "@scSubmitRatingDescriptionNotRated": {
         "description": "Shown when the user hasn't rated the game yet."
+    },
+
+    "txRating1Star": "Really disappointing. Didn't enjoy it at all. 😞",
+    "@txRating1Star": {
+      "description": "1-star rating – very poor experience with the game."
+    },
+  
+    "txRating2Star": "Not great. It has some serious flaws. 😕",
+    "@txRating2Star": {
+      "description": "2-star rating – noticeable problems with the game."
+    },
+  
+    "txRating3Star": "It's okay, but there's room for improvement. 😐",
+    "@txRating3Star": {
+      "description": "3-star rating – an average experience, not bad but not great."
+    },
+  
+    "txRating4Star": "Pretty good! Had a lot of fun. 👍",
+    "@txRating4Star": {
+      "description": "4-star rating – enjoyable and fun game."
+    },
+  
+    "txRating5Star": "This game is awesome, I love it! 😍",
+    "@txRating5Star": {
+      "description": "5-star rating – excellent and satisfying experience."
+    },
+
+    "txSubmitReview": "Give us a short review!",
+    "@txSubmitReview": {
+        "description": "Text shown below the text field encouraging the user to write a brief review."
     }
 }

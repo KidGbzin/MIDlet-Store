@@ -18,6 +18,7 @@ import '../application/services/github_service.dart';
 import '../application/services/supabase_service.dart';
 
 import '../application.dart';
+
 import '../logger.dart';
 
 Future<void> main() async {

@@ -405,7 +405,7 @@ class _Controller {
     }
 
     try {
-      data.downloads ??= await rSupabase.getOrInsertGameDownloads(game);
+      data.downloads ??= await rSupabase.getOrInsertDownloadsForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(

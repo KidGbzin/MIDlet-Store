@@ -47,7 +47,7 @@ class GameMetadata {
       'Average-Rating': averageRating,
       'Downloads': downloads,
       'Identifier': identifier,
-      'My-Rating': myReview?.toJson(),
+      'My-Review': myReview?.toJson(),
       'Stars': stars,
       'Total-Ratings': totalRatings,
     };

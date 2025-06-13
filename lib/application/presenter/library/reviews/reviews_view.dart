@@ -16,15 +16,30 @@ class _View extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: _SubmitReviewButton(
+        controller: controller,
+        localizations: localizations,
+      ),
+      floatingActionButtonLocation: gFABPadding,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: <Widget> [
             ButtonWidget.icon(
               icon: HugeIcons.strokeRoundedArrowLeft01,
               onTap: () => context.pop(),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 1, 0, 0),
+              child: Text(
+                localizations.hdReviews,
+                style: TypographyEnumeration.headline(Palettes.elements).style,
+              ),
+            ),
+            SizedBox.square(
+              dimension: 40,
             ),
           ],
         ),
@@ -35,6 +50,7 @@ class _View extends StatelessWidget {
           if (state == ProgressEnumeration.isReady) {
             return _ListView(
               controller: controller,
+              localizations: localizations,
             );
           }
           else if (state == ProgressEnumeration.isLoading) {

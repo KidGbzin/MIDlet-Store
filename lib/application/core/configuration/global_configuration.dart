@@ -23,3 +23,18 @@ final Divider gDivider = Divider(
 );
 
 final Duration gAnimationDuration = Durations.long2;
+
+/// FAB sem padding — canto inferior direito sem considerar padding ou margin
+class _GlobalFABLocation extends FloatingActionButtonLocation {
+
+  @override
+  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
+    final double fabX = scaffoldGeometry.scaffoldSize.width - scaffoldGeometry.floatingActionButtonSize.width;
+    final double fabY = scaffoldGeometry.scaffoldSize.height - scaffoldGeometry.floatingActionButtonSize.height;
+    
+    return Offset(fabX, fabY);
+  }
+}
+
+/// Getter global para facilitar o uso
+final FloatingActionButtonLocation gFABPadding = _GlobalFABLocation();

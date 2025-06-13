@@ -1,6 +1,6 @@
-part of '../details_handler.dart';
+part of '../reviews_handler.dart';
 
-class _SubmitRatingModal extends StatefulWidget {
+class _SubmitReviewModal extends StatefulWidget {
 
   /// Controls the handler’s state and behavior logic.
   final _Controller controller;
@@ -8,47 +8,58 @@ class _SubmitRatingModal extends StatefulWidget {
   /// Provides localized strings and messages based on the user’s language and region.
   final AppLocalizations localizations;
 
-  const _SubmitRatingModal({
+  const _SubmitReviewModal({
     required this.controller,
     required this.localizations,
   });
 
   @override
-  State<_SubmitRatingModal> createState() => _SubmitRatingModalState();
+  State<_SubmitReviewModal> createState() => _SubmitReviewModalState();
 }
 
-class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTickerProviderStateMixin {
+class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTickerProviderStateMixin {
   late final ValueNotifier<int> nRating;
   late final ValueNotifier<ProgressEnumeration> nState;
-  
+
   late final AppLocalizations localizations;
   late final int initialRating;
-  late final String? initialBody;
-  late final TextEditingController cTextField;
+  late final String? initialComment;
+  late final TextEditingController? cTextField;
+
+  Review? review;
 
   @override
   initState() {
     super.initState();
 
-    nRating = ValueNotifier<int>(widget.controller.nGameMetadata.value!.myReview!.rating);
-    nState = ValueNotifier(ProgressEnumeration.isWaiting);
+    nState = ValueNotifier(ProgressEnumeration.isLoading);
+    nRating = ValueNotifier<int>(0);
     
-    initialRating = widget.controller.nGameMetadata.value!.myReview!.rating;
-    initialBody = widget.controller.nGameMetadata.value!.myReview!.comment;
     localizations = widget.localizations;
 
-    cTextField = TextEditingController(
-      text: initialBody,
-    );
+    getUserReview();
   }
 
   @override
   void dispose() {
-    cTextField.dispose();
-    nRating.dispose();
+    if (cTextField != null) cTextField!.dispose();
     nState.dispose();
 
     super.dispose();
+  }
+
+  Future<void> getUserReview() async {
+    review = await widget.controller.getUserReview();
+    
+    initialComment = review!.comment;
+    initialRating = review!.rating;
+
+    cTextField = TextEditingController(
+      text: initialComment,
+    );
+
+    nRating.value = review!.rating;
+    nState.value = ProgressEnumeration.isWaiting;
   }
 
   @override
@@ -164,45 +175,40 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
   }
 
   Widget section() {
-    return ValueListenableBuilder(
-      valueListenable: widget.controller.nGameMetadata,
-      builder: (BuildContext context, GameMetadata? metadata, Widget? _) {
-        return Section(
-          description: metadata!.myReview!.rating == 0
-            ? localizations.scSubmitRatingDescriptionNotRated
-            : localizations.scSubmitRatingDescriptionRated.replaceFirst("@star", "${nRating.value}"),
-          
-          title: localizations.scSubmitRating,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(15, 25, 15, 0),
-            child: Align(
-              alignment: Alignment.center,
-              child: RatingBar(
-                initialRating: metadata.myReview!.rating.toDouble(),
-                itemSize: 50,
-                glow: false,
-                onRatingUpdate: (double rating) {
-                  nRating.value = rating.toInt();
-                },
-                ratingWidget: RatingWidget(
-                  full: Icon(
-                    HugeIcons.strokeRoundedStar,
-                    color: Palettes.gold.value,
-                  ),
-                  half: Icon(
-                    HugeIcons.strokeRoundedStarHalf,
-                    color: Palettes.gold.value,
-                  ),
-                  empty: Icon(
-                    HugeIcons.strokeRoundedStar,
-                    color: Palettes.divider.value,
-                  ),
-                ),
+    return Section(
+      description: review!.rating == 0
+        ? localizations.scSubmitRatingDescriptionNotRated
+        : localizations.scSubmitRatingDescriptionRated.replaceFirst("@star", "${review!.rating}"),
+      
+      title: localizations.scSubmitRating,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(15, 25, 15, 0),
+        child: Align(
+          alignment: Alignment.center,
+          child: RatingBar(
+            initialRating: review!.rating.toDouble(),
+            itemSize: 50,
+            glow: false,
+            onRatingUpdate: (double rating) {
+              nRating.value = rating.toInt();
+            },
+            ratingWidget: RatingWidget(
+              full: Icon(
+                HugeIcons.strokeRoundedStar,
+                color: Palettes.gold.value,
+              ),
+              half: Icon(
+                HugeIcons.strokeRoundedStarHalf,
+                color: Palettes.gold.value,
+              ),
+              empty: Icon(
+                HugeIcons.strokeRoundedStar,
+                color: Palettes.divider.value,
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -211,7 +217,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
       valueListenable: nRating,
       builder: (BuildContext context, int rating, Widget? _) {
         final bool isReadyToSubmit = (rating != 0 && rating != initialRating) ||
-                                     (rating != 0 && cTextField.value.text != initialBody);
+                                     (rating != 0 && cTextField!.value.text != initialComment);
 
         return Padding(
           padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -242,7 +248,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
       onTap: () {
         try {
           nState.value = ProgressEnumeration.isLoading;
-          widget.controller.submitRating(context, rating, cTextField.text);
+          widget.controller.submitRating(context, rating, cTextField!.text);
         }
         catch (error) {
           nState.value = ProgressEnumeration.hasError;

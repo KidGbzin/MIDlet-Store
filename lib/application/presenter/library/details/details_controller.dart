@@ -99,7 +99,7 @@ class _Controller {
     }
 
     try {
-      metadata.myReview = await rSupabase.getGameReviewFromUser(game);
+      metadata.myReview ??= await rSupabase.getUserReviewForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -107,11 +107,11 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      metadata.myReview = null;
+      metadata.myReview = Review.noReview();
     }
 
     try {
-      metadata.totalRatings ??= await rSupabase.getGameRatingsCount(game);
+      metadata.totalRatings ??= await rSupabase.countReviewsForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -123,7 +123,7 @@ class _Controller {
     }
 
     try {
-      metadata.stars ??= await rSupabase.getGameRatingsByStarsCount(game);
+      metadata.stars ??= await rSupabase.countRatingsByStarForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -151,7 +151,7 @@ class _Controller {
     final GameMetadata metadata = nGameMetadata.value!;
 
     try {
-      final Review review = await rSupabase.upsertGameReview(game, rating, body);
+      final Review review = await rSupabase.upsertReviewForGame(game, rating, body);
 
       metadata.myReview = review;
     }
@@ -165,7 +165,7 @@ class _Controller {
     }
 
     try {
-      metadata.totalRatings = await rSupabase.getGameRatingsCount(game);
+      metadata.totalRatings = await rSupabase.countReviewsForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -189,7 +189,7 @@ class _Controller {
     }
 
     try {
-      metadata.stars = await rSupabase.getGameRatingsByStarsCount(game);
+      metadata.stars = await rSupabase.countRatingsByStarForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(

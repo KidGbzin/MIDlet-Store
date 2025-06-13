@@ -195,9 +195,19 @@
         "description": "Texto do botão para enviar uma nova avaliação do jogo."
     },
 
+    "btSubmitReview": "AVALIAR JOGO",
+    "@btSubmitReview": {
+        "description": "Rótulo do botão para enviar uma nova avaliação do jogo."
+    },
+
     "btUpdateYourRating": "ATUALIZAR AVALIAÇÃO",
     "@btUpdateYourRating": {
         "description": "Exibido quando o usuário não definiu uma nota válida."
+    },
+
+    "hdReviews": "AVALIAÇÕES",
+    "@hdReviews": {
+        "description": "Título da tela exibido na AppBar da página de avaliações."
     },
 
     "scAbout": "SOBRE",
@@ -243,5 +253,35 @@
     "scSubmitRatingDescriptionNotRated": "Você ainda não avaliou este jogo. Compartilhe sua opinião dando uma nota!",
     "@scSubmitRatingDescriptionNotRated": {
         "description": "Exibido quando o usuário ainda não avaliou o jogo."
+    },
+
+    "txRating1Star": "Muito decepcionante. Não gostei nada. 😞",
+    "@txRating1Star": {
+      "description": "Avaliação de 1 estrela – experiência muito ruim com o jogo."
+    },
+
+    "txRating2Star": "Ruim. Tem falhas sérias. 😕",
+    "@txRating2Star": {
+      "description": "Avaliação de 2 estrelas – jogo com problemas importantes."
+    },
+
+    "txRating3Star": "É ok, mas dá pra melhorar. 😐",
+    "@txRating3Star": {
+      "description": "Avaliação de 3 estrelas – jogo mediano, aceitável."
+    },
+
+    "txRating4Star": "Muito bom! Me diverti bastante. 👍",
+    "@txRating4Star": {
+      "description": "Avaliação de 4 estrelas – jogo divertido e agradável."
+    },
+
+    "txRating5Star": "Esse jogo é incrível, adorei! 😍",
+    "@txRating5Star": {
+      "description": "Avaliação de 5 estrelas – jogo excelente, muito satisfatório."
+    },
+
+    "txSubmitReview": "Escreva uma breve avaliação!",
+    "@txSubmitReview": {
+        "description": "Texto exibido abaixo do campo de texto incentivando o usuário a escrever uma avaliação curta."
     }
 }
