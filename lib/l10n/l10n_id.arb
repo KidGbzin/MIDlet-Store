@@ -26,34 +26,6 @@
     "sectionFilterPublisherDescription": "Filter pencarian Anda dengan memilih penerbit tertentu.",
     "sectionFilterReleaseYear": "FILTER BERDASARKAN TAHUN RILIS",
     "sectionFilterReleaseYearDescription": "Filter pencarian Anda dengan memilih tahun rilis tertentu.",
-    "tag3D": "3D",
-    "tagAction": "Aksi",
-    "tagAdventure": "Petualangan",
-    "tagBreakout": "Breakout",
-    "tagCasual": "Santai",
-    "tagDriving": "Mengemudi",
-    "tagExtremeSports": "Olahraga Ekstrem",
-    "tagFighting": "Pertarungan",
-    "tagFootball": "Sepak Bola",
-    "tagHackAndSlash": "Hack 'n' Slash",
-    "tagMetroidvania": "Metroidvania",
-    "tagOffRoad": "Off-Road",
-    "tagOpenWorld": "Dunia Terbuka",
-    "tagPlatformer": "Platformer",
-    "tagPointAndClick": "Tunjuk dan Klik",
-    "tagPuzzle": "Teka-Teki",
-    "tagRacing": "Balapan",
-    "tagRally": "Reli",
-    "tagSciFi": "Fiksi Ilmiah",
-    "tagShooter": "Penembak",
-    "tagShootEmUp": "Tembak-Tembakan",
-    "tagSports": "Olahraga",
-    "tagStarfighter": "Pesawat Tempur",
-    "tagStealth": "Sembunyi-Sembunyi",
-    "tagSurvivalHorror": "Horor Bertahan Hidup",
-    "tagTakedown": "Menjatuhkan",
-    "tagTerror": "Teror",
-    "tagTowerDefense": "Pertahanan Menara",
 
     "btInstallOnEmulator": "INSTAL DI EMULATOR",
     "@btInstallOnEmulator": {
@@ -68,6 +40,26 @@
     "btPlayGame": "MAIN",
     "@btPlayGame": {
         "description": "Label tombol untuk memulai atau menjalankan game."
+    },
+
+    "btSubmitRating": "KIRIM PENILAIAN",
+    "@btSubmitRating": {
+        "description": "Teks tombol untuk mengirim penilaian baru pada game."
+    },
+
+    "btSubmitReview": "ULAS GAME",
+    "@btSubmitReview": {
+        "description": "Label tombol untuk mengirim ulasan baru untuk game."
+    },
+
+    "btUpdateYourRating": "PERBARUI PENILAIAN",
+    "@btUpdateYourRating": {
+        "description": "Ditampilkan saat pengguna belum memberikan penilaian yang benar."
+    },
+
+    "hdReviews": "ULASAN",
+    "@hdReviews": {
+        "description": "Judul halaman yang ditampilkan di AppBar untuk halaman ulasan."
     },
 
     "lb3D": "3D",
@@ -180,26 +172,6 @@
         "description": "Pesan yang ditampilkan saat tidak ada gambar pratinjau untuk game tersebut."
     },
 
-    "btSubmitRating": "KIRIM PENILAIAN",
-    "@btSubmitRating": {
-        "description": "Teks tombol untuk mengirim penilaian baru pada game."
-    },
-
-    "btSubmitReview": "ULAS GAME",
-    "@btSubmitReview": {
-        "description": "Label tombol untuk mengirim ulasan baru untuk game."
-    },
-
-    "btUpdateYourRating": "PERBARUI PENILAIAN",
-    "@btUpdateYourRating": {
-        "description": "Ditampilkan saat pengguna belum memberikan penilaian yang benar."
-    },
-
-    "hdReviews": "ULASAN",
-    "@hdReviews": {
-        "description": "Judul halaman yang ditampilkan di AppBar untuk halaman ulasan."
-    },
-
     "scAbout": "TENTANG",
     "@scAbout": {
         "description": "Judul bagian yang menampilkan informasi tentang game."
@@ -253,6 +225,166 @@
     "scSubmitRatingDescriptionNotRated": "Anda belum memberi penilaian untuk game ini. Bagikan pendapat Anda dengan memberikan penilaian!",
     "@scSubmitRatingDescriptionNotRated": {
         "description": "Ditampilkan saat pengguna belum memberi penilaian pada game."
+    },
+
+    "tg3D": "3D",
+    "@tg3D": {
+      "description": "Tag untuk game dengan grafis atau lingkungan 3D."
+    },
+
+    "tgAction": "Aksi",
+    "@tgAction": {
+      "description": "Tag untuk game aksi dengan gameplay cepat."
+    },
+
+    "tgAdventure": "Petualangan",
+    "@tgAdventure": {
+      "description": "Tag untuk game dengan cerita dan eksplorasi."
+    },
+
+    "tgBreakout": "Breakout",
+    "@tgBreakout": {
+      "description": "Tag untuk game pemecah balok seperti Breakout klasik."
+    },
+
+    "tgCasual": "Kasual",
+    "@tgCasual": {
+      "description": "Tag untuk game sederhana dan mudah dimainkan."
+    },
+
+    "tgDriving": "Menyetir",
+    "@tgDriving": {
+      "description": "Tag untuk game yang berfokus pada mengemudi kendaraan."
+    },
+
+    "tgExtremeSports": "Olahraga Ekstrem",
+    "@tgExtremeSports": {
+      "description": "Tag untuk game seperti skateboard atau BMX."
+    },
+
+    "tgFighting": "Pertarungan",
+    "@tgFighting": {
+      "description": "Tag untuk game perkelahian satu lawan satu."
+    },
+
+    "tgFootball": "Sepak Bola",
+    "@tgFootball": {
+      "description": "Tag untuk game olahraga sepak bola."
+    },
+
+    "tgHackAndSlash": "Hack 'n' Slash",
+    "@tgHackAndSlash": {
+      "description": "Tag untuk game aksi dengan serangan jarak dekat melawan banyak musuh."
+    },
+
+    "tgMetroidvania": "Metroidvania",
+    "@tgMetroidvania": {
+      "description": "Tag untuk game platform eksploratif ala Metroid dan Castlevania."
+    },
+
+    "tgOffRoad": "Off-Road",
+    "@tgOffRoad": {
+      "description": "Tag untuk game balap di medan tidak rata."
+    },
+
+    "tgOpenWorld": "Dunia Terbuka",
+    "@tgOpenWorld": {
+      "description": "Tag untuk game dengan lingkungan eksploratif yang luas."
+    },
+
+    "tgPinball": "Pinball",
+    "@tgPinball": {
+      "description": "Tag untuk game simulasi mesin pinball."
+    },
+
+    "tgPlatformer": "Platformer",
+    "@tgPlatformer": {
+      "description": "Tag untuk game dengan lompatan antar platform."
+    },
+
+    "tgPointAndClick": "Point 'n' Click",
+    "@tgPointAndClick": {
+      "description": "Tag untuk game petualangan dengan interaksi klik."
+    },
+
+    "tgPowerUps": "Power-Up",
+    "@tgPowerUps": {
+      "description": "Tag untuk game dengan item yang meningkatkan kemampuan."
+    },
+
+    "tgPuzzle": "Teka-Teki",
+    "@tgPuzzle": {
+      "description": "Tag untuk game yang berfokus pada tantangan logika."
+    },
+
+    "tgRacing": "Balapan",
+    "@tgRacing": {
+      "description": "Tag untuk game balapan kendaraan."
+    },
+
+    "tgRally": "Reli",
+    "@tgRally": {
+      "description": "Tag untuk game balapan bergaya reli, biasanya off-road."
+    },
+
+    "tgRunAndGun": "Run 'n' Gun",
+    "@tgRunAndGun": {
+      "description": "Tag untuk game menembak cepat sambil berlari."
+    },
+
+    "tgSciFi": "Fiksi Ilmiah",
+    "@tgSciFi": {
+      "description": "Tag untuk game dengan tema futuristik atau sci-fi."
+    },
+
+    "tgShooter": "Penembak",
+    "@tgShooter": {
+      "description": "Tag untuk game yang berfokus pada mekanik tembak-menembak."
+    },
+
+    "tgShootEmUp": "Shoot 'Em Up",
+    "@tgShootEmUp": {
+      "description": "Tag untuk game arcade dengan banyak peluru dan musuh."
+    },
+
+    "tgSports": "Olahraga",
+    "@tgSports": {
+      "description": "Tag untuk game berdasarkan olahraga nyata atau fiksi."
+    },
+
+    "tgStarfighter": "Pesawat Tempur",
+    "@tgStarfighter": {
+      "description": "Tag untuk game pertempuran luar angkasa dengan pesawat."
+    },
+
+    "tgStealth": "Siluman",
+    "@tgStealth": {
+      "description": "Tag untuk game yang menekankan penyusupan dan menghindari musuh."
+    },
+
+    "tgStrategy": "Strategi",
+    "@tgStrategy": {
+      "description": "Tag untuk game yang butuh perencanaan dan taktik."
+    },
+
+    "tgSurvivalHorror": "Horror Bertahan Hidup",
+    "@tgSurvivalHorror": {
+      "description": "Tag untuk game horror dengan elemen bertahan hidup dan sumber daya terbatas."
+    },
+
+    "tgTakedown": "Penaklukan",
+    "@tgTakedown": {
+      "description": "Tag untuk game dengan misi mengalahkan musuh, seringkali secara strategis."
+    },
+
+    "tgTerror": "Teror",
+    "@tgTerror": {
+      "description": "Tag untuk game horror yang menakut-nakuti pemain."
+    },
+
+    "tgTowerDefense": "Pertahanan Menara",
+    "@tgTowerDefense": {
+      "description": "Tag untuk game strategi di mana pemain menempatkan menara untuk bertahan."
     },
 
     "txRating1Star": "Sangat mengecewakan. Tidak menikmati sama sekali. 😞",

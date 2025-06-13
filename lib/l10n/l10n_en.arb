@@ -74,90 +74,6 @@
     "sectionFilterReleaseYearDescription": "Filter your search by selecting a specific release year.",
     "@sectionFilterReleaseYearDescription": {},
 
-    "tag3D": "3D",
-    "@tag3D": {},
-
-    "tagAction": "Action",
-    "@tagAction": {},
-
-    "tagAdventure": "Adventure",
-    "@tagAdventure": {},
-
-    "tagBreakout": "Breakout",
-    "@tagBreakout": {},
-
-    "tagCasual": "Casual",
-    "@tagCasual": {},
-
-    "tagDriving": "Driving",
-    "@tagDriving": {},
-
-    "tagExtremeSports": "Extreme Sports",
-    "@tagExtremeSports": {},
-
-    "tagFighting": "Fighting",
-    "@tagFighting": {},
-
-    "tagFootball": "Football",
-    "@tagFootball": {},
-
-    "tagHackAndSlash": "Hack 'n' Slash",
-    "@tagHackAndSlash": {},
-
-    "tagMetroidvania": "Metroidvania",
-    "@tagMetroidvania": {},
-
-    "tagOffRoad": "Off-Road",
-    "@tagOffRoad": {},
-
-    "tagOpenWorld": "Open World",
-    "@tagOpenWorld": {},
-
-    "tagPlatformer": "Platformer",
-    "@tagPlatformer": {},
-
-    "tagPointAndClick": "Point 'n' Click",
-    "@tagPointAndClick": {},
-
-    "tagPuzzle": "Puzzle",
-    "@tagPuzzle": {},
-
-    "tagRacing": "Racing",
-    "@tagRacing": {},
-
-    "tagRally": "Rally",
-    "@tagRally": {},
-
-    "tagSciFi": "Sci-Fi",
-    "@tagSciFi": {},
-
-    "tagShooter": "Shooter",
-    "@tagShooter": {},
-
-    "tagShootEmUp": "Shoot 'Em Up",
-    "@tagShootEmUp": {},
-
-    "tagSports": "Sports",
-    "@tagSports": {},
-
-    "tagStarfighter": "Starfighter",
-    "@tagStarfighter": {},
-
-    "tagStealth": "Stealth",
-    "@tagStealth": {},
-
-    "tagSurvivalHorror": "Survival Horror",
-    "@tagSurvivalHorror": {},
-
-    "tagTakedown": "Takedown",
-    "@tagTakedown": {},
-
-    "tagTerror": "Terror",
-    "@tagTerror": {},
-
-    "tagTowerDefense": "Tower Defense",
-    "@tagTowerDefense": {},
-
     "btInstallOnEmulator": "INSTALL ON EMULATOR",
     "@btInstallOnEmulator": {
         "description": "Button label used to install the game on the selected emulator."
@@ -351,11 +267,171 @@
     "scSubmitRatingDescriptionRated": "Looks like you've already rated this game with @star stars. Would you like to update your rating?",
     "@scSubmitRatingDescriptionRated": {
         "description": "Shown when the user has already rated the game."
-    },
+      },
 
     "scSubmitRatingDescriptionNotRated": "You haven't rated this game yet. Share your opinion by giving it a rating!",
     "@scSubmitRatingDescriptionNotRated": {
-        "description": "Shown when the user hasn't rated the game yet."
+      "description": "Shown when the user hasn't rated the game yet."
+    },
+
+    "tg3D": "3D",
+    "@tg3D": {
+      "description": "Tag used for games with 3D graphics or environments."
+    },
+
+    "tgAction": "Action",
+    "@tgAction": {
+      "description": "Tag for action games that focus on fast-paced gameplay."
+    },
+
+    "tgAdventure": "Adventure",
+    "@tgAdventure": {
+      "description": "Tag for story-driven games with exploration elements."
+    },
+
+    "tgBreakout": "Breakout",
+    "@tgBreakout": {
+      "description": "Tag for brick-breaking games inspired by classic Breakout-style gameplay."
+    },
+
+    "tgCasual": "Casual",
+    "@tgCasual": {
+      "description": "Tag for simple, easy-to-play games for short sessions."
+    },
+
+    "tgDriving": "Driving",
+    "@tgDriving": {
+      "description": "Tag for games focused on driving vehicles."
+    },
+
+    "tgExtremeSports": "Extreme Sports",
+    "@tgExtremeSports": {
+      "description": "Tag for games based on extreme sports like skateboarding or BMX."
+    },
+
+    "tgFighting": "Fighting",
+    "@tgFighting": {
+      "description": "Tag for one-on-one combat games."
+    },
+
+    "tgFootball": "Football",
+    "@tgFootball": {
+      "description": "Tag for soccer/football sports games."
+    },
+
+    "tgHackAndSlash": "Hack 'n' Slash",
+    "@tgHackAndSlash": {
+      "description": "Tag for action games focused on melee combat with many enemies."
+    },
+
+    "tgMetroidvania": "Metroidvania",
+    "@tgMetroidvania": {
+      "description": "Tag for exploration-based platformers inspired by Metroid and Castlevania."
+    },
+
+    "tgOffRoad": "Off-Road",
+    "@tgOffRoad": {
+      "description": "Tag for racing or driving games on rough, off-road terrain."
+    },
+
+    "tgOpenWorld": "Open World",
+    "@tgOpenWorld": {
+      "description": "Tag for games with freely explorable open environments."
+    },
+
+    "tgPinball": "Pinball",
+    "@tgPinball": {
+      "description": "Tag for games simulating a pinball machine."
+    },
+
+    "tgPlatformer": "Platformer",
+    "@tgPlatformer": {
+      "description": "Tag for games focused on jumping between platforms."
+    },
+
+    "tgPointAndClick": "Point 'n' Click",
+    "@tgPointAndClick": {
+      "description": "Tag for adventure games where players interact by pointing and clicking."
+    },
+
+    "tgPowerUps": "Power-Ups",
+    "@tgPowerUps": {
+      "description": "Tag for games where collecting power-ups enhances gameplay."
+    },
+
+    "tgPuzzle": "Puzzle",
+    "@tgPuzzle": {
+      "description": "Tag for games focused on solving puzzles or logic challenges."
+    },
+
+    "tgRacing": "Racing",
+    "@tgRacing": {
+      "description": "Tag for competitive speed-based vehicle games."
+    },
+
+    "tgRally": "Rally",
+    "@tgRally": {
+      "description": "Tag for off-road rally-style racing games."
+    },
+
+    "tgRunAndGun": "Run 'n' Gun",
+    "@tgRunAndGun": {
+      "description": "Tag for fast-paced platform shooters where the player runs and shoots."
+    },
+
+    "tgSciFi": "Sci-Fi",
+    "@tgSciFi": {
+      "description": "Tag for games with science fiction themes or futuristic settings."
+    },
+
+    "tgShooter": "Shooter",
+    "@tgShooter": {
+      "description": "Tag for games focused on shooting mechanics, either first or third person."
+    },
+
+    "tgShootEmUp": "Shoot 'Em Up",
+    "@tgShootEmUp": {
+      "description": "Tag for arcade-style shooters with lots of projectiles and enemies."
+    },
+
+    "tgSports": "Sports",
+    "@tgSports": {
+      "description": "Tag for games based on real or fictional sports."
+    },
+
+    "tgStarfighter": "Starfighter",
+    "@tgStarfighter": {
+      "description": "Tag for space combat games involving starfighters or spaceships."
+    },
+
+    "tgStealth": "Stealth",
+    "@tgStealth": {
+      "description": "Tag for games that emphasize sneaking and avoiding detection."
+    },
+
+    "tgStrategy": "Strategy",
+    "@tgStrategy": {
+      "description": "Tag for games that require planning and tactical decision-making."
+    },
+
+    "tgSurvivalHorror": "Survival Horror",
+    "@tgSurvivalHorror": {
+      "description": "Tag for horror-themed games focused on survival and limited resources."
+    },
+
+    "tgTakedown": "Takedown",
+    "@tgTakedown": {
+      "description": "Tag for games where the goal is to take down enemies, often in tactical fashion."
+    },
+
+    "tgTerror": "Terror",
+    "@tgTerror": {
+      "description": "Tag for horror games focused on scaring the player."
+    },
+
+    "tgTowerDefense": "Tower Defense",
+    "@tgTowerDefense": {
+      "description": "Tag for strategy games where players defend areas by placing towers."
     },
 
     "txRating1Star": "Really disappointing. Didn't enjoy it at all. 😞",

@@ -26,34 +26,6 @@
     "sectionFilterPublisherDescription": "Filtre sua pesquisa selecionando uma publicadora específica.",
     "sectionFilterReleaseYear": "FILTRAR POR ANO DE LANÇAMENTO",
     "sectionFilterReleaseYearDescription": "Filtre sua pesquisa selecionando um ano de lançamento especifico.",
-    "tag3D": "3D",
-    "tagAction": "Ação",
-    "tagAdventure": "Aventura",
-    "tagBreakout": "Quebra-Blocos",
-    "tagCasual": "Casual",
-    "tagDriving": "Direção",
-    "tagExtremeSports": "Esportes Radicais",
-    "tagFighting": "Luta",
-    "tagFootball": "Futebol",
-    "tagHackAndSlash": "Hack 'n' Slash",
-    "tagMetroidvania": "Metroidvania",
-    "tagOffRoad": "Off-Road",
-    "tagOpenWorld": "Mundo Aberto",
-    "tagPlatformer": "Plataforma",
-    "tagPointAndClick": "Point 'n' Click",
-    "tagPuzzle": "Quebra-Cabeça",
-    "tagRacing": "Corrida",
-    "tagRally": "Rali",
-    "tagSciFi": "Ficção Científica",
-    "tagShooter": "Tiro",
-    "tagShootEmUp": "Shoot 'em Up",
-    "tagSports": "Esportes",
-    "tagStarfighter": "Nave de Combate",
-    "tagStealth": "Furtividade",
-    "tagSurvivalHorror": "Survival Horror",
-    "tagTakedown": "Takedown",
-    "tagTerror": "Terror",
-    "tagTowerDefense": "Tower Defense",
 
     "btInstallOnEmulator": "INSTALAR NO EMULADOR",
     "@btInstallOnEmulator": {
@@ -68,6 +40,26 @@
     "btPlayGame": "JOGAR",
     "@btPlayGame": {
         "description": "Rótulo do botão para iniciar ou executar o jogo."
+    },
+
+    "btSubmitRating": "ENVIAR AVALIAÇÃO",
+    "@btSubmitRating": {
+        "description": "Texto do botão para enviar uma nova avaliação do jogo."
+    },
+
+    "btSubmitReview": "AVALIAR JOGO",
+    "@btSubmitReview": {
+        "description": "Rótulo do botão para enviar uma nova avaliação do jogo."
+    },
+
+    "btUpdateYourRating": "ATUALIZAR AVALIAÇÃO",
+    "@btUpdateYourRating": {
+        "description": "Exibido quando o usuário não definiu uma nota válida."
+    },
+
+    "hdReviews": "AVALIAÇÕES",
+    "@hdReviews": {
+        "description": "Título da tela exibido na AppBar da página de avaliações."
     },
 
     "lb3D": "3D",
@@ -190,26 +182,6 @@
         "description": "Texto de instrução pedindo ao usuário que escolha o emulador preferido."
     },
 
-    "btSubmitRating": "ENVIAR AVALIAÇÃO",
-    "@btSubmitRating": {
-        "description": "Texto do botão para enviar uma nova avaliação do jogo."
-    },
-
-    "btSubmitReview": "AVALIAR JOGO",
-    "@btSubmitReview": {
-        "description": "Rótulo do botão para enviar uma nova avaliação do jogo."
-    },
-
-    "btUpdateYourRating": "ATUALIZAR AVALIAÇÃO",
-    "@btUpdateYourRating": {
-        "description": "Exibido quando o usuário não definiu uma nota válida."
-    },
-
-    "hdReviews": "AVALIAÇÕES",
-    "@hdReviews": {
-        "description": "Título da tela exibido na AppBar da página de avaliações."
-    },
-
     "scAbout": "SOBRE",
     "@scAbout": {
         "description": "Título da seção que exibe informações sobre o jogo."
@@ -253,6 +225,166 @@
     "scSubmitRatingDescriptionNotRated": "Você ainda não avaliou este jogo. Compartilhe sua opinião dando uma nota!",
     "@scSubmitRatingDescriptionNotRated": {
         "description": "Exibido quando o usuário ainda não avaliou o jogo."
+    },
+
+    "tg3D": "3D",
+    "@tg3D": {
+      "description": "Tag usada para jogos com gráficos ou ambientes em 3D."
+    },
+
+    "tgAction": "Ação",
+    "@tgAction": {
+      "description": "Tag para jogos de ação com jogabilidade rápida."
+    },
+
+    "tgAdventure": "Aventura",
+    "@tgAdventure": {
+      "description": "Tag para jogos com narrativa e elementos de exploração."
+    },
+
+    "tgBreakout": "Quebra-Blocos",
+    "@tgBreakout": {
+      "description": "Tag para jogos de quebrar blocos no estilo clássico Breakout."
+    },
+
+    "tgCasual": "Casual",
+    "@tgCasual": {
+      "description": "Tag para jogos simples, ideais para sessões curtas."
+    },
+
+    "tgDriving": "Direção",
+    "@tgDriving": {
+      "description": "Tag para jogos focados em dirigir veículos."
+    },
+
+    "tgExtremeSports": "Esportes Radicais",
+    "@tgExtremeSports": {
+      "description": "Tag para jogos de esportes como skate ou BMX."
+    },
+
+    "tgFighting": "Luta",
+    "@tgFighting": {
+      "description": "Tag para jogos de combate um contra um."
+    },
+
+    "tgFootball": "Futebol",
+    "@tgFootball": {
+      "description": "Tag para jogos esportivos de futebol."
+    },
+
+    "tgHackAndSlash": "Hack 'n' Slash",
+    "@tgHackAndSlash": {
+      "description": "Tag para jogos de combate corpo a corpo contra muitos inimigos."
+    },
+
+    "tgMetroidvania": "Metroidvania",
+    "@tgMetroidvania": {
+      "description": "Tag para jogos de plataforma com exploração contínua, estilo Metroid e Castlevania."
+    },
+
+    "tgOffRoad": "Off-Road",
+    "@tgOffRoad": {
+      "description": "Tag para jogos de corrida em terrenos irregulares."
+    },
+
+    "tgOpenWorld": "Mundo Aberto",
+    "@tgOpenWorld": {
+      "description": "Tag para jogos com ambientes livres para exploração."
+    },
+
+    "tgPinball": "Pinball",
+    "@tgPinball": {
+      "description": "Tag para jogos que simulam máquinas de pinball."
+    },
+
+    "tgPlatformer": "Plataforma",
+    "@tgPlatformer": {
+      "description": "Tag para jogos com foco em saltos entre plataformas."
+    },
+
+    "tgPointAndClick": "Point 'n' Click",
+    "@tgPointAndClick": {
+      "description": "Tag para jogos de aventura com interação por clique."
+    },
+
+    "tgPowerUps": "Power-Ups",
+    "@tgPowerUps": {
+      "description": "Tag para jogos com itens que aumentam habilidades."
+    },
+
+    "tgPuzzle": "Quebra-Cabeça",
+    "@tgPuzzle": {
+      "description": "Tag para jogos com foco em desafios de lógica e raciocínio."
+    },
+
+    "tgRacing": "Corrida",
+    "@tgRacing": {
+      "description": "Tag para jogos de velocidade e competição com veículos."
+    },
+
+    "tgRally": "Rali",
+    "@tgRally": {
+      "description": "Tag para jogos de corrida estilo rali, geralmente off-road."
+    },
+
+    "tgRunAndGun": "Run 'n' Gun",
+    "@tgRunAndGun": {
+      "description": "Tag para jogos onde se corre e atira ao mesmo tempo."
+    },
+
+    "tgSciFi": "Ficção Científica",
+    "@tgSciFi": {
+      "description": "Tag para jogos com temas futuristas ou de ficção científica."
+    },
+
+    "tgShooter": "Tiro",
+    "@tgShooter": {
+      "description": "Tag para jogos focados em mecânicas de tiro."
+    },
+
+    "tgShootEmUp": "Shoot 'Em Up",
+    "@tgShootEmUp": {
+      "description": "Tag para jogos arcade com muitos inimigos e projéteis."
+    },
+
+    "tgSports": "Esportes",
+    "@tgSports": {
+      "description": "Tag para jogos inspirados em esportes reais ou fictícios."
+    },
+
+    "tgStarfighter": "Nave de Combate",
+    "@tgStarfighter": {
+      "description": "Tag para jogos de combate espacial com naves."
+    },
+
+    "tgStealth": "Furtivo",
+    "@tgStealth": {
+      "description": "Tag para jogos que priorizam a furtividade e evitar ser visto."
+    },
+
+    "tgStrategy": "Estratégia",
+    "@tgStrategy": {
+      "description": "Tag para jogos que exigem planejamento tático."
+    },
+
+    "tgSurvivalHorror": "Terror de Sobrevivência",
+    "@tgSurvivalHorror": {
+      "description": "Tag para jogos de terror com foco em sobrevivência e poucos recursos."
+    },
+
+    "tgTakedown": "Takedown",
+    "@tgTakedown": {
+      "description": "Tag para jogos com foco em eliminar inimigos, muitas vezes de forma estratégica."
+    },
+
+    "tgTerror": "Terror",
+    "@tgTerror": {
+      "description": "Tag para jogos voltados a assustar o jogador."
+    },
+
+    "tgTowerDefense": "Defesa de Torres",
+    "@tgTowerDefense": {
+      "description": "Tag para jogos onde se posicionam torres para defender áreas."
     },
 
     "txRating1Star": "Muito decepcionante. Não gostei nada. 😞",
