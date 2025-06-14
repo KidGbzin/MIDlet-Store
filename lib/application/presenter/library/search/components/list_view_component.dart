@@ -131,7 +131,7 @@ class _ListTileState extends State<_ListTile> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 15, 15, 25),
                 child: Text(
-                  widget.game.description(Localizations.localeOf(context)) ?? "",
+                  widget.game.fDescription(Localizations.localeOf(context)) ?? "",
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
                   style: TypographyEnumeration.body(Palettes.grey).style,

@@ -104,6 +104,46 @@
         "description": "Shown when the user has not set a correct rating."
     },
 
+    "exClientExceptionTitle": "Connection Failed",
+    "@exClientExceptionTitle": {
+      "description": "Title displayed when a ClientException occurs, usually due to a lack of internet connection."
+    },
+
+    "exClientExceptionMessage": "Could not connect to the server. Please check your internet connection and try again.",
+    "@exClientExceptionMessage": {
+      "description": "Message explaining that the server couldn't be reached, typically due to connectivity issues."
+    },
+
+    "exFormatExceptionTitle": "Unexpected Error",
+    "@exFormatExceptionTitle": {
+      "description": "Title shown when a FormatException occurs, such as failing to parse a date or JSON."
+    },
+
+    "exFormatExceptionMessage": "Something went wrong and the operation couldn't be completed. Please try again shortly. If the problem persists, contact our support team.",
+    "@exFormatExceptionMessage": {
+      "description": "Message shown for data parsing errors like format or conversion failures."
+    },
+
+    "exHttpExceptionTitle": "Server Unavailable",
+    "@exHttpExceptionTitle": {
+      "description": "Title shown when the server cannot provide the requested resource."
+    },
+
+    "exHttpExceptionMessage": "Could not access the requested resource on the server. This may happen due to an invalid URL, server issue, or missing file.",
+    "@exHttpExceptionMessage": {
+      "description": "Message indicating a server-side error such as 404 Not Found or 500 Internal Server Error."
+    },
+
+    "exUnknownExceptionTitle": "Something went wrong",
+    "@exUnknownExceptionTitle": {
+      "description": "Generic title for unclassified exceptions."
+    },
+    
+    "exUnknownExceptionMessage": "Something went wrong and the operation couldn't be completed. Please try again later. If the issue persists, contact our support team.",
+    "@exUnknownExceptionMessage": {
+      "description": "Fallback message for unexpected errors not matching known exception types."
+    },
+
     "hdReviews": "REVIEWS",
     "@hdReviews": {
         "description": "Screen title shown in the AppBar for the reviews page."

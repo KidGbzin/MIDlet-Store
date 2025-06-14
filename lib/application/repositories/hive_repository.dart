@@ -87,25 +87,17 @@ class HiveRepository {
   /// This file contains a list of games, which is parsed and saved to the local storage boxes. 
   /// Caching the collection locally helps reduce the number of API requests and conserve resources.
   ///
-  /// Throws:
-  /// - `Exception`: If the JSON file cannot be found or fetched.
+  /// Thrown:
+  /// - `ClientException`: Thrown by the [http](https://pub.dev/packages/http) package, typically when there is no internet connection.
+  /// - `FormatException`: Thrown by the [GitHub] or [Game] classes when parsing data fails (e.g., date formats or invalid JSON structure).
+  /// - `HttpException`: Thrown when the GitHub repository file cannot be accessed or the server responds with an unexpected status code.
   Future<void> _fetchStaticDatabase() async {
     const String source = "Database/DATABASE.json";
 
     DateTime? lastUpdated;
     DateTime? lastCached = boxSettings.lastUpdated;
 
-    try {
-      lastUpdated = await sGitHub.getLastUpdatedDate(source);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      rethrow;
-    }
+    lastUpdated = await sGitHub.getLastUpdatedDate(source);
     
     if (lastCached != null && lastUpdated.isBefore(lastCached)) {
       Logger.information("The local database is already up-to-date, no update required.");
@@ -113,43 +105,19 @@ class HiveRepository {
       return;
     }
     
-    final Uint8List? bytes;
+    final Uint8List? bytes = await sGitHub.get(source);
 
-    try {
-      bytes = await sGitHub.get(source);
+    final List<dynamic> decoded = jsonDecode(utf8.decode(bytes!));
+    final List<Game> collection = decoded.map(Game.fromJson).toList();
 
-      if (bytes == null) throw Exception('The file "$source" could not be found in the repository.');
+    boxGames.clear();
+    
+    for (final Game game in collection) {
+      boxGames.put(game);
     }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      rethrow;
-    }
-
-    try {
-      final List decoded = jsonDecode(utf8.decode(bytes));
-      final List<Game> collection = decoded.map(Game.fromJson).toList();
-
-      boxGames.clear();
-      for (final Game game in collection) {
-        boxGames.put(game);
-      }
-
-      boxSettings.setLastUpdated(DateTime.now().toString());
-
-      Logger.success("The local database was updated successfully with ${collection.length} games.");
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      throw Exception('Error parsing or storing the local database with Hive.');
-    }
+    boxSettings.setLastUpdated(DateTime.now().toString());
+    
+    Logger.success("The local database was updated successfully with ${collection.length} games.");
   }
 }
 

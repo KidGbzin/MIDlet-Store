@@ -32,7 +32,7 @@ class _ViewState extends State<_View> {
     ),    
     gDivider,
     _About(
-      description: widget.controller.game.description(Localizations.localeOf(context)),
+      description: widget.controller.game.fDescription(Localizations.localeOf(context)),
       localizations: widget.localizations,
     ),
     gDivider,

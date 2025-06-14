@@ -166,10 +166,10 @@ class _ActionsSection extends StatelessWidget {
         spacing: 7.5,
         children: <Widget> [
           Expanded(
-            child: button(midlet.formattedResolution, HugeIcons.strokeRoundedModernTv),
+            child: button(midlet.fResolution, HugeIcons.strokeRoundedModernTv),
           ),
           Expanded(
-            child: button(midlet.formattedSize, HugeIcons.strokeRoundedPackage),
+            child: button(midlet.fSize, HugeIcons.strokeRoundedPackage),
           ),
           Expanded(
             child: button("Keyboard", HugeIcons.strokeRoundedVideoConsole),

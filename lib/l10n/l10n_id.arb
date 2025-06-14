@@ -57,6 +57,46 @@
         "description": "Ditampilkan saat pengguna belum memberikan penilaian yang benar."
     },
 
+    "exClientExceptionTitle": "Koneksi Gagal",
+    "@exClientExceptionTitle": {
+      "description": "Judul ditampilkan saat terjadi ClientException, biasanya karena tidak ada koneksi internet."
+    },
+
+    "exClientExceptionMessage": "Tidak dapat terhubung ke server. Periksa koneksi internet Anda dan coba lagi.",
+    "@exClientExceptionMessage": {
+      "description": "Pesan yang menjelaskan bahwa server tidak dapat dijangkau, biasanya karena masalah koneksi."
+    },
+
+    "exFormatExceptionTitle": "Kesalahan Tak Terduga",
+    "@exFormatExceptionTitle": {
+      "description": "Judul yang ditampilkan ketika terjadi FormatException, seperti kegagalan parsing tanggal atau JSON."
+    },
+
+    "exFormatExceptionMessage": "Terjadi kesalahan dan operasi tidak dapat diselesaikan. Silakan coba lagi dalam beberapa saat. Jika masalah terus berlanjut, hubungi tim dukungan kami.",
+    "@exFormatExceptionMessage": {
+      "description": "Pesan yang ditampilkan saat terjadi kesalahan parsing atau konversi data."
+    },
+
+    "exHttpExceptionTitle": "Server Tidak Tersedia",
+    "@exHttpExceptionTitle": {
+      "description": "Judul ditampilkan saat server tidak dapat menyediakan sumber daya yang diminta."
+    },
+
+    "exHttpExceptionMessage": "Tidak dapat mengakses sumber daya yang diminta di server. Ini bisa terjadi karena URL tidak valid, masalah server, atau file tidak ditemukan.",
+    "@exHttpExceptionMessage": {
+      "description": "Pesan yang menunjukkan kesalahan di sisi server, seperti 404 atau 500."
+    },
+
+    "exUnknownExceptionTitle": "Terjadi kesalahan",
+    "@exUnknownExceptionTitle": {
+      "description": "Judul umum untuk pengecualian yang tidak diketahui."
+    },
+    
+    "exUnknownExceptionMessage": "Terjadi kesalahan dan operasi tidak dapat diselesaikan. Coba lagi nanti. Jika masalah berlanjut, hubungi tim dukungan kami.",
+    "@exUnknownExceptionMessage": {
+      "description": "Pesan umum untuk kesalahan tak terduga yang tidak sesuai dengan jenis pengecualian yang dikenal."
+    },
+
     "hdReviews": "ULASAN",
     "@hdReviews": {
         "description": "Judul halaman yang ditampilkan di AppBar untuk halaman ulasan."

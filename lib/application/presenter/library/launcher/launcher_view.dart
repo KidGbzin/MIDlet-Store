@@ -40,25 +40,16 @@ class _LauncherViewState extends State<_LauncherView> {
                       child: LoadingAnimation(),
                     );
                   }
-                  else if (progress == ProgressEnumeration.requestUpdate) {
-                 
-                  }
                   else if (progress == ProgressEnumeration.isFinished) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (context.mounted) context.pushReplacement('/search');
                     });
                   }
                   else {
-                    child = Align(
-                      alignment: Alignment.center,
-                      child: HugeIcon(
-                        icon: HugeIcons.strokeRoundedAlert01,
-                        color: Palettes.grey.value,
-                      ),
-                    );
+                    child = _Error(widget.controller.nError.value!);
                   }
                   return AnimatedSwitcher(
-                    duration: Durations.extralong4,
+                    duration: gAnimationDuration,
                     child: child,
                   );
                 }

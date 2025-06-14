@@ -1,9 +1,65 @@
-// MIDLET ENTITY ☕️: ============================================================================================================================================================ //
+import '../configuration/global_configuration.dart';
 
-/// Represents a Java ME (J2ME) application entity, which is a `.jar` file containing a mobile Java application.
+/// Represents a Java ME (J2ME) application, typically distributed as a `.jar` file.
 ///
-/// The `MIDlet` entity provides metadata and attributes related to the Java ME application, such as the brand, file, censoring, default, landscape, multiplayer, and tags.
+/// A [MIDlet] contains metadata and attributes describing the mobile Java application, including device compatibility,
+/// display settings, multiplayer support, localization, and technical requirements.
+///
+/// This class is used for storing, displaying, and managing Java ME games within the application context.
 class MIDlet {
+
+  // MARK: Constructor ⮟
+
+  /// The target phone brand for which this MIDlet was designed.
+  final String brand;
+
+  /// The filename of the MIDlet JAR package, including the `.jar` extension.
+  final String file;
+
+  /// Whether the MIDlet contains censored or restricted content.
+  final bool isCensored;
+
+  /// Whether the MIDlet is a default (pre-installed) application.
+  final bool isDefault;
+
+  /// Whether the MIDlet is optimized for landscape orientation.
+  final bool isLandscape;
+
+  /// Whether the MIDlet supports Bluetooth multiplayer.
+  final bool isMultiplayerB;
+
+  /// Whether the MIDlet supports local (offline) multiplayer.
+  final bool isMultiplayerL;
+
+  /// Whether the MIDlet adapts to multiple screen resolutions.
+  final bool isMultiscreen;
+
+  /// Whether the MIDlet requires an internet connection.
+  final bool isOnline;
+
+  /// Whether the MIDlet supports touchscreen input.
+  final bool isTouchscreen;
+
+  /// Whether the MIDlet features 3D graphics.
+  final bool isThreeD;
+
+  /// Supported language codes for localization.
+  final List<String> languages;
+
+  /// The native screen resolution of the MIDlet.
+  final String resolution;
+
+  /// The size of the JAR package in kilobytes.
+  final int size;
+
+  /// The source from which the MIDlet was obtained.
+  final String source;
+
+  /// The title of the MIDlet.
+  final String title;
+
+  /// The release version of the MIDlet.
+  final String version;
 
   MIDlet({
     required this.brand,
@@ -25,87 +81,50 @@ class MIDlet {
     required this.version,
   });
 
-  /// The target phone brand for which this [MIDlet] was designed.
-  final String brand;
+  // MARK: Formats ⮟
 
-  /// The filename of the [MIDlet] JAR package, including the `.jar` extension.
-  final String file;
+  /// Returns the file size in kilobytes, rounded and formatted as a string (e.g., "512 KB").
+  String get fSize => "${(size / 1024).round()} KB";
 
-  /// Indicates whether the [MIDlet] contains censored or restricted content.
-  final bool isCensored;
+  /// Returns the screen resolution with spacing (e.g., "240x320" → "240 x 320").
+  String get fResolution => resolution.replaceFirst("x", " x ");
 
-  /// Specifies if this [MIDlet] is a default (pre-installed) application.
-  final bool isDefault;
+  /// Returns the formatted title, replacing " -" with ":" (e.g., "Bomberman - Deluxe" → "Bomberman: Deluxe").
+  String get fTitle => title.replaceFirst(" -", ":");
 
-  /// Determines if the [MIDlet] is optimized for landscape orientation.
-  final bool isLandscape;
+  // MARK: JSON Methods ⮟
 
-  /// Specifies if the [MIDlet] supports Bluetooth multiplayer functionality.
-  final bool isMultiplayerB;
-
-  /// Specifies if the [MIDlet] supports Local multiplayer functionality.
-  final bool isMultiplayerL;
-
-  /// Indicates if the [MIDlet] can adapt to multiple screen resolutions.
-  final bool isMultiscreen;
-
-  /// Determines whether the [MIDlet] requires an internet connection.
-  final bool isOnline;
-
-  /// Indicates if the [MIDlet] supports touchscreen input.
-  final bool isTouchscreen;
-
-  /// Specifies whether the [MIDlet] features 3D graphics.
-  final bool isThreeD;
-
-  /// A list of supported language codes for localization.
-  final List<String> languages;
-
-  /// The native screen resolution of the [MIDlet] in pixels.
-  final String resolution;
-
-  /// The size of the .JAR package in kilobytes.
-  final int size;
-
-  final String source;
-
-  /// The title of the [MIDlet].
-  final String title;
-
-  /// The release version of the [MIDlet].
-  final String version;
-
-  /// Creates a [MIDlet] instance from a JSON object.
+  /// Creates a [MIDlet] instance from a JSON string.
   /// 
-  /// The [json] parameter is expected to be a dynamic object containing
-  /// key-value pairs that map to the properties of this class.
-  factory MIDlet.fromJson(dynamic json) {
+  /// The [jString] parameter is expected to be a dynamic object containing key-value pairs that map to the properties of this class.
+  /// 
+  /// Throws:
+  /// - `FormatException`: Thrown when a required field is missing, null, or does not match the expected type during parsing.
+  factory MIDlet.fromJson(dynamic jString) {
     return MIDlet(
-      brand: json['brand'] as String,
-      file: json['file'] as String,
-      isCensored: json['isCensored'] as bool,
-      isDefault: json['isDefault'] as bool,
-      isLandscape: json['isLandscape'] as bool,
-      isMultiplayerB: json['isMultiplayerB'] as bool,
-      isMultiplayerL: json['isMultiplayerL'] as bool,
-      isMultiscreen: json['isMultiscreen'] as bool,
-      isOnline: json['isOnline'] as bool,
-      isTouchscreen: json['isTouchscreen'] as bool,
-      isThreeD: json['isThreeD'] as bool,
-      languages: List<String>.from(json["languages"]),
-      resolution: json['resolution'] as String,
-      size: json['size'] as int,
-      source: json['source'] as String,
-      title: json['title'] as String,
-      version: json['version'] as String,
+      brand: require<String>(jString, "brand")!,
+      file: require<String>(jString, "file")!,
+      isCensored: require<bool>(jString, "isCensored")!,
+      isDefault: require<bool>(jString, "isDefault")!,
+      isLandscape: require<bool>(jString, "isLandscape")!,
+      isMultiplayerB: require<bool>(jString, "isMultiplayerB")!,
+      isMultiplayerL: require<bool>(jString, "isMultiplayerL")!,
+      isMultiscreen: require<bool>(jString, "isMultiscreen")!,
+      isOnline: require<bool>(jString, "isOnline")!,
+      isTouchscreen: require<bool>(jString, "isTouchscreen")!,
+      isThreeD: require<bool>(jString, "isThreeD")!,
+      languages: require<List<String>>(jString, "languages")!,
+      resolution: require<String>(jString, "resolution")!,
+      size: require<int>(jString, "size")!,
+      source: require<String>(jString, "source")!,
+      title: require<String>(jString, "title")!,
+      version: require<String>(jString, "version")!,
     );
   }
 
-  /// Converts the [MIDlet] instance into a JSON-compatible map.
-  /// 
-  /// This method is primarily used for serialization, including storage and data transmission.
+  /// Converts this [MIDlet] instance into a JSON-compatible map.
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic> {
       'brand': brand,
       'file': file,
       'isCensored': isCensored,
@@ -125,10 +144,4 @@ class MIDlet {
       'version': version,
     };
   }
-
-  String get formattedSize => "${(size / 1024).round()} KB";
-
-  String get formattedResolution => resolution.replaceFirst("x", " x ");
-
-  String get formattedTitle => title.replaceFirst(" -", ":");
 }

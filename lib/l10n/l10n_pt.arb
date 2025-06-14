@@ -57,6 +57,46 @@
         "description": "Exibido quando o usuário não definiu uma nota válida."
     },
 
+    "exClientExceptionTitle": "Falha na conexão",
+    "@exClientExceptionTitle": {
+      "description": "Título exibido quando ocorre um ClientException, geralmente por falta de conexão com a internet."
+    },
+
+    "exClientExceptionMessage": "Não foi possível se conectar ao servidor. Verifique sua conexão com a internet e tente novamente.",
+    "@exClientExceptionMessage": {
+      "description": "Mensagem informando que o servidor não pôde ser acessado, normalmente por problemas de conectividade."
+    },
+
+    "exFormatExceptionTitle": "Erro inesperado",
+    "@exFormatExceptionTitle": {
+      "description": "Título mostrado quando ocorre um FormatException, como falha ao analisar data ou JSON."
+    },
+
+    "exFormatExceptionMessage": "Algo deu errado e não foi possível concluir a operação. Tente novamente em breve. Se o problema persistir, fale com nosso suporte.",
+    "@exFormatExceptionMessage": {
+      "description": "Mensagem exibida para erros de formatação ou conversão de dados."
+    },
+
+    "exHttpExceptionTitle": "Servidor indisponível",
+    "@exHttpExceptionTitle": {
+      "description": "Título exibido quando o servidor não consegue fornecer o recurso solicitado."
+    },
+
+    "exHttpExceptionMessage": "Não foi possível acessar o recurso solicitado no servidor. Isso pode ocorrer por uma URL inválida, problema no servidor ou arquivo não encontrado.",
+    "@exHttpExceptionMessage": {
+      "description": "Mensagem indicando um erro do servidor, como 404 ou 500."
+    },
+
+    "exUnknownExceptionTitle": "Algo deu errado",
+    "@exUnknownExceptionTitle": {
+      "description": "Título genérico para exceções não classificadas."
+    },
+    
+    "exUnknownExceptionMessage": "Algo deu errado e não foi possível concluir a operação. Tente novamente em breve. Se o problema persistir, fale com nosso suporte.",
+    "@exUnknownExceptionMessage": {
+      "description": "Mensagem genérica para erros inesperados que não se encaixam em tipos conhecidos."
+    },
+
     "hdReviews": "AVALIAÇÕES",
     "@hdReviews": {
         "description": "Título da tela exibido na AppBar da página de avaliações."

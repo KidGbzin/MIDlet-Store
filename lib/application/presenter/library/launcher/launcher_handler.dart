@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 
@@ -7,8 +10,11 @@ import '../../../../l10n/l10n_localizations.dart';
 
 import '../../../../logger.dart';
 
+import '../../../core/configuration/global_configuration.dart';
+
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
+import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../core/extensions/router_extension.dart';
 
@@ -20,6 +26,8 @@ import '../../../services/supabase_service.dart';
 import '../../../repositories/hive_repository.dart';
 
 import '../../widgets/loading_widget.dart';
+
+part '../launcher/components/error_component.dart';
 
 part '../launcher/launcher_controller.dart';
 part '../launcher/launcher_view.dart';
