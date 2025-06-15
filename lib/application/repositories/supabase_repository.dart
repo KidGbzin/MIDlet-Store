@@ -124,6 +124,23 @@ class SupabaseRepository {
     return response.map((review) => Review.fromJson(review as Map<String, dynamic>)).toList();
   }
 
+  Future<List<Review>> getTop3ReviewsForGame(Game game) async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "get_top_3_reviews_for_game",
+      params: <String, dynamic> {
+        "p_game_key": game.identifier,
+      }
+    );
+
+    final List<Review> reviews = <Review> [];
+
+    for (Map<String, dynamic> element in response) {
+      reviews.add(Review.fromJson(element));
+    }
+
+    return reviews;
+  }
+
   /// Retrieves the current user's review for a given game from Supabase.
   ///
   /// This function calls the stored procedure `get_user_review_for_game`, passing the game's unique identifier (`game.identifier`).
@@ -151,7 +168,7 @@ class SupabaseRepository {
   }
 
   Future<(int, int)> getScoreForReview(Review review) async {
-    final response = await supabase.client.rpc(
+    final List<dynamic> response = await supabase.client.rpc(
       "get_score_for_review",
       params: <String, dynamic> {
         "p_review_key": review.identifier,

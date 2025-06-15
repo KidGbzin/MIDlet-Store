@@ -35,7 +35,7 @@ class _Controller {
     required this.sAdMob,
   });
 
-  final Map<String, BannerAd?> _advertisements = {};
+  late final Map<String, BannerAd?> _advertisements;
 
   /// Initializes the handler’s core services and state notifiers.
   ///
@@ -49,7 +49,7 @@ class _Controller {
       
       fetchThumbnail();
 
-      await sAdMob.getMultipleAdvertisements(["0", "1", "2", "3"], AdSize.banner);
+      _advertisements = await sAdMob.getMultipleAdvertisements(["0", "1", "2", "3"], AdSize.banner);
 
       nProgress.value = Progresses.isFinished;
       
@@ -90,6 +90,10 @@ class _Controller {
   late final ValueNotifier<bool> nFavorite;
   late final ValueNotifier<GameMetadata?> nGameMetadata;
   late final ValueNotifier<File?> nThumbnail;
+
+  // MARK: Reviews ⮟
+
+  Future<List<Review>> getTop3Reviews() async => rSupabase.getTop3ReviewsForGame(game);
 
   BannerAd? getAdvertisement(String key) => _advertisements[key];
 

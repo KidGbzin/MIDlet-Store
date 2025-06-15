@@ -26,6 +26,11 @@ class _ViewState extends State<_View> {
       localizations: widget.localizations,
     ),
     gDivider,
+    _TopReviewsSection(
+      controller: widget.controller,
+      localizations: widget.localizations,
+    ),
+    gDivider,
     _ActionsSection(
       controller: widget.controller,
       localizations: widget.localizations,

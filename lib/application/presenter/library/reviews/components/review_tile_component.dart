@@ -25,12 +25,17 @@ class _ReviewTile extends StatelessWidget {
         spacing: 7.5,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget> [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            direction: Axis.horizontal,
             spacing: 7.5,
-            children: [
+            runSpacing: 7.5,
+            children: <Widget> [
               Text(
                 "${review.flag} • ${review.userName.toUpperCase()}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TypographyEnumeration.headline(Palettes.elements).style,
               ),
               Text(

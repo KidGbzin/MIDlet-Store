@@ -1,6 +1,7 @@
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../l10n/l10n_localizations.dart';
+import '../configuration/global_configuration.dart';
 
 class Review {
 
@@ -49,15 +50,15 @@ class Review {
     };
   }
 
-  factory Review.fromJson(dynamic json) {
+  factory Review.fromJson(dynamic jString) {
     return Review(
-      userKey: json["user_key"] as String,
-      comment: json["comment"] as String,
-      identifier: json["key"] as String,
-      locale: json['locale'] as String,
-      rating: json['rating'] as int,
-      updatedAt: json["updated_at"] as String,
-      userName: json["user_name"] as String,
+      comment: require<String>(jString, "comment")!,
+      identifier: require<String>(jString, "key")!,
+      locale: require<String>(jString, "locale")!,
+      rating: require<int>(jString, "rating")!,
+      updatedAt: require<String>(jString, "updated_at")!,
+      userName: require<String>(jString, "user_name")!,
+      userKey: require<String>(jString, "user_key")!,
     );
   }
 

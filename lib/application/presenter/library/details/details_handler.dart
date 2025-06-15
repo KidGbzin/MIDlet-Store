@@ -58,6 +58,7 @@ part '../details/components/previews_section_component.dart';
 part '../details/components/rating_section_component.dart';
 part '../details/components/related_section_component.dart';
 part '../details/components/submit_rating_modal_component.dart';
+part '../details/components/top_reviews_section_component.dart';
 
 part '../details/details_controller.dart';
 part '../details/details_view.dart';
