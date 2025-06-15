@@ -5,15 +5,11 @@ class Advertisement extends StatelessWidget {
   
   final BannerAd? advertisement;
 
-  const Advertisement.banner({
-    required this.advertisement,
-    super.key,
-  });
+  const Advertisement.banner(this.advertisement, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (advertisement == null) return SizedBox();
-
+    if (advertisement == null) return SizedBox.shrink();
     if (advertisement!.responseInfo == null) return SizedBox.shrink();
 
     return Container(

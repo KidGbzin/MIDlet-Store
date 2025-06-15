@@ -15,12 +15,10 @@ class _ListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       itemBuilder: (BuildContext context, int index) {
-        controller.sAdMob.preloadNearbyAdvertisements(index, AdSize.mediumRectangle);
+        if (games.length >= 6) controller.preloadNearbyAdvertisements(index);
 
         if ((index + 1) % 6 == 0) {
-          return Advertisement.banner(
-            advertisement: controller.sAdMob.getAdvertisementByIndex(index),
-          );
+          return Advertisement.banner(controller.getAdvertisementByIndex(index));
         }
 
         final int iGame = index - (index ~/ 6);

@@ -19,7 +19,7 @@ class _SubmitReviewModal extends StatefulWidget {
 
 class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTickerProviderStateMixin {
   late final ValueNotifier<int> nRating;
-  late final ValueNotifier<ProgressEnumeration> nState;
+  late final ValueNotifier<Progresses> nState;
 
   late final AppLocalizations localizations;
   late final int initialRating;
@@ -32,7 +32,7 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
   initState() {
     super.initState();
 
-    nState = ValueNotifier(ProgressEnumeration.isLoading);
+    nState = ValueNotifier(Progresses.isLoading);
     nRating = ValueNotifier<int>(0);
     
     localizations = widget.localizations;
@@ -59,17 +59,17 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
     );
 
     nRating.value = review!.rating;
-    nState.value = ProgressEnumeration.isWaiting;
+    nState.value = Progresses.isWaiting;
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: nState,
-      builder: (BuildContext context, ProgressEnumeration state, Widget? _) {
+      builder: (BuildContext context, Progresses state, Widget? _) {
         Widget child;
 
-        if (state == ProgressEnumeration.isWaiting) {
+        if (state == Progresses.isWaiting) {
           child = Padding(
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -91,7 +91,7 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
             ),
           );
         }
-        else if (state == ProgressEnumeration.isLoading) {
+        else if (state == Progresses.isLoading) {
           child = Container(
             height: 268, // The default size of the modal's body.
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 25),
@@ -247,11 +247,11 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
       icon: HugeIcons.strokeRoundedSent,
       onTap: () {
         try {
-          nState.value = ProgressEnumeration.isLoading;
+          nState.value = Progresses.isLoading;
           widget.controller.submitRating(context, rating, cTextField!.text);
         }
         catch (error) {
-          nState.value = ProgressEnumeration.hasError;
+          nState.value = Progresses.hasError;
         }
       },
       text: localizations.btSubmitRating,

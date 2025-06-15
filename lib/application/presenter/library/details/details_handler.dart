@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image/image.dart' as image;
 import 'package:provider/provider.dart';
@@ -37,6 +38,7 @@ import '../../../repositories/supabase_repository.dart';
 import '../../../services/activity_service.dart';
 import '../../../services/admob_service.dart';
 
+import '../../widgets/advertisement_widget.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/confetti_widget.dart';
 import '../../widgets/gradient_button_widget.dart';

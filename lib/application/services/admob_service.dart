@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../logger.dart';
+
+import '../core/enumerations/views_enumerations.dart';
 
 /// A service class responsible for managing and loading advertisements via AdMob.
 ///
@@ -18,59 +22,61 @@ class AdMobService {
     required this.bannerUnit,
   });
 
-  final Map<int, BannerAd> _iAdvertisementTable = <int, BannerAd> {};
-  final Map<String, BannerAd> _kAdvertisementTable = <String, BannerAd> {};
-
   Future<void> initialize() async {
     Logger.information("Initializing the AdMob service...");
 
     await MobileAds.instance.initialize();
   }
 
-  void clear() {
-    for (final BannerAd advertisement in _iAdvertisementTable.values) {
-      advertisement.dispose();
+  void clear(Views view) {
+    Logger.trash("Disposing ${view.name} view advertisements...");
 
-      Logger.trash("Disposing advertisement...");
+    final Map<dynamic, BannerAd> table = _getTable(view);
+
+    for (final BannerAd advertisements in table.values) {
+      advertisements.dispose();
     }
-    
-    for (final BannerAd advertisement in _kAdvertisementTable.values) {
-      advertisement.dispose();
-
-      Logger.trash("Disposing advertisement...");
-    }
-
-    _iAdvertisementTable.clear();
-    _kAdvertisementTable.clear();
+    table.clear();
   }
 
-  // MARK: Advertisements ⮟
+  final Map<int, BannerAd> _searchAdvertisementsTable = <int, BannerAd> {};
+  final Map<int, BannerAd> _reviewsAdvertisementsTable = <int, BannerAd> {};
+  final Map<int, BannerAd> _midletsAdvertisementsTable = <int, BannerAd> {};
+
+  final Map<String, BannerAd> _installationAdvertisementsTable = <String, BannerAd> {};
+
+  // MARK: By Index ⮟
 
   /// Returns the preloaded [BannerAd] associated with the given [index], if it exists.
-  BannerAd? getAdvertisementByIndex(int index) => _iAdvertisementTable[index];
-
-  /// Returns the preloaded [BannerAd] associated with the given [key], if it exists.
-  BannerAd? getAdvertisementByKey(String key) => _kAdvertisementTable[key];
-
-  // MARK: Preload by Index ⮟
+  BannerAd? getAdvertisementByIndex(int index, Views view) => _getTable(view)[index];
 
   /// Preloads banner advertisements for the 2 nearest advertisement slots relative to [iCurrent] index.
   ///
   /// Useful for dynamic lists like `ListView`, where you want to keep only relevant ads in memory.
-  void preloadNearbyAdvertisements(int iCurrent, AdSize size) {
+  void preloadNearbyAdvertisements({
+    required int iCurrent,
+    required AdSize size,
+    required Views view,
+  }) {
+    final Map<int, BannerAd> table = _getTable(view) as Map<int, BannerAd>;
+
     final List<int> indexes = _calculateNearbyIndexes(iCurrent);
-    final List<int> indexesToBeRemoved = _iAdvertisementTable.keys.where((key) => !indexes.contains(key)).toList();
+    final List<int> indexesToBeRemoved = table.keys.where((key) => !indexes.contains(key)).toList();
 
     for (final int index in indexesToBeRemoved) {
-      _iAdvertisementTable[index]?.dispose();
-      _iAdvertisementTable.remove(index);
+      table[index]?.dispose();
+      table.remove(index);
 
       Logger.trash("Disposing advertisement with index $index...");
     }
 
     for (final int index in indexes) {
-      if (!_iAdvertisementTable.containsKey(index)) {
-        _preloadWithIndex(index, size);
+      if (!table.containsKey(index)) {
+        _preloadWithIndex(
+          index: index,
+          size: size,
+          table: table,
+        );
       }
     }
   }
@@ -104,12 +110,16 @@ class AdMobService {
 
   /// Loads and stores a banner ad at the specified [index] if not already loaded.
   ///
-  /// Associates the loaded [BannerAd] with its index inside [_iAdvertisementTable].
+  /// Associates the loaded [BannerAd] with its index inside [_searchAdvertisementsTable].
   /// Automatically disposes the ad and removes it from the table if loading fails.
-  void _preloadWithIndex(int index, AdSize size) {
-    if (_iAdvertisementTable.containsKey(index)) return;
+  void _preloadWithIndex({
+    required int index,
+    required AdSize size,
+    required Map<int, BannerAd> table,
+  }) {
+    if (table.containsKey(index)) return;
 
-    _iAdvertisementTable[index] = BannerAd(
+    table[index] = BannerAd(
       adUnitId: _getAdvertisementUnitBySize(size),
       size: size,
       request: const AdRequest(),
@@ -120,35 +130,71 @@ class AdMobService {
           Logger.trash("Disposing advertisement with index $index...");
 
           advertisement.dispose();
-          _iAdvertisementTable.remove(index);
+          table.remove(index);
         },
       ),
     )..load();
   }
 
-  // MARK: Preload by Key ⮟
+  // MARK: Manually ⮟
 
-  void preloadAdvertisement(String key, AdSize size) {
-    if (_kAdvertisementTable.containsKey(key)) return;
+  Future<BannerAd> preloadAdvertisement(String key, AdSize size) {
+    final Completer<BannerAd> completer = Completer<BannerAd>();
 
-    _kAdvertisementTable[key] = BannerAd(
+    late final BannerAd ad;
+
+    ad = BannerAd(
       adUnitId: _getAdvertisementUnitBySize(size),
       size: size,
       request: const AdRequest(),
       listener: BannerAdListener(
-        onAdLoaded: (Ad advertisement) => Logger.information("Advertisement with $key was sucessfull loaded."),
+        onAdLoaded: (_) {
+          Logger.information("Advertisement with key $key was successfully loaded.");
+          completer.complete(ad);
+        },
         onAdFailedToLoad: (Ad advertisement, LoadAdError error) {
-          Logger.error("Advertisement with $key got an error: $error");
+          Logger.error("Advertisement with key $key got an error: $error");
           Logger.trash("Disposing advertisement with key $key...");
 
           advertisement.dispose();
-          _kAdvertisementTable.remove(key);
+          completer.completeError(error);
         },
       ),
-    )..load();
+    );
+
+    ad.load();
+    return completer.future;
+  }
+
+  Future<Map<String, BannerAd?>> getMultipleAdvertisements(List<String> keys, AdSize size) async {
+    final Map<String, BannerAd?> table = <String, BannerAd?> {};
+    
+    final Iterable<Future<Null>> futures = keys.map((key) async {
+      try {
+        final BannerAd advertisement = await preloadAdvertisement(key, size);
+        table[key] = advertisement;
+      }
+      catch (_) {
+        table[key] = null;
+      }
+    });
+
+    await Future.wait(futures);
+
+    return table;
   }
 
   // MARK: Helpers ⮟
+
+  Map<dynamic, BannerAd> _getTable(Views view) {
+    switch (view) {
+      case (Views.installation): return _installationAdvertisementsTable;
+      case (Views.midlets): return _midletsAdvertisementsTable;
+      case (Views.reviews): return _reviewsAdvertisementsTable;
+      case (Views.search): return _searchAdvertisementsTable;
+      default: throw Exception();
+    }
+  }
 
   /// Returns the appropriate AdMob unit identifier based on the provided [size].
   ///

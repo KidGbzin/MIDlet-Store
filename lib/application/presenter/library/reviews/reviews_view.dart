@@ -46,14 +46,14 @@ class _View extends StatelessWidget {
       ),
       body: ValueListenableBuilder(
         valueListenable: controller.nState,
-        builder: (BuildContext context, ProgressEnumeration state, Widget? _) {
-          if (state == ProgressEnumeration.isReady) {
+        builder: (BuildContext context, Progresses state, Widget? _) {
+          if (state == Progresses.isReady) {
             return _ListView(
               controller: controller,
               localizations: localizations,
             );
           }
-          else if (state == ProgressEnumeration.isLoading) {
+          else if (state == Progresses.isLoading) {
             return Center(child: LoadingAnimation());
           }
           else {

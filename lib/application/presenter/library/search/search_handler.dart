@@ -19,6 +19,7 @@ import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/tag_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
+import '../../../core/enumerations/views_enumerations.dart';
 import '../../../core/extensions/messenger_extension.dart';
 import '../../../core/extensions/router_extension.dart';
 

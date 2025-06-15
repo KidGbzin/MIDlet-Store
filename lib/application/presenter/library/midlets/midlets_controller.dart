@@ -23,10 +23,12 @@ class _Controller {
   /// This method must be called from the `initState` of the handler widget.
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
-    nMIDletsLength = ValueNotifier<int>(game.midlets.length);
-    nThumbnail = ValueNotifier<File?>(null);
-
     try {
+      sAdMob.clear(Views.midlets);
+    
+      nMIDletsLength = ValueNotifier<int>(game.midlets.length);
+      nThumbnail = ValueNotifier<File?>(null);
+      
       nThumbnail.value = await _thumbnail;
     }
     catch (error, stackTrace) {
@@ -41,6 +43,8 @@ class _Controller {
   ///
   /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
   void dispose() {
+    sAdMob.clear(Views.midlets);
+
     nMIDletsLength.dispose();
     nThumbnail.dispose();
   }
@@ -54,4 +58,14 @@ class _Controller {
   // MARK: Thumbnail ⮟
 
   Future<File?> get _thumbnail async => await rBucket.cover(game.title);
+
+  // MARK: Advertisements ⮟
+
+  BannerAd? getAdvertisementByIndex(int index) => sAdMob.getAdvertisementByIndex(index, Views.midlets);
+
+  void preloadNearbyAdvertisements(int index) => sAdMob.preloadNearbyAdvertisements(
+    iCurrent: index,
+    size: AdSize.mediumRectangle,
+    view: Views.midlets,
+  );
 }

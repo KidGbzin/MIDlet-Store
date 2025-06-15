@@ -18,6 +18,7 @@ import '../../../core/entities/midlet_entity.dart';
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
+import '../../../core/enumerations/views_enumerations.dart';
 import '../../../core/extensions/router_extension.dart';
 
 import '../../../repositories/bucket_repository.dart';

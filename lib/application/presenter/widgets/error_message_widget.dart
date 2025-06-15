@@ -1,16 +1,25 @@
-part of '../launcher_handler.dart';
+import 'dart:io';
 
-class _Error extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:hugeicons/hugeicons.dart';
+
+import '../../../l10n/l10n_localizations.dart';
+
+import '../../core/enumerations/palette_enumeration.dart';
+import '../../core/enumerations/typographies_enumeration.dart';
+
+class ErrorMessage extends StatefulWidget {
 
   final Object error;
 
-  const _Error(this.error);
+  const ErrorMessage(this.error, {super.key});
 
   @override
-  State<_Error> createState() => _ErrorState();
+  State<ErrorMessage> createState() => _ErrorMessageState();
 }
 
-class _ErrorState extends State<_Error> {
+class _ErrorMessageState extends State<ErrorMessage> {
   late String title;
   late String message;
 

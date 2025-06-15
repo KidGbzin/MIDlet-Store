@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:http/http.dart';
 import 'package:hugeicons/hugeicons.dart';
-
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
@@ -30,7 +31,9 @@ import '../../../repositories/supabase_repository.dart';
 import '../../../services/activity_service.dart';
 import '../../../services/admob_service.dart';
 
+import '../../widgets/advertisement_widget.dart';
 import '../../widgets/button_widget.dart';
+import '../../widgets/error_message_widget.dart';
 import '../../widgets/gradient_button_widget.dart';
 import '../../widgets/loading_widget.dart';
 import '../../widgets/modal_widget.dart';

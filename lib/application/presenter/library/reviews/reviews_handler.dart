@@ -4,6 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:midlet_store/application/core/enumerations/views_enumerations.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';

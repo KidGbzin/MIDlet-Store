@@ -19,7 +19,7 @@ class _SubmitRatingModal extends StatefulWidget {
 
 class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTickerProviderStateMixin {
   late final ValueNotifier<int> nRating;
-  late final ValueNotifier<ProgressEnumeration> nState;
+  late final ValueNotifier<Progresses> nState;
   
   late final AppLocalizations localizations;
   late final int initialRating;
@@ -31,7 +31,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
     super.initState();
 
     nRating = ValueNotifier<int>(widget.controller.nGameMetadata.value!.myReview!.rating);
-    nState = ValueNotifier(ProgressEnumeration.isWaiting);
+    nState = ValueNotifier(Progresses.isWaiting);
     
     initialRating = widget.controller.nGameMetadata.value!.myReview!.rating;
     initialBody = widget.controller.nGameMetadata.value!.myReview!.comment;
@@ -55,10 +55,10 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: nState,
-      builder: (BuildContext context, ProgressEnumeration state, Widget? _) {
+      builder: (BuildContext context, Progresses state, Widget? _) {
         Widget child;
 
-        if (state == ProgressEnumeration.isWaiting) {
+        if (state == Progresses.isWaiting) {
           child = Padding(
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -80,7 +80,7 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
             ),
           );
         }
-        else if (state == ProgressEnumeration.isLoading) {
+        else if (state == Progresses.isLoading) {
           child = Container(
             height: 268, // The default size of the modal's body.
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 25),
@@ -241,11 +241,11 @@ class _SubmitRatingModalState extends State<_SubmitRatingModal> with SingleTicke
       icon: HugeIcons.strokeRoundedSent,
       onTap: () {
         try {
-          nState.value = ProgressEnumeration.isLoading;
+          nState.value = Progresses.isLoading;
           widget.controller.submitRating(context, rating, cTextField.text);
         }
         catch (error) {
-          nState.value = ProgressEnumeration.hasError;
+          nState.value = Progresses.hasError;
         }
       },
       text: localizations.btSubmitRating,

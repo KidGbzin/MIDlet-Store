@@ -25,15 +25,21 @@ class _InstallationViewState extends State<_InstallationView> {
   late final List<Widget> children = <Widget> [
     _ActionsSection(widget.midlet),
     gDivider,
+    Advertisement.banner(widget.controller.getAdvertisement("0")),
+    gDivider,
     _DetailsSection(
       localizations: widget.localizations,
       midlet: widget.midlet,
     ),
     gDivider,
+    Advertisement.banner(widget.controller.getAdvertisement("1")),
+    gDivider,
     _SelectEmulatorSection(
       controller: widget.controller,
       localizations: widget.localizations,
     ),
+    gDivider,
+    Advertisement.banner(widget.controller.getAdvertisement("2")),
     gDivider,
     _InstallButton(
       controller: widget.controller,
@@ -79,11 +85,42 @@ class _InstallationViewState extends State<_InstallationView> {
             expandedHeight: 102,
             collapsedHeight: 102,
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) => children[index],
-              childCount: children.length,
-            ),
+          ValueListenableBuilder(
+            valueListenable: widget.controller.nProgress,
+            builder: (BuildContext context, (Progresses, Object?) progress, Widget? _) {
+              if (progress.$1 == Progresses.isReady) {
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) => children[index],
+                    childCount: children.length,
+                  ),
+                );
+              }
+              else if (progress.$1 == Progresses.isLoading) {
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(50),
+                    child: LoadingAnimation(),
+                  ),
+                );
+              }
+              else if (progress.$1 == Progresses.hasError) {
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: ErrorMessage(progress.$2!),
+                  ),
+                );
+              }
+              else {
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: ErrorMessage(Exception),
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),

@@ -33,11 +33,13 @@ class _Controller {
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
     try {
-      nState = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.isLoading);
+      sAdMob.clear(Views.reviews);
+
+      nState = ValueNotifier<Progresses>(Progresses.isLoading);
       nReviews = ValueNotifier<List<Review>>(List.empty());
 
       nReviews.value = await rSupabase.getReviewsForGame(game);
-      nState.value = ProgressEnumeration.isReady;
+      nState.value = Progresses.isReady;
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -45,7 +47,7 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      nState.value = ProgressEnumeration.hasError;
+      nState.value = Progresses.hasError;
     }
   }
 
@@ -55,15 +57,27 @@ class _Controller {
   void dispose() {
     nState.dispose();
     nReviews.dispose();
+
+    sAdMob.clear(Views.reviews);
   }
 
   // MARK: Notifiers ⮟
 
   /// Notifies listeners about changes in the current progress state of the handler.
-  late final ValueNotifier<ProgressEnumeration> nState;
+  late final ValueNotifier<Progresses> nState;
   
   /// Holds and notifies listeners about the current list of user reviews.
   late final ValueNotifier<List<Review>> nReviews;
+
+  // MARK: Advertisements ⮟
+
+  BannerAd? getAdvertisementByIndex(int index) => sAdMob.getAdvertisementByIndex(index, Views.reviews);
+
+  void preloadNearbyAdvertisements(int index) => sAdMob.preloadNearbyAdvertisements(
+    iCurrent: index,
+    size: AdSize.mediumRectangle,
+    view: Views.reviews,
+  );
 
   // MARK: Vote ⮟
 

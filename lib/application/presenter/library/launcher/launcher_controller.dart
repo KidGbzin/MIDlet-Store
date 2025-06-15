@@ -33,7 +33,7 @@ class _Controller {
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize(BuildContext context) async {
     try {
-      nProgress = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.isLoading);
+      nProgress = ValueNotifier<Progresses>(Progresses.isLoading);
       nError = ValueNotifier<Object?>(null);
 
       await sAdMob.initialize();
@@ -55,7 +55,7 @@ class _Controller {
       }
     } 
     catch (error, stackTrace) {
-      nProgress.value = ProgressEnumeration.hasError;
+      nProgress.value = Progresses.hasError;
       nError.value = error;
 
       Logger.error(
@@ -73,7 +73,7 @@ class _Controller {
   // MARK: Notifiers ⮟
 
   /// Notifies listeners about changes in the current progress state of the handler.
-  late final ValueNotifier<ProgressEnumeration> nProgress;
+  late final ValueNotifier<Progresses> nProgress;
 
   late final ValueNotifier<Object?> nError;
 }

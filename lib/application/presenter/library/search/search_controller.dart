@@ -7,7 +7,7 @@ class _Controller {
   /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
   final BucketRepository rBucket;
 
-  /// Manages local database operations, including storing game details, ratings, and user preferences.
+  /// Manages local database operations, inclshow Views, searching game details, ratings, and user preferences.
   final HiveRepository rHive;
 
   /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
@@ -39,6 +39,8 @@ class _Controller {
     required String? publisher,
   }) async {
     try {
+      sAdMob.clear(Views.search);
+
       nCurrentGames = ValueNotifier((<Game> [], true));
       nFiltersPublishers = ValueNotifier<Map<String,int>?>(null);
       nFiltersReleaseYear = ValueNotifier<Map<int, int>?>(null);
@@ -84,7 +86,7 @@ class _Controller {
     nSelectedTags.dispose();
     nSuggestions.dispose();
 
-    sAdMob.clear();
+    sAdMob.clear(Views.search);
   }
 
   // MARK: Notifiers ⮟
@@ -124,10 +126,6 @@ class _Controller {
   /// Each item in the list represents a tag that is currently active in the filter.
   late final ValueNotifier<List<String>> nSelectedTags;
 
-  // MARK: Advertisements ⮟
-
-  // MARK: num sei ⮟
-
   /// Waits for the specified [operation] to complete and then waits for the minimum time minus the elapsed time.
   ///
   /// This method is used to prevent the UI from freezing due to frequent updates of the search results.
@@ -157,7 +155,15 @@ class _Controller {
     return result;
   }
 
-  
+  // MARK: Advertisements ⮟
+
+  BannerAd? getAdvertisementByIndex(int index) => sAdMob.getAdvertisementByIndex(index, Views.search);
+
+  void preloadNearbyAdvertisements(int index) => sAdMob.preloadNearbyAdvertisements(
+    iCurrent: index,
+    size: AdSize.mediumRectangle,
+    view: Views.search,
+  );
 
   // FILTERS RELATED 🏷️: ======================================================================================================================================================== //
 

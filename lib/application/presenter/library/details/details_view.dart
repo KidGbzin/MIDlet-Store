@@ -29,17 +29,23 @@ class _ViewState extends State<_View> {
     _ActionsSection(
       controller: widget.controller,
       localizations: widget.localizations,
-    ),    
+    ),
+    gDivider,
+    Advertisement.banner(widget.controller.getAdvertisement("0")),
     gDivider,
     _About(
       description: widget.controller.game.fDescription(Localizations.localeOf(context)),
       localizations: widget.localizations,
     ),
     gDivider,
+    Advertisement.banner(widget.controller.getAdvertisement("1")),
+    gDivider,
     _PreviewsSection(
       controller: widget.controller,
       localizations: widget.localizations,
     ),
+    gDivider,
+    Advertisement.banner(widget.controller.getAdvertisement("2")),
     gDivider,
     _RelatedGamesSection(
       collection: widget.controller.getTopPublisherGames(),
@@ -47,6 +53,8 @@ class _ViewState extends State<_View> {
       description: widget.localizations.scRelatedPublisherDescription.replaceFirst("@publisher", widget.controller.game.publisher),
       title: widget.controller.game.publisher,
     ),
+    gDivider,
+    Advertisement.banner(widget.controller.getAdvertisement("3")),
     gDivider,
     _RelatedGamesSection(
       collection: widget.controller.getTopRelatedGames(),
@@ -105,11 +113,31 @@ class _ViewState extends State<_View> {
             titleSpacing: 0,
             toolbarHeight: 102 - padding,
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) => children[index],
-              childCount: children.length,
-            ),
+          ValueListenableBuilder(
+            valueListenable: widget.controller.nProgress,
+            builder: (context, progress, _) {
+              if (progress == Progresses.isFinished) {
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) => children[index],
+                    childCount: children.length,
+                  ),
+                );
+              }
+              else if (progress == Progresses.isLoading) {
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(50),
+                    child: LoadingAnimation(),
+                  ),
+                );
+              }
+              else {
+                return SliverToBoxAdapter(
+                  child: SizedBox.shrink(),
+                );
+              }
+            },
           ),
         ],
       ),

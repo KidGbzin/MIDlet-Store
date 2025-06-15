@@ -26,12 +26,10 @@ class _ListViewState extends State<_ListView> {
       builder: (BuildContext context, List<Review> reviews, Widget? _) {
         return ListView.separated(
           itemBuilder: (BuildContext context, int index) {
-            widget.controller.sAdMob.preloadNearbyAdvertisements(index, AdSize.mediumRectangle);
+            if (reviews.length >= 6) widget.controller.preloadNearbyAdvertisements(index);
         
             if ((index + 1) % 6 == 0) {
-              return Advertisement.banner(
-                advertisement: widget.controller.sAdMob.getAdvertisementByIndex(index),
-              );
+              return Advertisement.banner(widget.controller.getAdvertisementByIndex(index));
             }
         
             final int iReview = index - (index ~/ 6);

@@ -34,10 +34,8 @@ class _Controller {
     required this.sActivity,
     required this.sAdMob,
   });
-  
-  late final ValueNotifier<bool> nFavorite;
-  late final ValueNotifier<GameMetadata?> nGameMetadata;
-  late final ValueNotifier<File?> nThumbnail;
+
+  final Map<String, BannerAd?> _advertisements = {};
 
   /// Initializes the handler’s core services and state notifiers.
   ///
@@ -45,11 +43,17 @@ class _Controller {
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
     try {
+      nProgress = ValueNotifier(Progresses.isLoading);
       nGameMetadata = ValueNotifier<GameMetadata?>(null);
       nThumbnail = ValueNotifier<File?>(null);
-      playAudio();
       
       fetchThumbnail();
+
+      await sAdMob.getMultipleAdvertisements(["0", "1", "2", "3"], AdSize.banner);
+
+      nProgress.value = Progresses.isFinished;
+      
+      playAudio();
       _fetchGameMetadata();
       nFavorite = ValueNotifier(rHive.boxFavorites.contains(game));
       rHive.boxRecentGames.put(game);
@@ -67,13 +71,27 @@ class _Controller {
   /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
   void dispose() {
     cConfetti.dispose();
+    
     nFavorite.dispose();
     nGameMetadata.dispose();
     nThumbnail.dispose();
-    sAdMob.clear();
+
+    for (final BannerAd? advertisement in _advertisements.values) {
+      if (advertisement != null) advertisement.dispose();
+    }
+    _advertisements.clear();
     
     _player.dispose();
   }
+
+  // MARK: Notifiers ⮟
+
+  late final ValueNotifier<Progresses> nProgress;
+  late final ValueNotifier<bool> nFavorite;
+  late final ValueNotifier<GameMetadata?> nGameMetadata;
+  late final ValueNotifier<File?> nThumbnail;
+
+  BannerAd? getAdvertisement(String key) => _advertisements[key];
 
   /// Fetch all the game data needed and updates its listeners.
   /// 
