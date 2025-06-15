@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image/image.dart' as image;
 import 'package:provider/provider.dart';
@@ -18,9 +19,10 @@ import '../../../../logger.dart';
 
 import '../../../core/configuration/global_configuration.dart';
 
-import '../../../core/entities/game_data_entity.dart';
+import '../../../core/entities/game_metadata_entity.dart';
 import '../../../core/entities/game_entity.dart';
 import '../../../core/entities/midlet_entity.dart';
+import '../../../core/entities/review_entity.dart';
 
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
@@ -34,7 +36,9 @@ import '../../../repositories/hive_repository.dart';
 import '../../../repositories/supabase_repository.dart';
 
 import '../../../services/activity_service.dart';
+import '../../../services/admob_service.dart';
 
+import '../../widgets/advertisement_widget.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/confetti_widget.dart';
 import '../../widgets/gradient_button_widget.dart';
@@ -54,6 +58,7 @@ part '../details/components/previews_section_component.dart';
 part '../details/components/rating_section_component.dart';
 part '../details/components/related_section_component.dart';
 part '../details/components/submit_rating_modal_component.dart';
+part '../details/components/top_reviews_section_component.dart';
 
 part '../details/details_controller.dart';
 part '../details/details_view.dart';
@@ -74,10 +79,11 @@ class _DetailsState extends State<Details> {
   late final AppLocalizations localizations;
 
   late final ConfettiController cConfetti;
-  late final ActivityService sActivity;
   late final BucketRepository rBucket;
   late final HiveRepository rHive;
   late final SupabaseRepository rSupabase;
+  late final ActivityService sActivity;
+  late final AdMobService sAdMob;
 
   @override
   void initState() {
@@ -89,10 +95,6 @@ class _DetailsState extends State<Details> {
       duration: const Duration(
         seconds: 3,
       ),
-    );
-    sActivity = Provider.of<ActivityService>(
-      context,
-      listen: false,
     );
     rBucket = Provider.of<BucketRepository>(
       context,
@@ -106,14 +108,23 @@ class _DetailsState extends State<Details> {
       context,
       listen: false,
     );
+    sActivity = Provider.of<ActivityService>(
+      context,
+      listen: false,
+    );
+    sAdMob = Provider.of<AdMobService>(
+      context,
+      listen: false,
+    );
     
     controller = _Controller(
       cConfetti: cConfetti,
       game: widget.game,
-      sActivity: sActivity,
       rBucket: rBucket,
       rHive: rHive,
       rSupabase: rSupabase,
+      sActivity: sActivity,
+      sAdMob: sAdMob,
     );
     controller.initialize();
   }

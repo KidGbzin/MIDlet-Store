@@ -127,7 +127,7 @@ class _SearchState extends State<_SearchView> {
           gDivider,
           Expanded(
             child: ValueListenableBuilder(
-              valueListenable: widget.controller.nGames,
+              valueListenable: widget.controller.nCurrentGames,
               builder: (BuildContext context, (List<Game>, bool) listener, Widget? _) {
                 if (listener.$2) {
                   return Align(

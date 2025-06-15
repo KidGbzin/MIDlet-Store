@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -43,15 +41,14 @@ class FirebaseMessagingService {
   ///
   /// Listens for token refresh events to update the token in Supabase automatically.
   Future<void> registerToken() async {
-    final Locale locale = PlatformDispatcher.instance.locale;
     final String? token = await _instance.getToken();
     
     if (token != null) {
-      await rSupabase.upsertFirebaseToken(token, locale.toString());
+      await rSupabase.upsertFirebaseCloudMessagingToken(token);
     }
     
     _instance.onTokenRefresh.listen((newToken) async {
-      await rSupabase.upsertFirebaseToken(newToken, locale.toString());
+      await rSupabase.upsertFirebaseCloudMessagingToken(newToken);
     });
   }
 

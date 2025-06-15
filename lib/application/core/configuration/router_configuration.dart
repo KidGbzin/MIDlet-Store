@@ -6,6 +6,7 @@ import '../../presenter/library/installation/installation_handler.dart';
 import '../../presenter/library/launcher/launcher_handler.dart';
 import '../../presenter/library/login/login_handler.dart';
 import '../../presenter/library/midlets/midlets_handler.dart';
+import '../../presenter/library/reviews/reviews_handler.dart';
 import '../../presenter/library/search/search_handler.dart';
 import '../../presenter/library/update/update_handler.dart';
 
@@ -45,6 +46,10 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/midlets',
       builder: (BuildContext context, GoRouterState state) => MIDlets(state.extra as Game),
+    ),
+    GoRoute(
+      path: '/reviews',
+      builder: (BuildContext context, GoRouterState state) => Reviews(state.extra as Game),
     ),
     GoRoute(
       path: '/search',

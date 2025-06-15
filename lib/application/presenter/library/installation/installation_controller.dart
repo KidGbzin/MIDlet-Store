@@ -2,6 +2,8 @@ part of '../installation/installation_handler.dart';
 
 class _Controller {
 
+  // MARK: Constructor ⮟
+
   /// The game currently being processed, displayed, or interacted with.
   final Game game;
 
@@ -11,8 +13,10 @@ class _Controller {
   /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
   final BucketRepository rBucket;
 
+  /// Manages local storage operations, including games, favorites, recent games, and cached requests.
   final HiveRepository rHive;
 
+  /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
   final SupabaseRepository rSupabase;
 
   /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
@@ -31,88 +35,80 @@ class _Controller {
     required this.sActivity,
   });
 
-  late final ValueNotifier<Emulators> nEmulator;
-
-  late final ValueNotifier<ProgressEnumeration> nInstallationState;
-
-  File? _file;
+  late final Map<String, BannerAd?> _advertisements;
 
   /// Initializes the handler’s core services and state notifiers.
   ///
   /// This method must be called from the `initState` of the handler widget.
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
-    nEmulator = ValueNotifier<Emulators>(Emulators.j2meLoader);
-    nInstallationState = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.isLoading);
+    try {
+      nProgress = ValueNotifier<(Progresses, Object?)>((Progresses.isLoading, null));  
+      nEmulator = ValueNotifier<Emulators>(Emulators.j2meLoader);
+
+      _advertisements = await sAdMob.getMultipleAdvertisements(["0", "1", "2"], AdSize.mediumRectangle);
+
+      nProgress.value = (Progresses.isReady, null);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      nProgress.value = (Progresses.hasError, error);
+    }
   }
 
   /// Disposes the handler’s resources and notifiers.
   ///
   /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
   void dispose() {
+    nProgress.dispose();
     nEmulator.dispose();
-    nInstallationState.dispose();
+
+    for (final BannerAd? advertisement in _advertisements.values) {
+      if (advertisement != null) advertisement.dispose();
+    }
+    _advertisements.clear();
   }
 
-  /// Downloads the MIDlet from the bucket.
+  // MARK: Notifiers ⮟
+
+  /// Notifies listeners of the currently selected emulator.
+  late final ValueNotifier<Emulators> nEmulator;
+
+  /// Notifies listeners of the current progress state and optional error.
+  late final ValueNotifier<(Progresses, Object?)> nProgress;
+
+  // MARK: Advertisements ⮟
+
+  /// Retrieves the [BannerAd] associated with the given [key], or null if not found.
+  BannerAd? getAdvertisement(String key) => _advertisements[key];
+
+  // MARK: Installation ⮟
+
+  /// Downloads the MIDlet, updates metadata, and launches the emulator.
   ///
-  /// This function is used to download the selected MIDlet from the bucket.
-  /// It updates the [nInstallationState] based on the result of the download operation.
-  Future<void> downloadMIDlet(BuildContext context) async {
-    Logger.download("Downloading the MIDlet \"${midlet.file}\"...");
+  /// Increments downloads remotely and locally, saves metadata, and opens the MIDlet in the selected emulator.
+  Future<void> tryDownloadAndInstallMIDlet(BuildContext context) async {
+    final GameMetadata metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
+      identifier: game.identifier,
+    );
+    final File file = await rBucket.midlet(midlet);
 
-    try {
-      final GameData metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
-        identifier: game.identifier,
-      );
-
-      _file = await rBucket.midlet(midlet);
-
-      await rSupabase.incrementGameDownloads(game);
+    await rSupabase.incrementDownloadsForGame(game);
       
-      metadata.downloads ??= 0;
-      metadata.downloads = metadata.downloads! + 1;
+    metadata.downloads ??= 0;
+    metadata.downloads = metadata.downloads! + 1;
+    rHive.boxCachedRequests.put(metadata);
 
-      rHive.boxCachedRequests.put(metadata);
+    await sActivity.emulator(file, nEmulator.value);
 
-      if (context.mounted) await _tryInstallMIDlet(context);
-    }
-    catch (error, stackTrace) {
-      nInstallationState.value = ProgressEnumeration.hasError;
-
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-    }
+    if (context.mounted) context.pop();
   }
 
-  /// Installs the downloaded MIDlet using the current selected emulator.
-  Future<void> _tryInstallMIDlet(BuildContext context) async {
-    try {
-      if (_file == null) throw Exception("This MIDlet is not available!");
-
-      await sActivity.emulator(_file!, nEmulator.value);
-
-      if (context.mounted) context.pop();
-    }
-    on PlatformException catch (error, stackTrace) {
-      nInstallationState.value = ProgressEnumeration.requestEmulator;
-
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-    }
-    catch (error, stackTrace) {
-      nInstallationState.value = ProgressEnumeration.hasError;
-
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-    }
-  }
+  // MARK: URL Launchers ⮟
 
   Future<void> launchSourceUrl(BuildContext context) async {
     try {
@@ -140,8 +136,6 @@ class _Controller {
         "$error",
         stackTrace: stackTrace,
       );
-
-      nInstallationState.value = ProgressEnumeration.hasError;
     }
   }
 }

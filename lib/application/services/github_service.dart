@@ -16,11 +16,6 @@ import '../../logger.dart';
 /// Utilizes the [http](https://pub.dev/packages/http) package for making network requests.
 class GitHubService {
 
-  GitHubService({
-    required this.client,
-    required this.token,
-  }) : assert(token.isNotEmpty);
-
   final http.Client client;
   
   /// The key to access the GitHub API.
@@ -28,6 +23,11 @@ class GitHubService {
   /// All external game data is stored in a private repository and can only be accessed via a token.
   /// If the provided token is incorrect or does not exist, an error [HttpStatus.notFound] will be returned.
   final String token;
+
+  GitHubService({
+    required this.client,
+    required this.token,
+  }) : assert(token.isNotEmpty);
 
   /// The headers for the GitHub API requests.
   ///
@@ -69,11 +69,17 @@ class GitHubService {
   ///
   /// Throws:
   /// - `ClientException`: Thrown by the [http](https://pub.dev/packages/http) package, usually when there is no connection available.
-  /// - `Exception`: Thrown if the latest release from the repository could not be found.
+  /// - `HttpException`: Thrown if the last release is not avaliable on the GitHub repository.
   Future<bool> isVersionOutdated() async {
-    final http.Response response = await client.get(Uri.parse("https://api.github.com/repos/KidGbzin/MIDlet-Store/releases/latest"));
+    final String url = "https://api.github.com/repos/KidGbzin/MIDlet-Store/releases/latest";
+    final http.Response response = await client.get(Uri.parse(url));
 
-    if (response.statusCode != HttpStatus.ok) throw Exception("The latest release from the repository could not be found.");
+    if (response.statusCode != HttpStatus.ok) {
+      throw HttpException(
+        "The latest release from the repository could not be found, code ${response.statusCode}.",
+        uri: Uri.parse(url),
+      );
+    }
 
     final String latestVersion = (jsonDecode(response.body)['tag_name'] as String).replaceFirst('v', "");
     final String packageVersion = await PackageInfo.fromPlatform().then((packageInfo) => packageInfo.version);
@@ -88,6 +94,7 @@ class GitHubService {
       if (numberA < numberB) return true;
       if (numberA > numberB) return false;
     }
+
     return false;
   }
 
@@ -98,37 +105,36 @@ class GitHubService {
   /// 
   /// Throws:
   /// - `ClientException`: Thrown by the [http](https://pub.dev/packages/http) package, usually when there is no connection.
-  /// - `Exception`: Thrown if the static database file is not found or if parsing the date fails.
+  /// - `FormatException`: Thrown if there is an error parsing the [DateTime] from the response headers.
+  /// - `HttpException`: Thrown if the static database file is not found.
   Future<DateTime> getLastUpdatedDate(String source) async {
+    final String url = "https://api.github.com/repos/KidGbzin/MIDlet-Store-Bucket/contents/files/$source";
+
     final response = await client.get(
-      Uri.parse("https://api.github.com/repos/KidGbzin/MIDlet-Store-Bucket/contents/files/$source"),
+      Uri.parse(url),
       headers: _headers,
     );
 
     if (response.statusCode != HttpStatus.ok) {
-      Logger.error('The file "$source" was not found in the GitHub repository.');
-      throw Exception('Failed to fetch the file "$source" from GitHub, received status code ${response.statusCode}.');
+      throw HttpException(
+        "Failed to fetch the file \"$source\" from GitHub, received status code ${response.statusCode}.",
+        uri: Uri.parse(url),
+      );
     }
 
-    final lastModifiedHeader = response.headers["last-modified"];
+    final String? lastModifiedHeader = response.headers["last-modified"];
 
     if (lastModifiedHeader == null) {
-      Logger.error('The database metadata is missing the "Last-Modified" header.');
-      throw Exception('The "Last-Modified" header is missing from the database file.');
+      throw FormatException("The \"Last-Modified\" header is missing from the database file.");
     }
 
-    final lastModified = lastModifiedHeader.split(',')[1].trim();
+    final String lastModified = lastModifiedHeader.split(',')[1].trim();
 
     try {
       return DateFormat("dd MMM yyyy HH:mm:ss 'GMT'").parse(lastModified);
     }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      throw Exception('Failed to parse Last-Modified timestamp: "$lastModified".');
+    catch (_) {
+      throw FormatException("Failed to parse Last-Modified timestamp: $lastModified.");
     }
   }
 }

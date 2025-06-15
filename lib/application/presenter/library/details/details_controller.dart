@@ -2,14 +2,13 @@ part of '../details/details_handler.dart';
 
 class _Controller {
 
+  // MARK: Constructor ⮟
+
   /// Controls and triggers confetti animations for visual feedback or celebration effects.
   final ConfettiController cConfetti;
 
   /// The game currently being processed, displayed, or interacted with.
   final Game game;
-
-  /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
-  final ActivityService sActivity;
 
   /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
   final BucketRepository rBucket;
@@ -20,6 +19,12 @@ class _Controller {
   /// Manages local storage operations, including games, favorites, recent games, and cached requests.
   final HiveRepository rHive;
 
+  /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
+  final ActivityService sActivity;
+
+  /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisementss.
+  final AdMobService sAdMob;
+
   _Controller({
     required this.cConfetti,
     required this.game,
@@ -27,23 +32,28 @@ class _Controller {
     required this.rHive,
     required this.rSupabase,
     required this.sActivity,
+    required this.sAdMob,
   });
-  
-  late final ValueNotifier<bool> nFavorite;
-  late final ValueNotifier<GameData?> nGameMetadata;
-  late final ValueNotifier<File?> nThumbnail;
+
+  late final Map<String, BannerAd?> _advertisements;
 
   /// Initializes the handler’s core services and state notifiers.
   ///
   /// This method must be called from the `initState` of the handler widget.
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize() async {
-    nGameMetadata = ValueNotifier<GameData?>(null);
-    nThumbnail = ValueNotifier<File?>(null);
-
     try {
-      playAudio();
+      nProgress = ValueNotifier(Progresses.isLoading);
+      nGameMetadata = ValueNotifier<GameMetadata?>(null);
+      nThumbnail = ValueNotifier<File?>(null);
+      
       fetchThumbnail();
+
+      _advertisements = await sAdMob.getMultipleAdvertisements(["0", "1", "2", "3"], AdSize.banner);
+
+      nProgress.value = Progresses.isFinished;
+      
+      playAudio();
       _fetchGameMetadata();
       nFavorite = ValueNotifier(rHive.boxFavorites.contains(game));
       rHive.boxRecentGames.put(game);
@@ -61,12 +71,31 @@ class _Controller {
   /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
   void dispose() {
     cConfetti.dispose();
+    
     nFavorite.dispose();
     nGameMetadata.dispose();
     nThumbnail.dispose();
+
+    for (final BannerAd? advertisement in _advertisements.values) {
+      if (advertisement != null) advertisement.dispose();
+    }
+    _advertisements.clear();
     
     _player.dispose();
   }
+
+  // MARK: Notifiers ⮟
+
+  late final ValueNotifier<Progresses> nProgress;
+  late final ValueNotifier<bool> nFavorite;
+  late final ValueNotifier<GameMetadata?> nGameMetadata;
+  late final ValueNotifier<File?> nThumbnail;
+
+  // MARK: Reviews ⮟
+
+  Future<List<Review>> getTop3Reviews() async => rSupabase.getTop3ReviewsForGame(game);
+
+  BannerAd? getAdvertisement(String key) => _advertisements[key];
 
   /// Fetch all the game data needed and updates its listeners.
   /// 
@@ -75,7 +104,7 @@ class _Controller {
   /// 
   /// This function is initialized within the `initialize` function.
   Future<void> _fetchGameMetadata() async {
-    final GameData metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+    final GameMetadata metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
       identifier: game.identifier,
     );
 
@@ -92,7 +121,7 @@ class _Controller {
     }
 
     try {
-      metadata.myRating ??= await rSupabase.getUserRatingForGame(game);
+      metadata.myReview ??= await rSupabase.getUserReviewForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -100,11 +129,11 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      metadata.myRating = 0;
+      metadata.myReview = Review.noReview();
     }
 
     try {
-      metadata.totalRatings ??= await rSupabase.getGameRatingsCount(game);
+      metadata.totalRatings ??= await rSupabase.countReviewsForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -116,7 +145,7 @@ class _Controller {
     }
 
     try {
-      metadata.stars ??= await rSupabase.getGameRatingsByStarsCount(game);
+      metadata.stars ??= await rSupabase.countRatingsByStarForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -140,13 +169,13 @@ class _Controller {
   /// Inserts or updates the user's rating for a game.
   ///
   /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
-  Future<void> submitRating(BuildContext context, int rating) async {
-    final GameData metadata = nGameMetadata.value!;
+  Future<void> submitRating(BuildContext context, int rating, String body) async {
+    final GameMetadata metadata = nGameMetadata.value!;
 
     try {
-      await rSupabase.upsertGameRating(game, rating);
+      final Review review = await rSupabase.upsertReviewForGame(game, rating, body);
 
-      metadata.myRating = rating;
+      metadata.myReview = review;
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -158,7 +187,7 @@ class _Controller {
     }
 
     try {
-      metadata.totalRatings = await rSupabase.getGameRatingsCount(game);
+      metadata.totalRatings = await rSupabase.countReviewsForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -182,7 +211,7 @@ class _Controller {
     }
 
     try {
-      metadata.stars = await rSupabase.getGameRatingsByStarsCount(game);
+      metadata.stars = await rSupabase.countRatingsByStarForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -369,7 +398,7 @@ class _Controller {
   /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
   /// The fetched or defaulted value is then stored in the cache for future use.
   Future<double> _getAverageRating(Game game) async {
-    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+    final GameMetadata data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
       identifier: game.identifier,
     );
     try {

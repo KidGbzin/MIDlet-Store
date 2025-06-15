@@ -35,7 +35,7 @@ class _HeaderSection extends StatelessWidget {
       spacing: 15,
       children: <Widget> [
         Text(
-          controller.midlet.formattedTitle.toUpperCase(),
+          controller.midlet.fTitle.toUpperCase(),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TypographyEnumeration.headline(Palettes.elements).style,

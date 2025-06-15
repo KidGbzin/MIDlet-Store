@@ -3,8 +3,6 @@ import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
 
-// TAG ENUMERATION 🏷️: ========================================================================================================================================================== //
-
 /// An enumeration representing various game tags used in the application.
 ///
 /// Each tag corresponds to a specific category or genre of games, such as action, adventure, or puzzle.
@@ -21,12 +19,16 @@ enum TagEnumeration {
   football('Football', HugeIcons.strokeRoundedFootballPitch),
   offRoad('Off-Road', HugeIcons.strokeRoundedRoad01),
   openWorld('Open World', HugeIcons.strokeRoundedLocation04),
+  pinball("Pinball", HugeIcons.strokeRoundedJoystick05),
   platformer('Platformer', HugeIcons.strokeRoundedSuperMario),
   pointAndClick("Point 'n' Click", HugeIcons.strokeRoundedTouch02),
+  powerUps("Power-Ups", HugeIcons.strokeRoundedPackageOpen),
   puzzle('Puzzle', HugeIcons.strokeRoundedPuzzle),
   racing('Racing', HugeIcons.strokeRoundedRacingFlag),
   rally('Rally', HugeIcons.strokeRoundedCar03),
+  runAndGun("Run 'n' Gun", HugeIcons.strokeRoundedGun),
   scifi('Sci-Fi', HugeIcons.strokeRoundedMachineRobot),
+  strategy("Strategy", HugeIcons.strokeRoundedStrategy),
   shooter('Shooter', HugeIcons.strokeRoundedTarget03),
   shootEmUp('Shoot \'Em Up', HugeIcons.strokeRoundedAircraftGame),
   sports('Sports', HugeIcons.strokeRoundedWhistle),
@@ -38,21 +40,17 @@ enum TagEnumeration {
   threeD('3D', HugeIcons.strokeRoundedCube),
   towerDefense('Tower Defense', HugeIcons.strokeRoundedCastle01);
 
-  const TagEnumeration(this.code, this.icon);
-
-  /// The tag's icon.
-  ///
-  /// This icon is used on labels.
+  /// Icon used to visually represent the tag.
   final IconData icon;
 
-  /// The tag's code.
-  ///
-  /// The code is the tag's name in English.
+  /// Tag's identifier name in English.
   final String code;
+
+  const TagEnumeration(this.code, this.icon);
 
   /// Returns a [TagEnumeration] based on the provided [code].
   ///
-  /// If [code] does not match any tag, returns [TagEnumeration.error].
+  /// If the [code] does not match any tag in [TagEnumeration.values], returns [TagEnumeration.error] as a fallback.
   static TagEnumeration fromCode(String code) {
     try {
       return TagEnumeration.values.firstWhere((element) => element.code == code);
@@ -67,33 +65,36 @@ enum TagEnumeration {
   /// If a tag code does not have a localized name, the function returns a string with three question marks.
   static List<String> fromList(AppLocalizations localizations, List<String> tags) {
     final Map<String, String> table = <String, String> {
-      TagEnumeration.action.code: localizations.tagAction,
-      TagEnumeration.adventure.code: localizations.tagAdventure,
-      TagEnumeration.breakout.code: localizations.tagBreakout,
-      TagEnumeration.casual.code: localizations.tagCasual,
-      TagEnumeration.driving.code: localizations.tagDriving,
-      TagEnumeration.extremeSports.code: localizations.tagExtremeSports,
-      TagEnumeration.error.code: "???",
-      TagEnumeration.fighting.code: localizations.tagFighting,
-      TagEnumeration.football.code: localizations.tagFootball,
-      TagEnumeration.offRoad.code: localizations.tagOffRoad,
-      TagEnumeration.openWorld.code: localizations.tagOpenWorld,
-      TagEnumeration.platformer.code: localizations.tagPlatformer,
-      TagEnumeration.pointAndClick.code: localizations.tagPointAndClick,
-      TagEnumeration.puzzle.code: localizations.tagPuzzle,
-      TagEnumeration.racing.code: localizations.tagRacing,
-      TagEnumeration.rally.code: localizations.tagRally,
-      TagEnumeration.scifi.code: localizations.tagSciFi,
-      TagEnumeration.shooter.code: localizations.tagShooter,
-      TagEnumeration.shootEmUp.code: localizations.tagShootEmUp,
-      TagEnumeration.sports.code: localizations.tagSports,
-      TagEnumeration.starfighter.code: localizations.tagStarfighter,
-      TagEnumeration.stealth.code: localizations.tagStealth,
-      TagEnumeration.survivalHorror.code: localizations.tagSurvivalHorror,
-      TagEnumeration.takedown.code: localizations.tagTakedown,
-      TagEnumeration.terror.code: localizations.tagTerror,
-      TagEnumeration.threeD.code: localizations.tag3D,
-      TagEnumeration.towerDefense.code: localizations.tagTowerDefense,
+      TagEnumeration.action.code: localizations.tgAction,
+      TagEnumeration.adventure.code: localizations.tgAdventure,
+      TagEnumeration.breakout.code: localizations.tgBreakout,
+      TagEnumeration.casual.code: localizations.tgCasual,
+      TagEnumeration.driving.code: localizations.tgDriving,
+      TagEnumeration.extremeSports.code: localizations.tgExtremeSports,
+      TagEnumeration.fighting.code: localizations.tgFighting,
+      TagEnumeration.football.code: localizations.tgFootball,
+      TagEnumeration.offRoad.code: localizations.tgOffRoad,
+      TagEnumeration.openWorld.code: localizations.tgOpenWorld,
+      TagEnumeration.pinball.code: localizations.tgPinball,
+      TagEnumeration.platformer.code: localizations.tgPlatformer,
+      TagEnumeration.pointAndClick.code: localizations.tgPointAndClick,
+      TagEnumeration.powerUps.code: localizations.tgPowerUps,
+      TagEnumeration.puzzle.code: localizations.tgPuzzle,
+      TagEnumeration.racing.code: localizations.tgRacing,
+      TagEnumeration.rally.code: localizations.tgRally,
+      TagEnumeration.runAndGun.code: localizations.tgRunAndGun,
+      TagEnumeration.scifi.code: localizations.tgSciFi,
+      TagEnumeration.shooter.code: localizations.tgShooter,
+      TagEnumeration.shootEmUp.code: localizations.tgShootEmUp,
+      TagEnumeration.sports.code: localizations.tgSports,
+      TagEnumeration.starfighter.code: localizations.tgStarfighter,
+      TagEnumeration.stealth.code: localizations.tgStealth,
+      TagEnumeration.strategy.code: localizations.tgStrategy,
+      TagEnumeration.survivalHorror.code: localizations.tgSurvivalHorror,
+      TagEnumeration.takedown.code: localizations.tgTakedown,
+      TagEnumeration.terror.code: localizations.tgTerror,
+      TagEnumeration.threeD.code: localizations.tg3D,
+      TagEnumeration.towerDefense.code: localizations.tgTowerDefense,
     };
 
     return tags.map((tag) => table[tag] ?? "???").toList();
@@ -104,32 +105,36 @@ enum TagEnumeration {
   /// If a tag code does not have a localized name, the function returns a string with three question marks.
   String fromLocale(AppLocalizations localizations) {
     final Map<String, String> table = <String, String> {
-      TagEnumeration.action.code: localizations.tagAction,
-      TagEnumeration.adventure.code: localizations.tagAdventure,
-      TagEnumeration.breakout.code: localizations.tagBreakout,
-      TagEnumeration.casual.code: localizations.tagCasual,
-      TagEnumeration.driving.code: localizations.tagDriving,
-      TagEnumeration.extremeSports.code: localizations.tagExtremeSports,
-      TagEnumeration.fighting.code: localizations.tagFighting,
-      TagEnumeration.football.code: localizations.tagFootball,
-      TagEnumeration.offRoad.code: localizations.tagOffRoad,
-      TagEnumeration.openWorld.code: localizations.tagOpenWorld,
-      TagEnumeration.platformer.code: localizations.tagPlatformer,
-      TagEnumeration.pointAndClick.code: localizations.tagPointAndClick,
-      TagEnumeration.puzzle.code: localizations.tagPuzzle,
-      TagEnumeration.racing.code: localizations.tagRacing,
-      TagEnumeration.rally.code: localizations.tagRally,
-      TagEnumeration.scifi.code: localizations.tagSciFi,
-      TagEnumeration.shooter.code: localizations.tagShooter,
-      TagEnumeration.shootEmUp.code: localizations.tagShootEmUp,
-      TagEnumeration.sports.code: localizations.tagSports,
-      TagEnumeration.starfighter.code: localizations.tagStarfighter,
-      TagEnumeration.stealth.code: localizations.tagStealth,
-      TagEnumeration.survivalHorror.code: localizations.tagSurvivalHorror,
-      TagEnumeration.takedown.code: localizations.tagTakedown,
-      TagEnumeration.terror.code: localizations.tagTerror,
-      TagEnumeration.threeD.code: localizations.tag3D,
-      TagEnumeration.towerDefense.code: localizations.tagTowerDefense,
+      TagEnumeration.action.code: localizations.tgAction,
+      TagEnumeration.adventure.code: localizations.tgAdventure,
+      TagEnumeration.breakout.code: localizations.tgBreakout,
+      TagEnumeration.casual.code: localizations.tgCasual,
+      TagEnumeration.driving.code: localizations.tgDriving,
+      TagEnumeration.extremeSports.code: localizations.tgExtremeSports,
+      TagEnumeration.fighting.code: localizations.tgFighting,
+      TagEnumeration.football.code: localizations.tgFootball,
+      TagEnumeration.offRoad.code: localizations.tgOffRoad,
+      TagEnumeration.openWorld.code: localizations.tgOpenWorld,
+      TagEnumeration.pinball.code: localizations.tgPinball,
+      TagEnumeration.platformer.code: localizations.tgPlatformer,
+      TagEnumeration.pointAndClick.code: localizations.tgPointAndClick,
+      TagEnumeration.powerUps.code: localizations.tgPowerUps,
+      TagEnumeration.puzzle.code: localizations.tgPuzzle,
+      TagEnumeration.racing.code: localizations.tgRacing,
+      TagEnumeration.rally.code: localizations.tgRally,
+      TagEnumeration.runAndGun.code: localizations.tgRunAndGun,
+      TagEnumeration.scifi.code: localizations.tgSciFi,
+      TagEnumeration.shooter.code: localizations.tgShooter,
+      TagEnumeration.shootEmUp.code: localizations.tgShootEmUp,
+      TagEnumeration.sports.code: localizations.tgSports,
+      TagEnumeration.starfighter.code: localizations.tgStarfighter,
+      TagEnumeration.stealth.code: localizations.tgStealth,
+      TagEnumeration.strategy.code: localizations.tgStrategy,
+      TagEnumeration.survivalHorror.code: localizations.tgSurvivalHorror,
+      TagEnumeration.takedown.code: localizations.tgTakedown,
+      TagEnumeration.terror.code: localizations.tgTerror,
+      TagEnumeration.threeD.code: localizations.tg3D,
+      TagEnumeration.towerDefense.code: localizations.tgTowerDefense,
     };
 
     return table[code] ?? "???";

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:timeago/timeago.dart';
 
 import '../application/repositories/bucket_repository.dart';
 import '../application/repositories/hive_repository.dart';
@@ -11,19 +12,28 @@ import '../application/repositories/supabase_repository.dart';
 import '../application/services/activity_service.dart';
 import '../application/services/admob_service.dart';
 import '../application/services/android_service.dart';
-import 'application/services/google_authentication_service.dart';
+import '../application/services/google_authentication_service.dart';
 import '../application/services/firebase_messaging_service.dart';
 import '../application/services/github_service.dart';
 import '../application/services/supabase_service.dart';
 
 import '../application.dart';
+
 import '../logger.dart';
 
 Future<void> main() async {
+
+  // MARK: Initialization ⮟
+
   WidgetsFlutterBinding.ensureInitialized();
+
+  setLocaleMessages('pt', PtBrMessages());
+  setLocaleMessages('id', IdMessages());
+  setLocaleMessages('en', EnMessages());
 
   await Logger.initialize();
 
+  Logger.start("The application has been started!");
   Logger.start("Initializing the Firebase enviroment...");
 
   await Firebase.initializeApp(
@@ -36,9 +46,16 @@ Future<void> main() async {
     ),
   );
 
+  // MARK: Provider Instances ⮟
+
   final ActivityService sActivity = ActivityService();
-  final AdMobService sAdMob = AdMobService(const String.fromEnvironment("ADVERTISEMENT_UNIT"));
   final AndroidService sAndroid = AndroidService();
+  final GoogleOAuthService sGoogleOAuth = GoogleOAuthService(const String.fromEnvironment('GOOGLE_SERVER_CLIENT'));
+
+  final AdMobService sAdMob = AdMobService(
+    bannerRectangleUnit: const String.fromEnvironment("ADMOB_BANNER_RECTANGLE"),
+    bannerUnit: const String.fromEnvironment("ADMOB_BANNER"),
+  );
 
   final GitHubService sGitHub = GitHubService(
     client: http.Client(),
@@ -50,8 +67,6 @@ Future<void> main() async {
     url: const String.fromEnvironment("SUPABASE_URL"),
   );
 
-  final GoogleOAuthService sGoogleOAuth = GoogleOAuthService(const String.fromEnvironment('GOOGLE_SERVER_CLIENT'));
-
   final BucketRepository rBucket = BucketRepository(
     sAndroid: sAndroid,
     sGitHub: sGitHub,
@@ -59,8 +74,9 @@ Future<void> main() async {
 
   final HiveRepository rHive = HiveRepository(sGitHub);
   final SupabaseRepository rSupabase = SupabaseRepository(sSupabase);
-
   final FirebaseMessagingService sFirebaseMessaging = FirebaseMessagingService(rSupabase);
+
+  // MARK: Run Application ⮟
 
   runApp(MultiProvider(
     providers: <SingleChildWidget> [

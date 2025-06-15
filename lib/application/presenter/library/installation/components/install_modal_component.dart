@@ -18,13 +18,44 @@ class _InstallModal extends StatefulWidget {
 }
 
 class _InstallModalState extends State<_InstallModal> {
+  late final ValueNotifier<(Progresses, Object?)> nProgress;
 
   @override
   void initState() {
     super.initState();
 
-    widget.controller.nInstallationState.value = ProgressEnumeration.isLoading;
-    widget.controller.downloadMIDlet(context);
+    nProgress = ValueNotifier<(Progresses, Object?)>((Progresses.isLoading, null));
+    tryDownloadAndInstallMIDlet();
+  }
+
+  Future<void> tryDownloadAndInstallMIDlet() async {
+    try {
+      await widget.controller.tryDownloadAndInstallMIDlet(context);
+    }
+    on PlatformException catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      nProgress.value = (Progresses.requestEmulator, error);
+    }
+    on ClientException catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      nProgress.value = (Progresses.hasError, error);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      nProgress.value = (Progresses.hasError, error);
+    }
   }
 
   @override
@@ -39,32 +70,28 @@ class _InstallModalState extends State<_InstallModal> {
       ],
       child: Expanded(
         child: ValueListenableBuilder(
-          valueListenable: widget.controller.nInstallationState,
-          builder: (BuildContext context, ProgressEnumeration installationState, Widget? _) {
-            if (installationState == ProgressEnumeration.isLoading) {
-              return downloading();
+          valueListenable: nProgress,
+          builder: (BuildContext context, (Progresses, Object?) progress, Widget? _) {
+            if (progress.$1 == Progresses.isLoading) {
+              return const LoadingAnimation();
             }
-            if (installationState == ProgressEnumeration.requestEmulator) {
+            if (progress.$1 == Progresses.requestEmulator) {
               return requestEmulator();
             }
+            if (progress.$1 == Progresses.hasError) {
+              return Padding(
+                padding: const EdgeInsets.all(15),
+                child: ErrorMessage(progress.$2!),
+              );
+            }
             else {
-              Logger.error("Error state \"$installationState\".");
-
-              return error();
+              return Padding(
+                padding: const EdgeInsets.all(15),
+                child: ErrorMessage(Exception),
+              );
             }
           },
         ),
-      ),
-    );
-  }
-
-  Widget downloading() => const LoadingAnimation();
-
-  Widget error() {
-    return Center(
-      child: Text(
-        "Internal error!",
-        style: TypographyEnumeration.body(Palettes.elements).style,
       ),
     );
   }

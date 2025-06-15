@@ -1,14 +1,42 @@
 import 'dart:ui';
 
+import '../configuration/global_configuration.dart';
+
 import '../entities/midlet_entity.dart';
 
-// GAME ENTITY 🎮: ============================================================================================================================================================== //
-
-/// Entity representing a game's information.
+/// Represents a game entity with its metadata and related MIDlets.
 ///
-/// This class stores essential details about a game, including its title, description, release year, tags, and publisher.
-/// It is used both for displaying game data in the UI and for handling persistent storage.
+/// Stores localized descriptions, release info, tags, and publisher details.
 class Game {
+
+  // MARK: Constructor ⮟
+
+  /// Game description in Brazilian Portuguese.
+  final String descriptionBR;
+
+  /// Game description in Indonesian.
+  final String descriptionID;
+
+  /// Game description in American English.
+  final String descriptionUS;
+
+  /// Unique identifier of the game (primary key).
+  final int identifier;
+
+  /// List of associated MIDlet files for this game.
+  final List<MIDlet> midlets;
+
+  /// Year the game was released.
+  final int release;
+
+  /// Tags categorizing the game (e.g., Action, Shooter).
+  final List<String> tags;
+
+  /// Game title.
+  final String title;
+
+  /// Publisher company name.
+  final String publisher;
 
   Game({
     required this.descriptionBR,
@@ -22,55 +50,55 @@ class Game {
     required this.title,
   });
 
-  /// The game description in Brazilian Portuguese.
-  final String? descriptionBR;
+  // MARK: Formats ⮟
 
-  /// The game description in Indonesian.
-  final String? descriptionID;
+  /// Returns the game description based on the [locale].
+  /// 
+  /// Throws:
+  /// - `Exception`: If the locale is unsupported.
+  String? fDescription(Locale locale) {
+    switch (locale.countryCode) {
+      case "BR": return descriptionBR;
+      case "ID": return descriptionID;
+      case "US": return descriptionUS;
+      default: throw Exception("Unsupported locale: ${locale.languageCode} | ${locale.countryCode}.");
+    }
+  }
 
-  /// The game description in American English.
-  final String? descriptionUS;
+  /// Returns the formatted title, replacing " -" with ":" (e.g., "Bomberman - Deluxe" → "Bomberman: Deluxe").
+  String get fTitle => title.replaceFirst(" -", ":");
 
-  /// Unique identifier for the game.
-  ///
-  /// This ID serves as the primary key in the database.
-  final int identifier;
+  // MARK: JSON Methods ⮟
 
-  /// List of all [MIDlet] files available for this game.
-  final List<MIDlet> midlets;
-
-  /// The year the game was released.
-  final int release;
-
-  /// List of tags that categorize the game (e.g., Action, Shooter, Sports).
-  final List<String> tags;
-
-  /// The title of the game.
-  final String title;
-
-  /// The name of the company that published the game.
-  final String publisher;
-
-  /// Creates a [Game] object from a JSON map.
-  ///
-  /// This method is used to deserialize raw JSON data into a [Game] object.
-  factory Game.fromJson(dynamic json) {
+  /// Creates a [Game] instance from a JSON string.
+  /// 
+  /// The [jString] parameter is expected to be a dynamic object containing key-value pairs that map to the properties of this class.
+  /// 
+  /// Throws:
+  /// - `FormatException`: Thrown when a required field is missing, null, or does not match the expected type during parsing.
+  factory Game.fromJson(dynamic jString) {
     return Game(
-      descriptionBR: json['descriptionBR'] as String?,
-      descriptionID: json['descriptionID'] as String?,
-      descriptionUS: json['descriptionUS'] as String?,
-      identifier: json['identifier'] as int,
-      midlets: List<MIDlet>.from(json["midlets"].map((element) => MIDlet.fromJson(element))),
-      publisher: json['publisher'] as String,
-      release: json['release'] as int,
-      tags: List<String>.from(json["tags"].map((element) => element)),
-      title: json['title'] as String,
+      descriptionBR: require<String>(jString, "descriptionBR")!,
+      descriptionID: require<String>(jString, "descriptionID")!,
+      descriptionUS: require<String>(jString, "descriptionUS")!,
+      identifier: require<int>(jString, "identifier")!,
+      midlets: require<List<MIDlet>>(
+        jString,
+        "midlets",
+        convert: (midlets) => List<MIDlet>.from((midlets).map(MIDlet.fromJson)),
+      )!,
+      publisher: require<String>(jString, "publisher")!,
+      release: require<int>(jString, "release")!,
+      tags: require<List<String>>(
+        jString,
+        "tags",
+        convert: (tags) => List<String>.from((tags).map((element) => element)),
+      )!,
+      title: require<String>(jString, "title")!,
     );
   }
 
-  /// Converts the [Game] object into a JSON map.
-  ///
-  /// This method is used for serializing the [Game] object, enabling it to be stored in databases like Hive.
+  /// Converts this [Game] instance into a JSON-compatible map.
   Map<String, dynamic> toJson() {
     return <String, dynamic> {
       'descriptionBR': descriptionBR,
@@ -84,19 +112,4 @@ class Game {
       'title': title,
     };
   }
-
-  /// Retrieves the game description based on the given locale.
-  /// 
-  /// Throws:
-  /// - `Exception`: If the locale is unsupported.
-  String? description(Locale locale) {
-    switch (locale.countryCode) {
-      case "BR": return descriptionBR;
-      case "ID": return descriptionID;
-      case "US": return descriptionUS;
-      default: throw Exception("Unsupported locale: ${locale.languageCode} | ${locale.countryCode}.");
-    }
-  }
-
-  String get fTitle => title.replaceFirst(" -", ":");
 }

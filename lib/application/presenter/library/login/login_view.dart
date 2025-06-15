@@ -24,14 +24,14 @@ class __LoginViewState extends State<_LoginView> {
     return Scaffold(
       body: ValueListenableBuilder(
         valueListenable: widget.controller.nProgress,
-        builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
-          if (progress == ProgressEnumeration.isLoading) {
+        builder: (BuildContext context, Progresses progress, Widget? _) {
+          if (progress == Progresses.isLoading) {
             return Align(
               alignment: Alignment.center,
               child: LoadingAnimation(),
             );
           }
-          else if (progress == ProgressEnumeration.requestSignIn) {
+          else if (progress == Progresses.requestSignIn) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(15, 150, 15, 150),
               child: Column(
@@ -45,7 +45,7 @@ class __LoginViewState extends State<_LoginView> {
               ),
             );
           }
-          else if (progress == ProgressEnumeration.isFinished) {
+          else if (progress == Progresses.isFinished) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               widget.controller.handleNotificationMessage(context);
             });
@@ -57,7 +57,7 @@ class __LoginViewState extends State<_LoginView> {
               ),
             );
           }
-          else if (progress == ProgressEnumeration.hasError) {
+          else if (progress == Progresses.hasError) {
             return SizedBox();
           }
           else {

@@ -49,9 +49,23 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
             </intent-filter>
         </service>
+
+        <!-- ============================================================================================================================================== -->
+        <!-- UNITY ADVERTISEMENT CONFIGURATION -->
+        <meta-data
+            android:name="unity_ads_game_id"
+            android:value="5867786"
+        />
+        <meta-data
+            android:name="unity_ads_test_mode"
+            android:value="false"
+        />
+        <!-- ============================================================================================================================================== -->
+        
         <meta-data
             android:name="flutterEmbedding"
-            android:value="2"/>
+            android:value="2"
+        />
     </application>
     <queries>
         <intent>

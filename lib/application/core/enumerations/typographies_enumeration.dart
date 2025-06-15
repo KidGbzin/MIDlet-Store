@@ -22,13 +22,12 @@ class TypographyEnumeration {
     ));
   }
 
-  factory TypographyEnumeration.theme(Palettes palette) {
+  factory TypographyEnumeration.number(Palettes palette) {
     return TypographyEnumeration._internal(GoogleFonts.rajdhani(
       color: palette.value,
-      fontSize: 45,
-      fontWeight: FontWeight.w600,
-      height: 1,
-      wordSpacing: 1.25,
+      fontSize: 15,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 0.25,
     ));
   }
 

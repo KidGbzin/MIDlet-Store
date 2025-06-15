@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 
@@ -11,13 +12,14 @@ import '../../../../logger.dart';
 
 import '../../../core/configuration/global_configuration.dart';
 
-import '../../../core/entities/game_data_entity.dart';
+import '../../../core/entities/game_metadata_entity.dart';
 import '../../../core/entities/game_entity.dart';
 
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/tag_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
+import '../../../core/enumerations/views_enumerations.dart';
 import '../../../core/extensions/messenger_extension.dart';
 import '../../../core/extensions/router_extension.dart';
 

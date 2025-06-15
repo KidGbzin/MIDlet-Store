@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../logger.dart';
 
-import '../core/entities/game_data_entity.dart';
+import '../core/entities/game_metadata_entity.dart';
 import '../core/entities/game_entity.dart';
 
 import '../services/github_service.dart';
@@ -51,9 +51,9 @@ class HiveRepository {
     Hive.defaultDirectory = directory!.path;
 
     Hive.registerAdapter('Game', Game.fromJson);
-    Hive.registerAdapter('GameData', GameData.fromJson);
+    Hive.registerAdapter('GameData', GameMetadata.fromJson);
 
-    boxCachedRequests = BoxCachedRequests(Hive.box<GameData>(
+    boxCachedRequests = BoxCachedRequests(Hive.box<GameMetadata>(
       maxSizeMiB: 1,
       name: 'CACHED_REQUESTS',
     ))..clear();
@@ -87,25 +87,17 @@ class HiveRepository {
   /// This file contains a list of games, which is parsed and saved to the local storage boxes. 
   /// Caching the collection locally helps reduce the number of API requests and conserve resources.
   ///
-  /// Throws:
-  /// - `Exception`: If the JSON file cannot be found or fetched.
+  /// Thrown:
+  /// - `ClientException`: Thrown by the [http](https://pub.dev/packages/http) package, typically when there is no internet connection.
+  /// - `FormatException`: Thrown by the [GitHub] or [Game] classes when parsing data fails (e.g., date formats or invalid JSON structure).
+  /// - `HttpException`: Thrown when the GitHub repository file cannot be accessed or the server responds with an unexpected status code.
   Future<void> _fetchStaticDatabase() async {
     const String source = "Database/DATABASE.json";
 
     DateTime? lastUpdated;
     DateTime? lastCached = boxSettings.lastUpdated;
 
-    try {
-      lastUpdated = await sGitHub.getLastUpdatedDate(source);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      rethrow;
-    }
+    lastUpdated = await sGitHub.getLastUpdatedDate(source);
     
     if (lastCached != null && lastUpdated.isBefore(lastCached)) {
       Logger.information("The local database is already up-to-date, no update required.");
@@ -113,43 +105,19 @@ class HiveRepository {
       return;
     }
     
-    final Uint8List? bytes;
+    final Uint8List? bytes = await sGitHub.get(source);
 
-    try {
-      bytes = await sGitHub.get(source);
+    final List<dynamic> decoded = jsonDecode(utf8.decode(bytes!));
+    final List<Game> collection = decoded.map(Game.fromJson).toList();
 
-      if (bytes == null) throw Exception('The file "$source" could not be found in the repository.');
+    boxGames.clear();
+    
+    for (final Game game in collection) {
+      boxGames.put(game);
     }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      rethrow;
-    }
-
-    try {
-      final List decoded = jsonDecode(utf8.decode(bytes));
-      final List<Game> collection = decoded.map(Game.fromJson).toList();
-
-      boxGames.clear();
-      for (final Game game in collection) {
-        boxGames.put(game);
-      }
-
-      boxSettings.setLastUpdated(DateTime.now().toString());
-
-      Logger.success("The local database was updated successfully with ${collection.length} games.");
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      throw Exception('Error parsing or storing the local database with Hive.');
-    }
+    boxSettings.setLastUpdated(DateTime.now().toString());
+    
+    Logger.success("The local database was updated successfully with ${collection.length} games.");
   }
 }
 
@@ -196,15 +164,15 @@ class BoxSettings implements IBox {
 
 /// A storage box for caching game request data retrieved from Supabase.
 ///
-/// This class implements [IBox] and provides functionality for managing cached data, allowing efficient retrieval and storage of [GameData] objects.
+/// This class implements [IBox] and provides functionality for managing cached data, allowing efficient retrieval and storage of [GameMetadata] objects.
 /// The cached data is stored in a Hive box with a maximum size of 1 MiB.
 class BoxCachedRequests implements IBox {
 
-  /// The internal [Hive] box instance used for managing [GameData].
+  /// The internal [Hive] box instance used for managing [GameMetadata].
   ///
   /// This field is private to ensure that the box's operations and lifecycle are controlled exclusively through this class.
   /// Preventing unintended modifications or access outside its intended scope.
-  final Box<GameData> _box;
+  final Box<GameMetadata> _box;
 
   const BoxCachedRequests(this._box);
   
@@ -214,13 +182,13 @@ class BoxCachedRequests implements IBox {
   @override
   void close() => _box.close();
 
-  /// Retrieves a [GameData] object from storage, using the provided key.
+  /// Retrieves a [GameMetadata] object from storage, using the provided key.
   ///
   /// Returns `null` if no data exists for the provided key.
-  GameData? get(String key) => _box.get(key);
+  GameMetadata? get(String key) => _box.get(key);
 
-  /// Puts or updates a [GameData] object in the storage box.
-  void put(GameData gameData) => _box.put('${gameData.identifier}', gameData);
+  /// Puts or updates a [GameMetadata] object in the storage box.
+  void put(GameMetadata gameData) => _box.put('${gameData.identifier}', gameData);
 }
 
 /// A storage box for managing the user's favorite games.
@@ -229,7 +197,7 @@ class BoxCachedRequests implements IBox {
 /// The box stores games based on their title and ensures that the operations are encapsulated to avoid direct manipulation outside this class.
 class BoxFavorites implements IBox {
 
-  /// The internal [Hive] box instance used for managing [GameData].
+  /// The internal [Hive] box instance used for managing [GameMetadata].
   ///
   /// This field is private to ensure that the box's operations and lifecycle are controlled exclusively through this class.
   /// Preventing unintended modifications or access outside its intended scope.
@@ -265,7 +233,7 @@ class BoxFavorites implements IBox {
 /// It can retrieving games by index, title, publisher, or tags, and performing operations like adding, removing, and clearing games from the collection.
 class BoxGames implements IBox {
 
-  /// The internal [Hive] box instance used for managing [GameData].
+  /// The internal [Hive] box instance used for managing [GameMetadata].
   ///
   /// This field is private to ensure that the box's operations and lifecycle are controlled exclusively through this class.
   /// Preventing unintended modifications or access outside its intended scope.
@@ -436,7 +404,7 @@ List<String> _isolateTopRelatedGames(Map<String, dynamic> parameters) {
 /// The box ensures that only the most recent 10 games are stored, automatically deleting the oldest entry when a new game is added, maintaining a fixed size of 10 games.
 class BoxRecentGames implements IBox {
 
-  /// The internal [Hive] box instance used for managing [GameData].
+  /// The internal [Hive] box instance used for managing [GameMetadata].
   ///
   /// This field is private to ensure that the box's operations and lifecycle are controlled exclusively through this class.
   /// Preventing unintended modifications or access outside its intended scope.

@@ -1,12 +1,20 @@
 part of '../search/search_handler.dart';
 
-// SEARCH CONTROLLER 🔍: ======================================================================================================================================================== //
-
-/// Controller for managing game-related data and interactions.
-///
-/// This controller is responsible for managing the game's data, including fetching, updating, and storing game list information.
-/// It interacts with external services like the bucket, database, and local database to perform necessary operations.
 class _Controller {
+
+  // MARK: Constructor ⮟
+
+  /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
+  final BucketRepository rBucket;
+
+  /// Manages local database operations, inclshow Views, searching game details, ratings, and user preferences.
+  final HiveRepository rHive;
+
+  /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
+  final SupabaseRepository rSupabase;
+
+  /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisementss.
+  final AdMobService sAdMob;
   
   _Controller({
     required this.rBucket,
@@ -15,77 +23,32 @@ class _Controller {
     required this.sAdMob,
   });
 
-  /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisementss.
-  final AdMobService sAdMob;
-
-  /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
-  final BucketRepository rBucket;
-
-  /// Manages local database operations, including storing game details, ratings, and user preferences.
-  final HiveRepository rHive;
-
-  /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
-  final SupabaseRepository rSupabase;
-
   /// The complete list of all games available, loaded from the database.
   ///
   /// This list contains all the games stored in the database, retrieved during the initialization of the controller.
   /// It is used as the base data for the games list.
   /// The list is immutable (`List.unmodifiable`), meaning it cannot be modified directly.
-  /// Any filtering or updates to the list should be done through the `currentlyActiveGameList` notifier.
+  /// Any filtering or updates to the list should be done through the `nCurrentGames` notifier.
   late final List<Game> _allGames;
 
-  /// The current publisher filter that is actively applied.
+  /// Initializes the handler’s core services and state notifiers.
   ///
-  /// This notifier holds the selected publisher filter.
-  /// It is updated when a user selects a specific publisher to filter the list of games.
-  /// If no publisher filter is applied, its value will be `null`.
-  final ValueNotifier<String?> nSelectedPublisher = ValueNotifier(null);
-
-  /// The current release year filter that is actively applied.
-  ///
-  /// This notiifier holds the selected release year filter.
-  /// It is updated when a user selects a specific year to filter the list of games.
-  /// If no release year filter is applied, its value will be `null`.
-  final ValueNotifier<int?> nSelectedReleaseYear = ValueNotifier(null);
-
-  /// The current tags applied to the filter.
-  ///
-  /// This notifier holds the list of active tags that the user has selected to filter the games by.
-  /// Each item in the list represents a tag that is currently active in the filter.
-  final ValueNotifier<List<String>> nSelectedTags = ValueNotifier(<String> []);
-
-  /// Notifier for the filters of publishers.
-  /// 
-  /// This notifier holds the map of unique publishers and their respective counts.
-  final ValueNotifier<Map<String, int>?> nFiltersPublishers = ValueNotifier(null);
-
-  /// Notifier for the filters of release years.
-  /// 
-  /// This notifier holds the map of unique release years and their respective counts.
-  final ValueNotifier<Map<int, int>?> nFiltersReleaseYear = ValueNotifier(null);
-
-  /// Notifier for the filters of tags.
-  /// 
-  /// This notifier holds the list of unique tags and their respective counts.
-  final ValueNotifier<List<(TagEnumeration, String, int)>?> nFiltersTags = ValueNotifier(null);
-
-  /// Notifier for the current list of games and its loading state.
-  ///
-  /// This notifier stores the current list of games and its loading state.
-  /// It is used to update the UI when the list of games changes or when the loading state changes.
-  final ValueNotifier<(List<Game>, bool)> nGames = ValueNotifier((<Game> [], true));
-
-  /// Initializes the controller and loads the necessary data for games and suggestions.
-  ///
-  /// This method sets up the controller by loading all games from the database and initializing the notifiers for the game list and recent suggestions.
-  /// It also filters games by the specified publisher if provided.
+  /// This method must be called from the `initState` of the handler widget.
+  /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize({
     required String? publisher,
   }) async {
-    nSelectedPublisher.value = publisher;
-
     try {
+      sAdMob.clear(Views.search);
+
+      nCurrentGames = ValueNotifier((<Game> [], true));
+      nFiltersPublishers = ValueNotifier<Map<String,int>?>(null);
+      nFiltersReleaseYear = ValueNotifier<Map<int, int>?>(null);
+      nFiltersTags = ValueNotifier<List<(TagEnumeration, String, int)>?>(null);
+      nSelectedPublisher = ValueNotifier<String?>(publisher);
+      nSelectedReleaseYear = ValueNotifier<int?>(null);
+      nSelectedTags = ValueNotifier(<String> []);
+
       final List<Game> games = await execute(() async {
         _allGames = List.unmodifiable(rHive.boxGames.all());
 
@@ -97,7 +60,7 @@ class _Controller {
         }
       });
 
-      nGames.value = (games, false);
+      nCurrentGames.value = (games, false);
       nSuggestions.value = rHive.boxRecentGames.all();
     }
     catch (error, stackTrace) {
@@ -107,6 +70,61 @@ class _Controller {
       );
     }
   }
+
+  /// Disposes the handler’s resources and notifiers.
+  ///
+  /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
+  void dispose() {
+    cTextField.dispose();
+
+    nCurrentGames.dispose();
+    nFiltersPublishers.dispose();
+    nFiltersReleaseYear.dispose();
+    nFiltersTags.dispose();
+    nSelectedPublisher.dispose();
+    nSelectedReleaseYear.dispose();
+    nSelectedTags.dispose();
+    nSuggestions.dispose();
+
+    sAdMob.clear(Views.search);
+  }
+
+  // MARK: Notifiers ⮟
+
+  /// Notifier for the current list of games and its loading state.
+  ///
+  /// This notifier stores the current list of games and its loading state.
+  /// It is used to update the UI when the list of games changes or when the loading state changes.
+  late final ValueNotifier<(List<Game>, bool)> nCurrentGames;
+
+  /// Holds a notifier with a map of unique publishers and their counts.
+  late final ValueNotifier<Map<String, int>?> nFiltersPublishers;
+
+  /// Holds a notifier with a map of unique release years and their counts.
+  late final ValueNotifier<Map<int, int>?> nFiltersReleaseYear;
+
+  /// Holds a notifier with a list of unique tags and their counts.
+  late final ValueNotifier<List<(TagEnumeration, String, int)>?> nFiltersTags;
+
+  /// The current publisher filter that is actively applied.
+  ///
+  /// This notifier holds the selected publisher filter.
+  /// It is updated when a user selects a specific publisher to filter the list of games.
+  /// If no publisher filter is applied, its value will be `null`.
+  late final ValueNotifier<String?> nSelectedPublisher;
+
+  /// The current release year filter that is actively applied.
+  ///
+  /// This notiifier holds the selected release year filter.
+  /// It is updated when a user selects a specific year to filter the list of games.
+  /// If no release year filter is applied, its value will be `null`.
+  late final ValueNotifier<int?> nSelectedReleaseYear;
+
+  /// The current tags applied to the filter.
+  ///
+  /// This notifier holds the list of active tags that the user has selected to filter the games by.
+  /// Each item in the list represents a tag that is currently active in the filter.
+  late final ValueNotifier<List<String>> nSelectedTags;
 
   /// Waits for the specified [operation] to complete and then waits for the minimum time minus the elapsed time.
   ///
@@ -137,19 +155,15 @@ class _Controller {
     return result;
   }
 
-  /// Discards the resources used by the controller and cleans up allocated memory.
-  ///
-  /// This method is called to release the resources and memory allocated by the controller when it is no longer needed.
-  /// It disposes of all [ValueNotifier] instances and controllers that the controller is using to avoid memory leaks.
-  void dispose() {
-    nGames.dispose();
-    nSuggestions.dispose();
-    nSelectedPublisher.dispose();
-    nSelectedReleaseYear.dispose();
-    nSelectedTags.dispose();
-  
-    cTextField.dispose();
-  }
+  // MARK: Advertisements ⮟
+
+  BannerAd? getAdvertisementByIndex(int index) => sAdMob.getAdvertisementByIndex(index, Views.search);
+
+  void preloadNearbyAdvertisements(int index) => sAdMob.preloadNearbyAdvertisements(
+    iCurrent: index,
+    size: AdSize.mediumRectangle,
+    view: Views.search,
+  );
 
   // FILTERS RELATED 🏷️: ======================================================================================================================================================== //
 
@@ -258,7 +272,7 @@ class _Controller {
   /// It is typically used after the user finishes selecting filters in the [ModalWidget] widget.
   /// If no filters are applied, the list is reset to its original, unfiltered state.
   Future<void> applyFilters(BuildContext context, AppLocalizations localizations) async {
-    nGames.value = (<Game> [], true);
+    nCurrentGames.value = (<Game> [], true);
 
     final List<Game> games = await execute(() async {
       cTextField.clear();
@@ -287,7 +301,7 @@ class _Controller {
       });
     }
 
-    nGames.value = (games, false);
+    nCurrentGames.value = (games, false);
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(MessengerExtension(
@@ -301,7 +315,7 @@ class _Controller {
   ///
   /// This method resets the state of the game list and its filters, returning the list to its unfiltered state.
   Future<void> clearFilters(BuildContext context, AppLocalizations localizations) async {
-    nGames.value = (<Game> [], true);
+    nCurrentGames.value = (<Game> [], true);
 
     final List<Game> games = await execute(() async {
       cTextField.clear();
@@ -313,7 +327,7 @@ class _Controller {
       return _allGames;
     });
 
-    nGames.value = (games, false);
+    nCurrentGames.value = (games, false);
   }
 
   // SEARCH RELATED 🔍: ========================================================================================================================================================= //
@@ -343,7 +357,7 @@ class _Controller {
   /// - If the game's vendor contains [query].
   /// - If any tag matches the [query].
   Future<void> applySearch(String query) async {
-    nGames.value = (<Game> [], true);
+    nCurrentGames.value = (<Game> [], true);
 
     final List<Game> games = await execute(() async {
       query = query.toLowerCase();
@@ -360,7 +374,7 @@ class _Controller {
       }).toList();
     });
 
-    nGames.value = (games, false);
+    nCurrentGames.value = (games, false);
   }
 
   // DATABASE RELATED 🗃️: ======================================================================================================================================================= //
@@ -380,7 +394,7 @@ class _Controller {
   /// - `Average-Rating`: The average rating of the game.
   /// - `Downloads`: The total number of downloads for the game.
   Future<Map<String, dynamic>> getGameData(Game game) async {
-    final GameData data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameData(
+    final GameMetadata data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
       identifier: game.identifier,
     );
 
@@ -397,7 +411,7 @@ class _Controller {
     }
 
     try {
-      data.downloads ??= await rSupabase.getOrInsertGameDownloads(game);
+      data.downloads ??= await rSupabase.getOrInsertDownloadsForGame(game);
     }
     catch (error, stackTrace) {
       Logger.error(

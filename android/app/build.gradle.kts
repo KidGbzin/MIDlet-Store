@@ -10,7 +10,9 @@ plugins {
 
 dependencies {
     implementation("io.flutter.plugins.googlemobileads:google_mobile_ads:5.3.1")
+    implementation("com.google.ads.mediation:unity:4.14.2.0")
     implementation("com.google.android.gms:play-services-ads:22.6.0")
+    implementation("com.unity3d.ads:unity-ads:4.9.2")
 }
 
 val keystoreProperties = Properties()

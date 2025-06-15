@@ -13,6 +13,8 @@ enum Palettes {
   splash(Color(0x20e4e5e9)),
   googleBlue(Color(0xff4285F4)),
   pink(Color(0xFFE91E63)),
+  red(Colors.red),
+  green(Colors.green),
   transparent(Color(0x00000000));
 
   const Palettes(this.value);

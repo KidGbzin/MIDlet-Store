@@ -31,34 +31,25 @@ class _LauncherViewState extends State<_LauncherView> {
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: widget.controller.nProgress,
-                builder: (BuildContext context, ProgressEnumeration progress, Widget? _) {
+                builder: (BuildContext context, Progresses progress, Widget? _) {
                   Widget child = const SizedBox.shrink();
 
-                  if (progress == ProgressEnumeration.isLoading) {
+                  if (progress == Progresses.isLoading) {
                     child = Align(
                       alignment: Alignment.center,
                       child: LoadingAnimation(),
                     );
                   }
-                  else if (progress == ProgressEnumeration.requestUpdate) {
-                 
-                  }
-                  else if (progress == ProgressEnumeration.isFinished) {
+                  else if (progress == Progresses.isFinished) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (context.mounted) context.pushReplacement('/search');
                     });
                   }
                   else {
-                    child = Align(
-                      alignment: Alignment.center,
-                      child: HugeIcon(
-                        icon: HugeIcons.strokeRoundedAlert01,
-                        color: Palettes.grey.value,
-                      ),
-                    );
+                    child = ErrorMessage(widget.controller.nError.value!);
                   }
                   return AnimatedSwitcher(
-                    duration: Durations.extralong4,
+                    duration: gAnimationDuration,
                     child: child,
                   );
                 }

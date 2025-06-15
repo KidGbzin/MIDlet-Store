@@ -1,4 +1,4 @@
-enum ProgressEnumeration {
+enum Progresses {
   isLoading,
   isFinished,
   isReady,

@@ -26,34 +26,6 @@
     "sectionFilterPublisherDescription": "Filter pencarian Anda dengan memilih penerbit tertentu.",
     "sectionFilterReleaseYear": "FILTER BERDASARKAN TAHUN RILIS",
     "sectionFilterReleaseYearDescription": "Filter pencarian Anda dengan memilih tahun rilis tertentu.",
-    "tag3D": "3D",
-    "tagAction": "Aksi",
-    "tagAdventure": "Petualangan",
-    "tagBreakout": "Breakout",
-    "tagCasual": "Santai",
-    "tagDriving": "Mengemudi",
-    "tagExtremeSports": "Olahraga Ekstrem",
-    "tagFighting": "Pertarungan",
-    "tagFootball": "Sepak Bola",
-    "tagHackAndSlash": "Hack 'n' Slash",
-    "tagMetroidvania": "Metroidvania",
-    "tagOffRoad": "Off-Road",
-    "tagOpenWorld": "Dunia Terbuka",
-    "tagPlatformer": "Platformer",
-    "tagPointAndClick": "Tunjuk dan Klik",
-    "tagPuzzle": "Teka-Teki",
-    "tagRacing": "Balapan",
-    "tagRally": "Reli",
-    "tagSciFi": "Fiksi Ilmiah",
-    "tagShooter": "Penembak",
-    "tagShootEmUp": "Tembak-Tembakan",
-    "tagSports": "Olahraga",
-    "tagStarfighter": "Pesawat Tempur",
-    "tagStealth": "Sembunyi-Sembunyi",
-    "tagSurvivalHorror": "Horor Bertahan Hidup",
-    "tagTakedown": "Menjatuhkan",
-    "tagTerror": "Teror",
-    "tagTowerDefense": "Pertahanan Menara",
 
     "btInstallOnEmulator": "INSTAL DI EMULATOR",
     "@btInstallOnEmulator": {
@@ -68,6 +40,66 @@
     "btPlayGame": "MAIN",
     "@btPlayGame": {
         "description": "Label tombol untuk memulai atau menjalankan game."
+    },
+
+    "btSubmitRating": "KIRIM PENILAIAN",
+    "@btSubmitRating": {
+        "description": "Teks tombol untuk mengirim penilaian baru pada game."
+    },
+
+    "btSubmitReview": "ULAS GAME",
+    "@btSubmitReview": {
+        "description": "Label tombol untuk mengirim ulasan baru untuk game."
+    },
+
+    "btUpdateYourRating": "PERBARUI PENILAIAN",
+    "@btUpdateYourRating": {
+        "description": "Ditampilkan saat pengguna belum memberikan penilaian yang benar."
+    },
+
+    "exClientExceptionTitle": "Koneksi Gagal",
+    "@exClientExceptionTitle": {
+      "description": "Judul ditampilkan saat terjadi ClientException, biasanya karena tidak ada koneksi internet."
+    },
+
+    "exClientExceptionMessage": "Tidak dapat terhubung ke server. Periksa koneksi internet Anda dan coba lagi.",
+    "@exClientExceptionMessage": {
+      "description": "Pesan yang menjelaskan bahwa server tidak dapat dijangkau, biasanya karena masalah koneksi."
+    },
+
+    "exFormatExceptionTitle": "Kesalahan Tak Terduga",
+    "@exFormatExceptionTitle": {
+      "description": "Judul yang ditampilkan ketika terjadi FormatException, seperti kegagalan parsing tanggal atau JSON."
+    },
+
+    "exFormatExceptionMessage": "Terjadi kesalahan dan operasi tidak dapat diselesaikan. Silakan coba lagi dalam beberapa saat. Jika masalah terus berlanjut, hubungi tim dukungan kami.",
+    "@exFormatExceptionMessage": {
+      "description": "Pesan yang ditampilkan saat terjadi kesalahan parsing atau konversi data."
+    },
+
+    "exHttpExceptionTitle": "Server Tidak Tersedia",
+    "@exHttpExceptionTitle": {
+      "description": "Judul ditampilkan saat server tidak dapat menyediakan sumber daya yang diminta."
+    },
+
+    "exHttpExceptionMessage": "Tidak dapat mengakses sumber daya yang diminta di server. Ini bisa terjadi karena URL tidak valid, masalah server, atau file tidak ditemukan.",
+    "@exHttpExceptionMessage": {
+      "description": "Pesan yang menunjukkan kesalahan di sisi server, seperti 404 atau 500."
+    },
+
+    "exUnknownExceptionTitle": "Terjadi kesalahan",
+    "@exUnknownExceptionTitle": {
+      "description": "Judul umum untuk pengecualian yang tidak diketahui."
+    },
+    
+    "exUnknownExceptionMessage": "Terjadi kesalahan dan operasi tidak dapat diselesaikan. Coba lagi nanti. Jika masalah berlanjut, hubungi tim dukungan kami.",
+    "@exUnknownExceptionMessage": {
+      "description": "Pesan umum untuk kesalahan tak terduga yang tidak sesuai dengan jenis pengecualian yang dikenal."
+    },
+
+    "hdReviews": "ULASAN",
+    "@hdReviews": {
+        "description": "Judul halaman yang ditampilkan di AppBar untuk halaman ulasan."
     },
 
     "lb3D": "3D",
@@ -180,16 +212,6 @@
         "description": "Pesan yang ditampilkan saat tidak ada gambar pratinjau untuk game tersebut."
     },
 
-    "btSubmitRating": "KIRIM PENILAIAN",
-    "@btSubmitRating": {
-        "description": "Teks tombol untuk mengirim penilaian baru pada game."
-    },
-
-    "btUpdateYourRating": "PERBARUI PENILAIAN",
-    "@btUpdateYourRating": {
-        "description": "Ditampilkan saat pengguna belum memberikan penilaian yang benar."
-    },
-
     "scAbout": "TENTANG",
     "@scAbout": {
         "description": "Judul bagian yang menampilkan informasi tentang game."
@@ -243,5 +265,195 @@
     "scSubmitRatingDescriptionNotRated": "Anda belum memberi penilaian untuk game ini. Bagikan pendapat Anda dengan memberikan penilaian!",
     "@scSubmitRatingDescriptionNotRated": {
         "description": "Ditampilkan saat pengguna belum memberi penilaian pada game."
+    },
+
+    "tg3D": "3D",
+    "@tg3D": {
+      "description": "Tag untuk game dengan grafis atau lingkungan 3D."
+    },
+
+    "tgAction": "Aksi",
+    "@tgAction": {
+      "description": "Tag untuk game aksi dengan gameplay cepat."
+    },
+
+    "tgAdventure": "Petualangan",
+    "@tgAdventure": {
+      "description": "Tag untuk game dengan cerita dan eksplorasi."
+    },
+
+    "tgBreakout": "Breakout",
+    "@tgBreakout": {
+      "description": "Tag untuk game pemecah balok seperti Breakout klasik."
+    },
+
+    "tgCasual": "Kasual",
+    "@tgCasual": {
+      "description": "Tag untuk game sederhana dan mudah dimainkan."
+    },
+
+    "tgDriving": "Menyetir",
+    "@tgDriving": {
+      "description": "Tag untuk game yang berfokus pada mengemudi kendaraan."
+    },
+
+    "tgExtremeSports": "Olahraga Ekstrem",
+    "@tgExtremeSports": {
+      "description": "Tag untuk game seperti skateboard atau BMX."
+    },
+
+    "tgFighting": "Pertarungan",
+    "@tgFighting": {
+      "description": "Tag untuk game perkelahian satu lawan satu."
+    },
+
+    "tgFootball": "Sepak Bola",
+    "@tgFootball": {
+      "description": "Tag untuk game olahraga sepak bola."
+    },
+
+    "tgHackAndSlash": "Hack 'n' Slash",
+    "@tgHackAndSlash": {
+      "description": "Tag untuk game aksi dengan serangan jarak dekat melawan banyak musuh."
+    },
+
+    "tgMetroidvania": "Metroidvania",
+    "@tgMetroidvania": {
+      "description": "Tag untuk game platform eksploratif ala Metroid dan Castlevania."
+    },
+
+    "tgOffRoad": "Off-Road",
+    "@tgOffRoad": {
+      "description": "Tag untuk game balap di medan tidak rata."
+    },
+
+    "tgOpenWorld": "Dunia Terbuka",
+    "@tgOpenWorld": {
+      "description": "Tag untuk game dengan lingkungan eksploratif yang luas."
+    },
+
+    "tgPinball": "Pinball",
+    "@tgPinball": {
+      "description": "Tag untuk game simulasi mesin pinball."
+    },
+
+    "tgPlatformer": "Platformer",
+    "@tgPlatformer": {
+      "description": "Tag untuk game dengan lompatan antar platform."
+    },
+
+    "tgPointAndClick": "Point 'n' Click",
+    "@tgPointAndClick": {
+      "description": "Tag untuk game petualangan dengan interaksi klik."
+    },
+
+    "tgPowerUps": "Power-Up",
+    "@tgPowerUps": {
+      "description": "Tag untuk game dengan item yang meningkatkan kemampuan."
+    },
+
+    "tgPuzzle": "Teka-Teki",
+    "@tgPuzzle": {
+      "description": "Tag untuk game yang berfokus pada tantangan logika."
+    },
+
+    "tgRacing": "Balapan",
+    "@tgRacing": {
+      "description": "Tag untuk game balapan kendaraan."
+    },
+
+    "tgRally": "Reli",
+    "@tgRally": {
+      "description": "Tag untuk game balapan bergaya reli, biasanya off-road."
+    },
+
+    "tgRunAndGun": "Run 'n' Gun",
+    "@tgRunAndGun": {
+      "description": "Tag untuk game menembak cepat sambil berlari."
+    },
+
+    "tgSciFi": "Fiksi Ilmiah",
+    "@tgSciFi": {
+      "description": "Tag untuk game dengan tema futuristik atau sci-fi."
+    },
+
+    "tgShooter": "Penembak",
+    "@tgShooter": {
+      "description": "Tag untuk game yang berfokus pada mekanik tembak-menembak."
+    },
+
+    "tgShootEmUp": "Shoot 'Em Up",
+    "@tgShootEmUp": {
+      "description": "Tag untuk game arcade dengan banyak peluru dan musuh."
+    },
+
+    "tgSports": "Olahraga",
+    "@tgSports": {
+      "description": "Tag untuk game berdasarkan olahraga nyata atau fiksi."
+    },
+
+    "tgStarfighter": "Pesawat Tempur",
+    "@tgStarfighter": {
+      "description": "Tag untuk game pertempuran luar angkasa dengan pesawat."
+    },
+
+    "tgStealth": "Siluman",
+    "@tgStealth": {
+      "description": "Tag untuk game yang menekankan penyusupan dan menghindari musuh."
+    },
+
+    "tgStrategy": "Strategi",
+    "@tgStrategy": {
+      "description": "Tag untuk game yang butuh perencanaan dan taktik."
+    },
+
+    "tgSurvivalHorror": "Horror Bertahan Hidup",
+    "@tgSurvivalHorror": {
+      "description": "Tag untuk game horror dengan elemen bertahan hidup dan sumber daya terbatas."
+    },
+
+    "tgTakedown": "Penaklukan",
+    "@tgTakedown": {
+      "description": "Tag untuk game dengan misi mengalahkan musuh, seringkali secara strategis."
+    },
+
+    "tgTerror": "Teror",
+    "@tgTerror": {
+      "description": "Tag untuk game horror yang menakut-nakuti pemain."
+    },
+
+    "tgTowerDefense": "Pertahanan Menara",
+    "@tgTowerDefense": {
+      "description": "Tag untuk game strategi di mana pemain menempatkan menara untuk bertahan."
+    },
+
+    "txRating1Star": "Sangat mengecewakan. Tidak menikmati sama sekali. 😞",
+    "@txRating1Star": {
+      "description": "Penilaian bintang 1 – pengalaman yang sangat buruk dengan game."
+    },
+
+    "txRating2Star": "Kurang bagus. Banyak kekurangannya. 😕",
+    "@txRating2Star": {
+      "description": "Penilaian bintang 2 – game memiliki banyak kekurangan."
+    },
+
+    "txRating3Star": "Lumayan, tapi masih bisa lebih baik. 😐",
+    "@txRating3Star": {
+      "description": "Penilaian bintang 3 – game cukup oke, tapi tidak istimewa."
+    },
+
+    "txRating4Star": "Bagus banget! Sangat menyenangkan. 👍",
+    "@txRating4Star": {
+      "description": "Penilaian bintang 4 – game yang menyenangkan dan menghibur."
+    },
+
+    "txRating5Star": "Game ini luar biasa, saya suka banget! 😍",
+    "@txRating5Star": {
+      "description": "Penilaian bintang 5 – game yang sangat bagus dan memuaskan."
+    },
+
+    "txSubmitReview": "Tulis ulasan singkat!",
+    "@txSubmitReview": {
+        "description": "Teks yang muncul di bawah kolom teks untuk mendorong pengguna menulis ulasan singkat."
     }
 }

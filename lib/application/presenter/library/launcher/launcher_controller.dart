@@ -2,6 +2,8 @@ part of '../launcher/launcher_handler.dart';
 
 class _Controller {
 
+  // MARK: Constructor ⮟
+
   /// Manages local storage operations, including games, favorites, recent games, and cached requests.
   final HiveRepository rHive;
 
@@ -25,16 +27,15 @@ class _Controller {
     required this.sSupabase,
   });
 
-  late final ValueNotifier<ProgressEnumeration> nProgress;
-
   /// Initializes the handler’s core services and state notifiers.
   ///
   /// This method must be called from the `initState` of the handler widget.
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize(BuildContext context) async {
-    nProgress = ValueNotifier<ProgressEnumeration>(ProgressEnumeration.isLoading);
-
     try {
+      nProgress = ValueNotifier<Progresses>(Progresses.isLoading);
+      nError = ValueNotifier<Object?>(null);
+
       await sAdMob.initialize();
       await rHive.initialize();
       await sSupabase.initialize();
@@ -54,7 +55,8 @@ class _Controller {
       }
     } 
     catch (error, stackTrace) {
-      nProgress.value = ProgressEnumeration.hasError;
+      nProgress.value = Progresses.hasError;
+      nError.value = error;
 
       Logger.error(
         "$error",
@@ -67,4 +69,11 @@ class _Controller {
   ///
   /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
   void dispose() => nProgress.dispose();
+
+  // MARK: Notifiers ⮟
+
+  /// Notifies listeners about changes in the current progress state of the handler.
+  late final ValueNotifier<Progresses> nProgress;
+
+  late final ValueNotifier<Object?> nError;
 }
