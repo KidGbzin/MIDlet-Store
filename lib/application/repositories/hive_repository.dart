@@ -46,9 +46,9 @@ class HiveRepository {
   Future<void> initialize() async {
     Logger.start("Initializing the Hive repository...");
 
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory directory = await getApplicationCacheDirectory();
 
-    Hive.defaultDirectory = directory!.path;
+    Hive.defaultDirectory = directory.path;
 
     Hive.registerAdapter('Game', Game.fromJson);
     Hive.registerAdapter('GameData', GameMetadata.fromJson);
@@ -185,7 +185,17 @@ class BoxCachedRequests implements IBox {
   /// Retrieves a [GameMetadata] object from storage, using the provided key.
   ///
   /// Returns `null` if no data exists for the provided key.
-  GameMetadata? get(String key) => _box.get(key);
+  GameMetadata? get(String key) {
+    try {
+      return _box.get(key);
+    }
+    catch (error) {
+      // Sometimes get a concurrency error when loading from a 32-bit device.
+      // So we just ignore it, this only ignore cache.
+      Logger.error(error.toString());
+    }
+    return null;
+  }
 
   /// Puts or updates a [GameMetadata] object in the storage box.
   void put(GameMetadata gameData) => _box.put('${gameData.identifier}', gameData);
