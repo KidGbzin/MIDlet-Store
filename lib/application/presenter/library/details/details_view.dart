@@ -17,7 +17,7 @@ class _View extends StatefulWidget {
   State<_View> createState() => _ViewState();
 }
 
-class _ViewState extends State<_View> {
+class _ViewState extends State<_View> with WidgetsBindingObserver, RouteAware {
   late final double padding = MediaQuery.of(context).padding.top;
 
   late final List<Widget> children = <Widget> [
@@ -67,7 +67,43 @@ class _ViewState extends State<_View> {
       description: widget.localizations.scRelatedGamesDescription.replaceFirst("@title", widget.controller.game.fTitle),
       title: widget.localizations.scRelatedGames,
     ),
-  ]; 
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!(state == AppLifecycleState.resumed)) {
+      widget.controller.pauseAudio();
+    }
+
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void didChangeDependencies() {
+    oRouter.subscribe(this, ModalRoute.of(context)! as PageRoute);
+
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    oRouter.unsubscribe(this);
+
+    super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    widget.controller.pauseAudio();
+  }
 
   @override
   Widget build(BuildContext context) {

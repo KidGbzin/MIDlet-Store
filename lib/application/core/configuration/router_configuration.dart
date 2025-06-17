@@ -13,12 +13,15 @@ import '../../presenter/library/update/update_handler.dart';
 import '../entities/game_entity.dart';
 import '../entities/midlet_entity.dart';
 
+final RouteObserver<PageRoute> oRouter = RouteObserver<PageRoute>();
+
 /// The application's routes.
 /// 
 /// When redirecting a view never use the default navigator, always use this router from [GoRouter] navigator.
 /// Check the architecture document for more information.
 final GoRouter router = GoRouter(
   initialLocation: '/',
+  observers: <NavigatorObserver> [oRouter],
   routes: <RouteBase> [
     GoRoute(
       path: '/',
