@@ -116,7 +116,7 @@ class __TopReviewTile extends StatelessWidget {
                   style: TypographyEnumeration.headline(Palettes.elements).style,
                 ),
                 Text(
-                  review.fRelativeDate(review.locale),
+                  review.fRelativeDate,
                   style: TypographyEnumeration.body(Palettes.grey).style,
                 ),
               ],

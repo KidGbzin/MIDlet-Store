@@ -18,6 +18,7 @@ import '../../../../l10n/l10n_localizations.dart';
 import '../../../../logger.dart';
 
 import '../../../core/configuration/global_configuration.dart';
+import '../../../core/configuration/router_configuration.dart';
 
 import '../../../core/entities/game_metadata_entity.dart';
 import '../../../core/entities/game_entity.dart';

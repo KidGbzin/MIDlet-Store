@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../l10n/l10n_localizations.dart';
@@ -62,7 +64,9 @@ class Review {
     );
   }
 
-  String fRelativeDate(String locale) {
+  String get fRelativeDate {
+    final String locale = PlatformDispatcher.instance.locale.toString();
+
     return timeago.format(
       DateTime.parse(updatedAt),
       locale: locale.split("_").first,
