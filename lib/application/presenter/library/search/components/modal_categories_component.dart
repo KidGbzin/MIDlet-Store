@@ -15,12 +15,12 @@ class _CategoriesModal extends StatefulWidget {
 }
 
 class _CategoriesModalState extends State<_CategoriesModal> {
-  late final List<String> initialTags = widget.controller.nSelectedTags.value;
+  late final List<String> initialTags = widget.controller.nSelectedFilters.value.categories;
   late final AppLocalizations localizations = widget.localizations;
 
   @override
   void initState() {
-    widget.controller.fetchFiltersTags(localizations);
+    widget.controller.fetchFilters(localizations);
 
     super.initState();
   }
@@ -33,7 +33,9 @@ class _CategoriesModalState extends State<_CategoriesModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.nSelectedTags.value = initialTags;
+            widget.controller.updateSelectedFilters(
+              categories: initialTags,
+            );
             context.pop();
           },
         ),
@@ -60,9 +62,9 @@ class _CategoriesModalState extends State<_CategoriesModal> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
         child: ValueListenableBuilder(
-          valueListenable: widget.controller.nFiltersTags,
-          builder: (BuildContext context, List<(TagEnumeration, String, int)>? filters, Widget? _) {
-            if (filters == null) {
+          valueListenable: widget.controller.nFilters,
+          builder: (BuildContext context, ({List<(TagEnumeration, String, int)> categories, Map<String, int> publishers, Map<int, int> years}) filters, Widget? _) {
+            if (filters.categories.isEmpty) {
               return Align(
                 alignment: Alignment.center,
                 child: LoadingAnimation(),
@@ -71,7 +73,7 @@ class _CategoriesModalState extends State<_CategoriesModal> {
             return Wrap(
               runSpacing: 7.5,
               spacing: 7.5,
-              children: filters.map(tile).toList(),
+              children: filters.categories.map(tile).toList(),
             );
           }
         ),
@@ -84,12 +86,12 @@ class _CategoriesModalState extends State<_CategoriesModal> {
     final String name = record.$2;
     final int count = record.$3;
 
-    final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.nSelectedTags.value.contains(tag.code));
+    final ValueNotifier<bool> isSelected = ValueNotifier<bool>(widget.controller.nSelectedFilters.value.categories.contains(tag.code));
 
     return InkWell(
       borderRadius: gBorderRadius,
       onTap: () {
-        final List<String> temporary = widget.controller.nSelectedTags.value;
+        final List<String> temporary = widget.controller.nSelectedFilters.value.categories;
 
         if (temporary.contains(tag.code)) {
           temporary.remove(tag.code);
@@ -100,7 +102,9 @@ class _CategoriesModalState extends State<_CategoriesModal> {
           isSelected.value = !isSelected.value;
         }
         
-        widget.controller.nSelectedTags.value = List.from(temporary);
+        widget.controller.updateSelectedFilters(
+          categories: temporary,
+        );
       },
       child: ValueListenableBuilder(
         valueListenable: isSelected,

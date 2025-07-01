@@ -2,72 +2,61 @@ part of '../search/search_handler.dart';
 
 class _Controller {
 
-  // MARK: Constructor ⮟
-
   /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
   final BucketRepository rBucket;
 
-  /// Manages local database operations, inclshow Views, searching game details, ratings, and user preferences.
-  final HiveRepository rHive;
+  /// Manages local storage operations, including games, favorites, recent games, and cached requests.
+  final SembastRepository rSembast;
 
   /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
   final SupabaseRepository rSupabase;
 
   /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisementss.
   final AdMobService sAdMob;
-  
+
   _Controller({
     required this.rBucket,
-    required this.rHive,
+    required this.rSembast,
     required this.rSupabase,
     required this.sAdMob,
   });
+
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Initialization ⮟
 
   /// The complete list of all games available, loaded from the database.
   ///
   /// This list contains all the games stored in the database, retrieved during the initialization of the controller.
   /// It is used as the base data for the games list.
   /// The list is immutable (`List.unmodifiable`), meaning it cannot be modified directly.
-  /// Any filtering or updates to the list should be done through the `nCurrentGames` notifier.
+  /// Any filtering or updates to the list should be done through the [nGames] notifier.
   late final List<Game> _allGames;
 
   /// Initializes the handler’s core services and state notifiers.
   ///
   /// This method must be called from the `initState` of the handler widget.
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
-  Future<void> initialize({
-    required String? publisher,
-  }) async {
+  Future<void> initialize() async {
     try {
       sAdMob.clear(Views.search);
-
-      nCurrentGames = ValueNotifier((<Game> [], true));
-      nFiltersPublishers = ValueNotifier<Map<String,int>?>(null);
-      nFiltersReleaseYear = ValueNotifier<Map<int, int>?>(null);
-      nFiltersTags = ValueNotifier<List<(TagEnumeration, String, int)>?>(null);
-      nSelectedPublisher = ValueNotifier<String?>(publisher);
-      nSelectedReleaseYear = ValueNotifier<int?>(null);
-      nSelectedTags = ValueNotifier(<String> []);
-
-      final List<Game> games = await execute(() async {
-        _allGames = List.unmodifiable(rHive.boxGames.all());
-
-        if (nSelectedPublisher.value == null) {
-          return _allGames;
-        }
-        else {
-          return _allGames.where((game) => game.publisher == nSelectedPublisher.value).toList();
-        }
+      
+      await execute(() async {
+        _allGames = List.unmodifiable(await rSembast.boxGames.all());
+        nGames.value = _allGames;
       });
 
-      nCurrentGames.value = (games, false);
-      nSuggestions.value = rHive.boxRecentGames.all();
+      nProgress.value = (Progresses.isFinished, null);
     }
     catch (error, stackTrace) {
       Logger.error(
         "$error",
         stackTrace: stackTrace,
       );
+
+      nProgress.value = (Progresses.hasError, error);
     }
   }
 
@@ -75,56 +64,349 @@ class _Controller {
   ///
   /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
   void dispose() {
-    cTextField.dispose();
-
-    nCurrentGames.dispose();
-    nFiltersPublishers.dispose();
-    nFiltersReleaseYear.dispose();
-    nFiltersTags.dispose();
-    nSelectedPublisher.dispose();
-    nSelectedReleaseYear.dispose();
-    nSelectedTags.dispose();
+    nFilters.dispose();
+    nGames.dispose();
+    nProgress.dispose();
+    nSelectedFilters.dispose();
     nSuggestions.dispose();
-
-    sAdMob.clear(Views.search);
   }
 
+  // MARK: -------------------------
+  // 
+  // 
+  // 
   // MARK: Notifiers ⮟
 
-  /// Notifier for the current list of games and its loading state.
+  /// A [ValueNotifier] that holds the current list of games based on the active filters or search.
+  /// 
+  /// This list is updated dynamically when filters are applied or the game data is fetched from the server.
+  /// It serves as the main data source for game listings in the UI.
+  final ValueNotifier<List<Game>> nGames = ValueNotifier(<Game> []);
+
+  /// A [ValueNotifier] that holds all available filters for the game list.
+  /// 
+  /// This includes the list of categories (with their enum, name, and count), publishers (with count), and years (with count).
+  /// It is updated when fetching metadata and used to populate filtering options in the UI.
+  final ValueNotifier<({
+    List<(TagEnumeration, String, int)> categories,
+    Map<String, int> publishers,
+    Map<int, int> years,
+  })> nFilters = ValueNotifier((
+    categories: <(TagEnumeration, String, int)> [],
+    publishers: <String, int> {},
+    years: <int, int> {},
+  ));
+
+  /// A [ValueNotifier] that holds the current loading state and any error encountered during operations.
+  /// 
+  /// It is used to reflect loading status (e.g., isLoading, isLoaded, isError) and provide error feedback to the user interface.
+  final ValueNotifier<(Progresses progress, Object? error)> nProgress = ValueNotifier((Progresses.isLoading, null));
+
+  /// A [ValueNotifier] that holds the currently selected filters for the game list.
+  /// 
+  /// This includes the selected category names, publisher, and year. It is used to filter the list of games shown to the user.
+  final ValueNotifier<({
+    List<String> categories,
+    String? publisher,
+    int? year,
+  })> nSelectedFilters = ValueNotifier((
+    categories: <String> [],
+    publisher: null,
+    year: null,
+  ));
+
+  /// A [ValueNotifier] that holds the list of recently viewed or recommended games.
   ///
-  /// This notifier stores the current list of games and its loading state.
-  /// It is used to update the UI when the list of games changes or when the loading state changes.
-  late final ValueNotifier<(List<Game>, bool)> nCurrentGames;
+  /// This notifier is used to display the most recent games that the user has interacted with, or suggestions based on user activity.
+  /// It can be used to show a "recently viewed" section when searching a game.
+  final ValueNotifier<List<Game>> nSuggestions = ValueNotifier(<Game> []);
 
-  /// Holds a notifier with a map of unique publishers and their counts.
-  late final ValueNotifier<Map<String, int>?> nFiltersPublishers;
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Advertisements ⮟
 
-  /// Holds a notifier with a map of unique release years and their counts.
-  late final ValueNotifier<Map<int, int>?> nFiltersReleaseYear;
+  BannerAd? getAdvertisementByIndex(int index) => sAdMob.getAdvertisementByIndex(index, Views.search);
 
-  /// Holds a notifier with a list of unique tags and their counts.
-  late final ValueNotifier<List<(TagEnumeration, String, int)>?> nFiltersTags;
+  void preloadNearbyAdvertisements(int index) => sAdMob.preloadNearbyAdvertisements(
+    iCurrent: index,
+    size: AdSize.mediumRectangle,
+    view: Views.search,
+  );
 
-  /// The current publisher filter that is actively applied.
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Filters ⮟
+
+  /// Extracts and prepares the available filter options (tags, publishers, years) from the local game collection.
   ///
-  /// This notifier holds the selected publisher filter.
-  /// It is updated when a user selects a specific publisher to filter the list of games.
-  /// If no publisher filter is applied, its value will be `null`.
-  late final ValueNotifier<String?> nSelectedPublisher;
-
-  /// The current release year filter that is actively applied.
+  /// This method analyzes the [collection] of games and extracts three categories of filters:
+  ///   1. **Tags**: A list of unique [TagEnumeration]s, each with its localized name and occurrence count.
+  ///   2. **Publishers**: A map of publisher names and how many games each published.
+  ///   3. **Years**: A map of release years and the number of games released in each year.
   ///
-  /// This notiifier holds the selected release year filter.
-  /// It is updated when a user selects a specific year to filter the list of games.
-  /// If no release year filter is applied, its value will be `null`.
-  late final ValueNotifier<int?> nSelectedReleaseYear;
-
-  /// The current tags applied to the filter.
+  /// All data is aggregated in a single pass through the game list for performance.
   ///
-  /// This notifier holds the list of active tags that the user has selected to filter the games by.
-  /// Each item in the list represents a tag that is currently active in the filter.
-  late final ValueNotifier<List<String>> nSelectedTags;
+  /// This is used to dynamically populate filter options in the UI.
+  void fetchFilters(AppLocalizations l10n) {
+    if (nFilters.value.categories.isNotEmpty || nFilters.value.publishers.isNotEmpty || nFilters.value.years.isNotEmpty) return;
+
+    final List<(TagEnumeration, String, int)> categories = <(TagEnumeration, String, int)> [];
+    final Map<String, int> publishers = <String, int> {};
+    final Map<int, int> years = <int, int> {};
+    
+    final Map<String, int> table = <String, int> {};
+    
+    // Iterate through the collection, counting the occurrences of each filter.
+    // This loop was refactored to reduce the number of iterations that was used to retrieve the filters.
+    for (int index = 0; index < _allGames.length; index ++) {
+      final String publisher = _allGames[index].publisher;
+      final List<String> tags = _allGames[index].tags;
+      final int year = _allGames[index].release;
+    
+      // Count the occurrences of games by year.
+      if (!years.containsKey(year)) {
+        years[year] = 1;
+      }
+      else {
+        years[year] = years[year]! + 1;
+      }
+    
+      // Count the occurrences of games by publisher.
+      if (!publishers.containsKey(publisher)) {
+        publishers[publisher] = 1;
+      }
+      else {
+        publishers[publisher] = publishers[publisher]! + 1;
+      }
+    
+      // Count the occurrences of games by tag.
+      for (int iTag = 0; iTag < tags.length; iTag ++) {
+        final String tag = tags[iTag];
+        if (!table.containsKey(tag)) {
+          table[tag] = 1;
+        }
+        else {
+          table[tag] = table[tag]! + 1;
+        }
+      }
+    }
+    
+    categories.addAll(
+      table.entries.map((entry) {
+        final TagEnumeration tag = TagEnumeration.fromCode(entry.key);
+        return (tag, tag.fromLocale(l10n), entry.value);
+      }),
+    );
+    
+    // Sort the filters alphabetically, making easier to the user to find the desired filter.
+    categories.sort((x, y) => x.$2.compareTo(y.$2));
+    final List<MapEntry<int, int>> sortedYears = years.entries.toList()..sort((x, y) => x.key.compareTo(y.key));
+    final List<MapEntry<String, int>> sortedPublishers = publishers.entries.toList()..sort((x, y) => y.value.compareTo(x.value));
+    
+    nFilters.value = (
+      categories: categories,
+      publishers: Map.fromEntries(sortedPublishers),
+      years: Map.fromEntries(sortedYears),
+    );
+  }
+
+  /// Applies the currently active filters to the list of games.
+  ///
+  /// This method filters the [_allGames] list based on the active publisher and tag filters, and updates the [nGames] to reflect the filtered list.
+  /// If no filters are applied, the list is reset to its original, unfiltered state.
+  Future<void> applyFilters(BuildContext context, AppLocalizations localizations) async {
+    nProgress.value = (Progresses.isLoading, null);
+
+    final List<Game> collection = await execute(() async {
+      final ({List<String> categories, String? publisher, int? year}) record = nSelectedFilters.value;
+
+      return _allGames.where((game) {
+        final bool matchesPublisher = record.publisher == null || game.publisher == record.publisher;
+        final bool matchesYear = record.year == null || game.release == record.year;
+        final bool matchesTags = record.categories.isEmpty || record.categories.every((tag) => game.tags.contains(tag));
+
+        return matchesPublisher && matchesTags && matchesYear;
+      }).toList();
+    });
+
+    nGames.value = collection;
+    nProgress.value = (Progresses.isFinished, null);
+  }
+
+  /// This method resets the state of the game list and its filters, returning the list to its unfiltered state.
+  Future<void> clearFilters() async {
+    nProgress.value = (Progresses.isLoading, null);
+
+    final List<Game> collection = await execute(() async {
+      nSelectedFilters.value = (
+        categories: <String> [],
+        publisher: null,
+        year: null,
+      );
+      
+      return _allGames;
+    });
+
+    nGames.value = collection;
+    nProgress.value = (Progresses.isFinished, null);
+  }
+
+  void updateSelectedFilters({
+    List<String>? categories,
+    String? publisher,
+    int? year,
+  }) {
+    final ({List<String> categories, String? publisher, int? year}) record = nSelectedFilters.value;
+
+    nSelectedFilters.value = (
+      categories: categories ?? record.categories,
+      publisher: publisher ?? record.publisher,
+      year: year ?? record.year,
+    );
+  }
+
+  // MARK: -------------------------
+  // 
+  //  
+  // 
+  // MARK: Search ⮟
+
+  /// The text editing controller for managing user input text.
+  /// 
+  /// This controller is used to manage the input from text fields in the UI, allowing the user to type search queries or other textual data.
+  /// It provides methods for retrieving, modifying, and clearing the input text.
+  final TextEditingController cTextField = TextEditingController();
+
+  
+
+  /// The global key used to manage the overlay in the widget tree.
+  /// 
+  /// This key controls the overlay, which is used to display game suggestions when the user taps on the text form.
+  late GlobalKey overlayKey;
+
+  /// Filters the games list based on a search query.
+  /// 
+  /// The search is performed by checking if the query appears in any of the following fields:
+  /// - If the game's title contains [query].
+  /// - If the game's year of release is equal to [query].
+  /// - If the game's vendor contains [query].
+  /// - If any tag matches the [query].
+  Future<void> applySearch(String query) async {
+    nProgress.value = (Progresses.isLoading, null);
+
+    final List<Game> games = await execute(() async {
+      query = query.toLowerCase();
+  
+      return _allGames.where((element) {
+        final String title = element.title.toLowerCase();
+        final String release = element.release.toString();
+        final String vendor = element.publisher.toLowerCase();
+
+        return title.contains(query) ||
+               release == query ||
+               vendor.contains(query) ||
+               element.tags.any((tag) => tag.toLowerCase() == query);
+      }).toList();
+    });
+
+    nGames.value = (games);
+    nProgress.value = (Progresses.isFinished, null);
+  }
+
+  // MARK: -------------------------
+  // 
+  //  
+  // 
+  // MARK: Database ⮟
+
+  /// Retrieves and caches the game data, including the average rating and download count, from the database.
+  /// 
+  /// This method attempts to fetch the game’s average rating and download count.
+  /// If the data is not available in the cache, it queries the database to retrieve the values.
+  /// 
+  /// In case of any errors during the process, default values are assigned:
+  /// - The average rating is set to `0.0` if not found or an error occurs.
+  /// - The download count is set to `0` if not found or an error occurs.
+  /// 
+  /// After successfully retrieving or defaulting the values, the data is cached for future use.
+  ///
+  /// Returns a [Map<String, dynamic>] containing the following values:
+  /// - `Average-Rating`: The average rating of the game.
+  /// - `Downloads`: The total number of downloads for the game.
+  Future<Map<String, dynamic>> getGameMetadata(Game game) async {
+    final GameMetadata data = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
+      identifier: game.identifier,
+    );
+
+    try {
+      data.averageRating ??= await rSupabase.getAverageRatingForGame(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      data.averageRating = 0.0;
+    }
+
+    try {
+      data.downloads ??= await rSupabase.getOrInsertDownloadsForGame(game);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      data.downloads = 0;
+    }
+
+    rSembast.boxCachedRequests.put(data);
+
+    return <String, dynamic> {
+      "Average-Rating": data.averageRating,
+      "Downloads": data.downloads,
+    };
+  }
+
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Storage ⮟
+
+  /// Retrieves a [Future] that resolves to a thumbnail [File] for a given game title.
+  ///
+  /// This method fetches the cover image file from the bucket storage using the provided [title].
+  Future<File?> getThumbnail(String title) {
+    try {
+      return rBucket.cover(title);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      return Future.value(null);
+    }
+  }
+
+  /// Retrieves a [Future] that resolves to a publisher logo [File] for a given game title.
+  ///
+  /// This method fetches the publisher logo image file from the bucket storage using the provided [title].
+  Future<File> getPublisherLogo(String title) => rBucket.publisher(title);
+
+  // MARK: -------------------------
+  // 
+  //  
+  // 
+  // MARK: Helpers ⮟
 
   /// Waits for the specified [operation] to complete and then waits for the minimum time minus the elapsed time.
   ///
@@ -154,300 +436,4 @@ class _Controller {
 
     return result;
   }
-
-  // MARK: Advertisements ⮟
-
-  BannerAd? getAdvertisementByIndex(int index) => sAdMob.getAdvertisementByIndex(index, Views.search);
-
-  void preloadNearbyAdvertisements(int index) => sAdMob.preloadNearbyAdvertisements(
-    iCurrent: index,
-    size: AdSize.mediumRectangle,
-    view: Views.search,
-  );
-
-  // FILTERS RELATED 🏷️: ======================================================================================================================================================== //
-
-  /// Retrieves a list of all unique tags from the local game collection, along with their occurrence count.
-  ///
-  /// This function iterates through the local game collection and retrieves a list of all unique tags.
-  /// Each tag is then paired with its occurrence count, which is the number of times the tag appears in the collection.
-  /// The list is sorted in descending order by occurrence count.
-  ///
-  /// Set the [nFiltersTags] of tuples, where each tuple contains:
-  ///   1. A [TagEnumeration] representing the tag.
-  ///   2. A [String] containing the localized name of the tag.
-  ///   3. An [int] containing the occurrence count of the tag.
-  ///
-  /// This method is used to populate a list of tags for the user to select from.
-  void fetchFiltersTags(AppLocalizations localizations) {
-    if (nFiltersTags.value != null) return;
-
-    final List<(TagEnumeration, String, int)> categories = <(TagEnumeration, String, int)> [];
-    final Map<String, int> table = <String, int>{};
-  
-    for (int index = 0; index < rHive.boxGames.length; index++) {
-      final List<String> tags = rHive.boxGames.fromIndex(index).tags;
-  
-      for (int tagIndex = 0; tagIndex < tags.length; tagIndex++) {
-        final String tag = tags[tagIndex];
-  
-        if (!table.containsKey(tag)) {
-          table[tag] = 1;
-        }
-        else {
-          table[tag] = table[tag]! + 1;
-        }
-      }
-    }
-  
-    categories.addAll(
-      table.entries.map((entry) {
-        final TagEnumeration tag = TagEnumeration.fromCode(entry.key);
-        return (tag, tag.fromLocale(localizations), entry.value);
-      }),
-    );
-  
-    categories.sort((x, y) => x.$2.compareTo(y.$2));
-  
-    nFiltersTags.value = categories;
-  }
-
-  /// Retrieves a list of all unique game publishers from the local game collection.
-  ///
-  /// This function iterates through the local game collection and retrieves a list of all unique publishers.
-  /// The list is then set into the [nFiltersPublishers] notifier, which can be used to populate a list of publishers for the user to select from.
-  ///
-  /// The publishers are sorted in descending order by occurrence count.
-  void fetchFiltersPublishers() {
-    if (nFiltersPublishers.value != null) return;
-
-    final Map<String, int> publishers = <String, int> {};
-
-    for (int index = 0; index < rHive.boxGames.length; index ++) {
-      final String publisher = rHive.boxGames.fromIndex(index).publisher;
-
-      if (!publishers.containsKey(publisher)) {
-        publishers[publisher] = 1;
-      }
-      else {
-        publishers[publisher] = publishers[publisher]! + 1;
-      }
-    }
-  
-    final List<MapEntry<String, int>> publishersSorted = publishers.entries.toList();
-
-    publishersSorted.sort((MapEntry<String, int> x, MapEntry<String, int> y) => y.value.compareTo(x.value));
-
-    nFiltersPublishers.value = Map.fromEntries(publishersSorted);
-  }
-
-  /// Retrieves a list of all unique release years from the local game collection.
-  ///
-  /// This function iterates through the local game collection and retrieves a list of all unique release years.
-  /// The list is then set into the [nFiltersReleaseYear], which can be used to populate a list of release years for the user to select from.
-  void fetchFiltersReleaseYear() {
-    if (nFiltersReleaseYear.value != null) return;
-
-    final Map<int, int> years = <int, int> {};
-
-    for (int index = 0; index < rHive.boxGames.length; index ++) {
-      final int year = rHive.boxGames.fromIndex(index).release;
-
-      if (!years.containsKey(year)) {
-        years[year] = 1;
-      }
-      else {
-        years[year] = years[year]! + 1;
-      }
-    }
-
-    final List<MapEntry<int, int>> yearsSorted = years.entries.toList()..sort((x, y) => x.key.compareTo(y.key));
-
-    nFiltersReleaseYear.value = Map.fromEntries(yearsSorted);
-  }
-
-  /// Applies the currently active filters to the list of games.
-  ///
-  /// This method filters the [_allGames] list based on the active publisher and tag filters, and updates the [gameListState] to reflect the filtered list.
-  /// It is typically used after the user finishes selecting filters in the [ModalWidget] widget.
-  /// If no filters are applied, the list is reset to its original, unfiltered state.
-  Future<void> applyFilters(BuildContext context, AppLocalizations localizations) async {
-    nCurrentGames.value = (<Game> [], true);
-
-    final List<Game> games = await execute(() async {
-      cTextField.clear();
-
-      return _allGames.where((game) {
-        final bool matchesPublisher = nSelectedPublisher.value == null || game.publisher == nSelectedPublisher.value;
-        final bool matchesReleaseYear = nSelectedReleaseYear.value == null || game.release == nSelectedReleaseYear.value;
-        final bool matchesTags = nSelectedTags.value.isEmpty || nSelectedTags.value.every((tag) => game.tags.contains(tag));
-
-        return matchesPublisher && matchesTags && matchesReleaseYear;
-      }).toList();
-    });
-
-    final String message;
-
-    if (nSelectedPublisher.value == null && nSelectedTags.value.isEmpty && nSelectedReleaseYear.value == null) {
-      message = localizations.messageFiltersEmpty.replaceFirst('\$1', '${rHive.boxGames.length}');
-    }
-
-    else {
-      message = localizations.messageFiltersApplied.replaceAllMapped(RegExp(r'\$1|\$2'), (match) {
-        return <String, String> {
-          "\$1": games.length.toString(),
-          "\$2": rHive.boxGames.length.toString(),
-        } [match[0]]!;
-      });
-    }
-
-    nCurrentGames.value = (games, false);
-
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(MessengerExtension(
-        message: message,
-        icon: HugeIcons.strokeRoundedFilter,
-      ));
-    }
-  }
-
-  /// Clears all active filters applied to the games list.
-  ///
-  /// This method resets the state of the game list and its filters, returning the list to its unfiltered state.
-  Future<void> clearFilters(BuildContext context, AppLocalizations localizations) async {
-    nCurrentGames.value = (<Game> [], true);
-
-    final List<Game> games = await execute(() async {
-      cTextField.clear();
-
-      nSelectedReleaseYear.value = null;
-      nSelectedPublisher.value = null;
-      nSelectedTags.value.clear();
-      
-      return _allGames;
-    });
-
-    nCurrentGames.value = (games, false);
-  }
-
-  // SEARCH RELATED 🔍: ========================================================================================================================================================= //
-
-  /// The text editing controller for managing user input text.
-  /// 
-  /// This controller is used to manage the input from text fields in the UI, allowing the user to type search queries or other textual data.
-  /// It provides methods for retrieving, modifying, and clearing the input text.
-  final TextEditingController cTextField = TextEditingController();
-
-  /// A [ValueNotifier] that holds the list of recently viewed or recommended games.
-  ///
-  /// This notifier is used to display the most recent games that the user has interacted with, or suggestions based on user activity.
-  /// It can be used to show a "recently viewed" section when searching a game.
-  final ValueNotifier<List<Game>> nSuggestions = ValueNotifier(<Game> []);
-
-  /// The global key used to manage the overlay in the widget tree.
-  /// 
-  /// This key controls the overlay, which is used to display game suggestions when the user taps on the text form.
-  late GlobalKey overlayKey;
-
-  /// Filters the games list based on a search query.
-  /// 
-  /// The search is performed by checking if the query appears in any of the following fields:
-  /// - If the game's title contains [query].
-  /// - If the game's year of release is equal to [query].
-  /// - If the game's vendor contains [query].
-  /// - If any tag matches the [query].
-  Future<void> applySearch(String query) async {
-    nCurrentGames.value = (<Game> [], true);
-
-    final List<Game> games = await execute(() async {
-      query = query.toLowerCase();
-  
-      return _allGames.where((element) {
-        final String title = element.title.toLowerCase();
-        final String release = element.release.toString();
-        final String vendor = element.publisher.toLowerCase();
-
-        return title.contains(query) ||
-               release == query ||
-               vendor.contains(query) ||
-               element.tags.any((tag) => tag.toLowerCase() == query);
-      }).toList();
-    });
-
-    nCurrentGames.value = (games, false);
-  }
-
-  // DATABASE RELATED 🗃️: ======================================================================================================================================================= //
-
-  /// Retrieves and caches the game data, including the average rating and download count, from the database.
-  /// 
-  /// This method attempts to fetch the game’s average rating and download count.
-  /// If the data is not available in the cache, it queries the database to retrieve the values.
-  /// 
-  /// In case of any errors during the process, default values are assigned:
-  /// - The average rating is set to `0.0` if not found or an error occurs.
-  /// - The download count is set to `0` if not found or an error occurs.
-  /// 
-  /// After successfully retrieving or defaulting the values, the data is cached for future use.
-  ///
-  /// Returns a [Map<String, dynamic>] containing the following values:
-  /// - `Average-Rating`: The average rating of the game.
-  /// - `Downloads`: The total number of downloads for the game.
-  Future<Map<String, dynamic>> getGameData(Game game) async {
-    final GameMetadata data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
-      identifier: game.identifier,
-    );
-
-    try {
-      data.averageRating ??= await rSupabase.getAverageRatingForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      data.averageRating = 0.0;
-    }
-
-    try {
-      data.downloads ??= await rSupabase.getOrInsertDownloadsForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      data.downloads = 0;
-    }
-
-    rHive.boxCachedRequests.put(data);
-
-    return <String, dynamic> {
-      "Average-Rating": data.averageRating,
-      "Downloads": data.downloads,
-    };
-  }
-  
-  // BUCKET RELATED 📦: ================================================================================================================================================================= //
-
-  /// Retrieves a [Future] that resolves to a thumbnail [File] for a given game title.
-  ///
-  /// This method fetches the cover image file from the bucket storage using the provided [title].
-  Future<File?> getCover(String title) {
-    try {
-      return rBucket.cover(title);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      return Future.value(null);
-    }
-  }
-
-  Future<File> getPublisherLogo(String title) => rBucket.publisher(title);
 }

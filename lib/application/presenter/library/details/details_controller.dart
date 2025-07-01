@@ -17,7 +17,7 @@ class _Controller {
   final SupabaseRepository rSupabase;
 
   /// Manages local storage operations, including games, favorites, recent games, and cached requests.
-  final HiveRepository rHive;
+  final SembastRepository rSembast;
 
   /// Provides access to native Android activity functions, such as opening URLs or interacting with platform features.
   final ActivityService sActivity;
@@ -29,7 +29,7 @@ class _Controller {
     required this.cConfetti,
     required this.game,
     required this.rBucket,
-    required this.rHive,
+    required this.rSembast,
     required this.rSupabase,
     required this.sActivity,
     required this.sAdMob,
@@ -55,8 +55,7 @@ class _Controller {
       
       playAudio();
       _fetchGameMetadata();
-      nFavorite = ValueNotifier(rHive.boxFavorites.contains(game));
-      rHive.boxRecentGames.put(game);
+      await rSembast.boxRecentGames.put(game.identifier, game.fTitle);
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -72,7 +71,6 @@ class _Controller {
   void dispose() {
     cConfetti.dispose();
     
-    nFavorite.dispose();
     nGameMetadata.dispose();
     nThumbnail.dispose();
 
@@ -87,7 +85,6 @@ class _Controller {
   // MARK: Notifiers ⮟
 
   late final ValueNotifier<Progresses> nProgress;
-  late final ValueNotifier<bool> nFavorite;
   late final ValueNotifier<GameMetadata?> nGameMetadata;
   late final ValueNotifier<File?> nThumbnail;
 
@@ -104,7 +101,7 @@ class _Controller {
   /// 
   /// This function is initialized within the `initialize` function.
   Future<void> _fetchGameMetadata() async {
-    final GameMetadata metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
+    final GameMetadata metadata = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
       identifier: game.identifier,
     );
 
@@ -162,7 +159,8 @@ class _Controller {
       };
     }
   
-    rHive.boxCachedRequests.put(metadata);
+    await rSembast.boxCachedRequests.put(metadata);
+
     nGameMetadata.value = metadata;
   }
 
@@ -228,7 +226,8 @@ class _Controller {
       };
     }
   
-    rHive.boxCachedRequests.put(metadata);
+    await rSembast.boxCachedRequests.put(metadata);
+
     nGameMetadata.value = null; // Force the reactive update.
     nGameMetadata.value = metadata;
 
@@ -298,35 +297,6 @@ class _Controller {
   /// The [_Cover] component listens to the [nThumbnail] to update the UI accordingly.
   Future<void> fetchThumbnail() async => nThumbnail.value = await rBucket.cover(game.title);
 
-  /// Toggles the bookmark status of the current game and updates the UI.
-  ///
-  /// This function switches the game's status between favorite and non-favorite.
-  /// If the game is currently marked as a favorite, it will be removed from the favorites cache.
-  /// If it is not marked as a favorite, it will be added to the favorites cache.
-  /// Additionally, a message is displayed to the user indicating the change in the game's status.
-  void toggleBookmarkStatus(BuildContext context, AppLocalizations localizations) {
-    late final String message;
-    final String title = game.title.replaceFirst(' -', ':');
-
-    if (nFavorite.value) {
-      rHive.boxFavorites.remove(game);
-      message = localizations.messageFavoritesRemoved.replaceFirst('\$1', title);
-    }
-    else {
-      rHive.boxFavorites.put(game);
-      message = localizations.messageFavoritesAdded.replaceFirst('\$1', title);
-    }
-
-    nFavorite.value = !nFavorite.value;
-
-    final MessengerExtension messenger = MessengerExtension(
-      message: message,
-      icon: HugeIcons.strokeRoundedFavourite,
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(messenger);
-  }
-
   /// A lazily initialized list of recommended games from the same publisher.
   ///
   /// This list is used to store games recommended based on the publisher of the current game.
@@ -346,7 +316,7 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topPublisherGames.isEmpty) {
-      _topPublisherGames = rHive.boxGames.fromPublisher(game.publisher);
+      _topPublisherGames = await rSembast.boxGames.fromPublisher(game.publisher);
       _topPublisherGames.shuffle();
       _topPublisherGames = _topPublisherGames.take(8).toList();
     }
@@ -375,7 +345,7 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topRelatedGames.isEmpty) {
-      _topRelatedGames = await rHive.boxGames.topRelatedGames(game);
+      _topRelatedGames = await rSembast.boxGames.topRelatedGames(game);
     }
 
     for (Game element in _topRelatedGames) {
@@ -398,7 +368,7 @@ class _Controller {
   /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
   /// The fetched or defaulted value is then stored in the cache for future use.
   Future<double> _getAverageRating(Game game) async {
-    final GameMetadata data = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
+    final GameMetadata data = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
       identifier: game.identifier,
     );
     try {
@@ -412,7 +382,8 @@ class _Controller {
 
       data.averageRating = 0.0;
     }
-    rHive.boxCachedRequests.put(data);
+    await rSembast.boxCachedRequests.put(data);
+
     return data.averageRating!;
   }
 }

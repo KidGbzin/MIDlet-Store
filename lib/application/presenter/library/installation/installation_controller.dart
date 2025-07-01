@@ -14,7 +14,7 @@ class _Controller {
   final BucketRepository rBucket;
 
   /// Manages local storage operations, including games, favorites, recent games, and cached requests.
-  final HiveRepository rHive;
+  final SembastRepository rSembast;
 
   /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
   final SupabaseRepository rSupabase;
@@ -29,7 +29,7 @@ class _Controller {
     required this.game,
     required this.midlet,
     required this.rBucket,
-    required this.rHive,
+    required this.rSembast,
     required this.rSupabase,
     required this.sAdMob,
     required this.sActivity,
@@ -92,7 +92,7 @@ class _Controller {
   ///
   /// Increments downloads remotely and locally, saves metadata, and opens the MIDlet in the selected emulator.
   Future<void> tryDownloadAndInstallMIDlet(BuildContext context) async {
-    final GameMetadata metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
+    final GameMetadata metadata = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
       identifier: game.identifier,
     );
     final File file = await rBucket.midlet(midlet);
@@ -101,8 +101,8 @@ class _Controller {
       
     metadata.downloads ??= 0;
     metadata.downloads = metadata.downloads! + 1;
-    rHive.boxCachedRequests.put(metadata);
-
+    
+    await rSembast.boxCachedRequests.put(metadata);
     await sActivity.emulator(file, nEmulator.value);
 
     if (context.mounted) context.pop();

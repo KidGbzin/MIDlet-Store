@@ -2,8 +2,6 @@ part of '../reviews/reviews_handler.dart';
 
 class _Controller {
 
-  // MARK: Constructor ⮟
-
   /// Controls and triggers confetti animations for visual feedback or celebration effects.
   final ConfettiController cConfetti;
 
@@ -11,7 +9,7 @@ class _Controller {
   final Game game;
 
   /// Manages local storage operations, including games, favorites, recent games, and cached requests.
-  final HiveRepository rHive;
+  final SembastRepository rSembast;
 
   /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
   final SupabaseRepository rSupabase;
@@ -22,10 +20,16 @@ class _Controller {
   _Controller({
     required this.cConfetti,
     required this.game,
-    required this.rHive,
+    required this.rSembast,
     required this.rSupabase,
     required this.sAdMob,
   });
+
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Initialization ⮟
 
   /// Initializes the handler’s core services and state notifiers.
   ///
@@ -61,6 +65,10 @@ class _Controller {
     sAdMob.clear(Views.reviews);
   }
 
+  // MARK: -------------------------
+  // 
+  // 
+  // 
   // MARK: Notifiers ⮟
 
   /// Notifies listeners about changes in the current progress state of the handler.
@@ -69,6 +77,10 @@ class _Controller {
   /// Holds and notifies listeners about the current list of user reviews.
   late final ValueNotifier<List<Review>> nReviews;
 
+  // MARK: -------------------------
+  // 
+  // 
+  // 
   // MARK: Advertisements ⮟
 
   BannerAd? getAdvertisementByIndex(int index) => sAdMob.getAdvertisementByIndex(index, Views.reviews);
@@ -79,7 +91,11 @@ class _Controller {
     view: Views.reviews,
   );
 
-  // MARK: Vote ⮟
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Votes ⮟
 
   /// Fetches the score (e.g., upvotes and downvotes) for a given review.
   Future<(int, int)> getReviewScore(Review review) async => rSupabase.getScoreForReview(review);
@@ -87,14 +103,18 @@ class _Controller {
   /// Submits or updates a vote for a given review.
   Future<(int, int)> submitVote(Review review, int vote) async => rSupabase.upsertVoteForReview(review, vote);
 
-  // MARK: User Review ⮟
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Reviews ⮟
 
   /// Retrieves the user's review for the current game from cache or remote source.
   ///
   /// If the cached review is missing, fetches it from the remote service and caches it.
   /// On error, logs the issue and returns a default empty review.
   Future<Review> getUserReview() async {
-    final GameMetadata metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
+    final GameMetadata metadata = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
       identifier: game.identifier,
     );
 
@@ -110,7 +130,7 @@ class _Controller {
       metadata.myReview = Review.noReview();
     }
 
-    rHive.boxCachedRequests.put(metadata);
+    await rSembast.boxCachedRequests.put(metadata);
 
     return metadata.myReview!;
   }
@@ -119,7 +139,7 @@ class _Controller {
   ///
   /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
   Future<void> submitRating(BuildContext context, int rating, String body) async {
-    final GameMetadata metadata = rHive.boxCachedRequests.get('${game.identifier}') ?? GameMetadata(
+    final GameMetadata metadata = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
       identifier: game.identifier,
     );
 
@@ -179,7 +199,7 @@ class _Controller {
       };
     }
   
-    rHive.boxCachedRequests.put(metadata);
+    await rSembast.boxCachedRequests.put(metadata);
     updateLocalReview(metadata.myReview!);
 
     if (context.mounted) context.pop();

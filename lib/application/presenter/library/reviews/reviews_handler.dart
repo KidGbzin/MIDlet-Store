@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:midlet_store/application/core/enumerations/views_enumerations.dart';
+import 'package:midlet_store/application/repositories/sembast_repository.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
@@ -21,7 +22,6 @@ import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
-import '../../../repositories/hive_repository.dart';
 import '../../../repositories/supabase_repository.dart';
 
 import '../../../services/admob_service.dart';
@@ -60,7 +60,7 @@ class _ReviewsState extends State<Reviews> {
   late final AppLocalizations localizations;
 
   late final ConfettiController cConfetti;
-  late final HiveRepository rHive;
+  late final SembastRepository rSembast;
   late final SupabaseRepository rSupabase;
   late final AdMobService sAdMob;
 
@@ -76,7 +76,7 @@ class _ReviewsState extends State<Reviews> {
       ),
     );
 
-    rHive = Provider.of<HiveRepository>(
+    rSembast = Provider.of<SembastRepository>(
       context,
       listen: false,
     );
@@ -92,7 +92,7 @@ class _ReviewsState extends State<Reviews> {
     controller = _Controller(
       cConfetti: cConfetti,
       game: widget.game,
-      rHive: rHive,
+      rSembast: rSembast,
       rSupabase: rSupabase,
       sAdMob: sAdMob,
     );

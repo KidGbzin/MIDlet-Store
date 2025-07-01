@@ -1,9 +1,6 @@
 part of '../login/login_handler.dart';
 
 class _Controller {
-
-  /// Manages local storage operations, including games, favorites, recent games, and cached requests.
-  final HiveRepository rHive;
   
   /// Manages Firebase Cloud Messaging operations, including notification handling and token management.
   final FirebaseMessagingService sFirebaseMessaging;
@@ -15,7 +12,6 @@ class _Controller {
   final SupabaseService sSupabase;
 
   _Controller({
-    required this.rHive,
     required this.sFirebaseMessaging,
     required this.sGoogleOAuth,
     required this.sSupabase,
@@ -126,10 +122,12 @@ class _Controller {
       final String? title = message.data["Game-Title"];
 
       if (title != null) {
-        context.gtDetails(
-          game: rHive.boxGames.fromTitle(title),
-          replace: true,
-        );
+        // TODO: Change the notification type to ID to show the game details.
+        
+        // context.gtDetails(
+        //   game: rHive.boxGames.fromTitle(title),
+        //   replace: true,
+        // );
 
         return;
       }

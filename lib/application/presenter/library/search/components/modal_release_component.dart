@@ -15,12 +15,12 @@ class _ReleaseModal extends StatefulWidget {
 }
 
 class _ReleaseModalState extends State<_ReleaseModal> {
-  late final int? initialPublisher = widget.controller.nSelectedReleaseYear.value;
-  late final AppLocalizations localizations = widget.localizations;
+  late final int? initialYear = widget.controller.nSelectedFilters.value.year;
+  late final AppLocalizations l10n = widget.localizations;
 
   @override
   void initState() {
-    widget.controller.fetchFiltersReleaseYear();
+    widget.controller.fetchFilters(l10n);
 
     super.initState();
   }
@@ -33,14 +33,16 @@ class _ReleaseModalState extends State<_ReleaseModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.nSelectedReleaseYear.value = initialPublisher;
+            widget.controller.updateSelectedFilters(
+              year: initialYear,
+            );
             context.pop();
           },
         ),
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedTick02,
           onTap: () {
-            widget.controller.applyFilters(context, localizations);
+            widget.controller.applyFilters(context, l10n);
             context.pop();
           },
         ),
@@ -55,14 +57,14 @@ class _ReleaseModalState extends State<_ReleaseModal> {
 
   Widget body() {
     return Section(
-      description: localizations.sectionFilterReleaseYearDescription,
-      title: localizations.sectionFilterReleaseYear,
+      description: l10n.sectionFilterReleaseYearDescription,
+      title: l10n.sectionFilterReleaseYear,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
         child: ValueListenableBuilder(
-          valueListenable: widget.controller.nFiltersReleaseYear,
-          builder: (BuildContext context, Map<int, int>? filters, Widget? _) {
-            if (filters == null) {
+          valueListenable: widget.controller.nFilters,
+          builder: (BuildContext context, ({List<(TagEnumeration, String, int)> categories, Map<String, int> publishers, Map<int, int> years}) filters, Widget? _) {
+            if (filters.years.isEmpty) {
               return Align(
                 alignment: Alignment.center,
                 child: LoadingAnimation(),
@@ -77,7 +79,7 @@ class _ReleaseModalState extends State<_ReleaseModal> {
               ),
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              children: filters.entries.map(tile).toList(),
+              children: filters.years.entries.map(tile).toList(),
             );
           }
         ),
@@ -92,17 +94,24 @@ class _ReleaseModalState extends State<_ReleaseModal> {
     return InkWell(
       borderRadius: gBorderRadius,
       onTap: () {
-        widget.controller.nSelectedReleaseYear.value == releaseYear
-          ? widget.controller.nSelectedReleaseYear.value = null
-          : widget.controller.nSelectedReleaseYear.value = releaseYear;
+        if (widget.controller.nSelectedFilters.value.year == releaseYear) {
+          widget.controller.updateSelectedFilters(
+            year: null,
+          );
+        }
+        else {
+          widget.controller.updateSelectedFilters(
+            year: releaseYear,
+          );
+        }
       },
       child: ValueListenableBuilder(
-        valueListenable: widget.controller.nSelectedReleaseYear,
-        builder: (BuildContext context, int? selectedReleaseYear, Widget? _) {
+        valueListenable: widget.controller.nSelectedFilters,
+        builder: (BuildContext context, ({List<String> categories, String? publisher, int? year})? filters, Widget? _) {
           return Ink(
             decoration: BoxDecoration(
               borderRadius: gBorderRadius,
-              color: selectedReleaseYear == releaseYear
+              color: filters!.year == releaseYear
                 ? Palettes.primary.value.withAlpha(190)
                 : Palettes.foreground.value,
             ),

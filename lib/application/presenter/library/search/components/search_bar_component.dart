@@ -85,7 +85,7 @@ class _SearchBarState extends State<_SearchBar> {
               maxLength: 30,
               maxLines: 1,
               onSubmitted: (String query) {
-                widget.controller.clearFilters(context, localizations);
+                widget.controller.clearFilters();
                 widget.controller.applySearch(query);
               },
               onChanged: (String query) {},

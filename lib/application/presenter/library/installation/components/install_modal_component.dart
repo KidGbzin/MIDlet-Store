@@ -69,28 +69,30 @@ class _InstallModalState extends State<_InstallModal> {
         ),
       ],
       child: Expanded(
-        child: ValueListenableBuilder(
-          valueListenable: nProgress,
-          builder: (BuildContext context, (Progresses, Object?) progress, Widget? _) {
-            if (progress.$1 == Progresses.isLoading) {
-              return const LoadingAnimation();
-            }
-            if (progress.$1 == Progresses.requestEmulator) {
-              return requestEmulator();
-            }
-            if (progress.$1 == Progresses.hasError) {
-              return Padding(
-                padding: const EdgeInsets.all(15),
-                child: ErrorMessage(progress.$2!),
-              );
-            }
-            else {
-              return Padding(
-                padding: const EdgeInsets.all(15),
-                child: ErrorMessage(Exception),
-              );
-            }
-          },
+        child: SingleChildScrollView(
+          child: ValueListenableBuilder(
+            valueListenable: nProgress,
+            builder: (BuildContext context, (Progresses, Object?) progress, Widget? _) {
+              if (progress.$1 == Progresses.isLoading) {
+                return const LoadingAnimation();
+              }
+              if (progress.$1 == Progresses.requestEmulator) {
+                return requestEmulator();
+              }
+              if (progress.$1 == Progresses.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: ErrorMessage(progress.$2!),
+                );
+              }
+              else {
+                return Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: ErrorMessage(Exception),
+                );
+              }
+            },
+          ),
         ),
       ),
     );

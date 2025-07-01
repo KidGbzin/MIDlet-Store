@@ -25,15 +25,15 @@ dependencies:
   google_fonts: ^6.2.1
   google_mobile_ads: ^6.0.0
   google_sign_in: ^6.2.1
-  hive: ^4.0.0-dev.2
   http: ^1.2.1
   hugeicons: ^0.0.7
   image: ^4.2.0
   intl: ^0.20.2
-  isar_flutter_libs: ^4.0.0-dev.13
   package_info_plus: ^8.2.1
+  path: ^1.9.1
   path_provider: ^2.1.4
   provider: ^6.1.2
+  sembast: ^3.8.5+1
   supabase_flutter: ^2.8.0
   timeago: ^3.7.1
 

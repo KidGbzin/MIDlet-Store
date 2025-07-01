@@ -29,11 +29,10 @@ import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/progress_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
-import '../../../core/extensions/messenger_extension.dart';
 import '../../../core/extensions/router_extension.dart';
 
 import '../../../repositories/bucket_repository.dart';
-import '../../../repositories/hive_repository.dart';
+import '../../../repositories/sembast_repository.dart';
 import '../../../repositories/supabase_repository.dart';
 
 import '../../../services/activity_service.dart';
@@ -81,7 +80,7 @@ class _DetailsState extends State<Details> {
 
   late final ConfettiController cConfetti;
   late final BucketRepository rBucket;
-  late final HiveRepository rHive;
+  late final SembastRepository rSembast;
   late final SupabaseRepository rSupabase;
   late final ActivityService sActivity;
   late final AdMobService sAdMob;
@@ -105,7 +104,7 @@ class _DetailsState extends State<Details> {
       context,
       listen: false,
     );
-    rHive = Provider.of<HiveRepository>(
+    rSembast = Provider.of<SembastRepository>(
       context,
       listen: false,
     );
@@ -122,7 +121,7 @@ class _DetailsState extends State<Details> {
       cConfetti: cConfetti,
       game: widget.game,
       rBucket: rBucket,
-      rHive: rHive,
+      rSembast: rSembast,
       rSupabase: rSupabase,
       sActivity: sActivity,
       sAdMob: sAdMob,

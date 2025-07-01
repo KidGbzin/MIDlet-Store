@@ -15,12 +15,12 @@ class _PublisherModal extends StatefulWidget {
 }
 
 class _PublisherModalState extends State<_PublisherModal> {
-  late final String? initialPublisher = widget.controller.nSelectedPublisher.value;
+  late final String? initialPublisher = widget.controller.nSelectedFilters.value.publisher;
   late final AppLocalizations localizations = widget.localizations;
 
   @override
   void initState() {
-    widget.controller.fetchFiltersPublishers();
+    widget.controller.fetchFilters(localizations);
   
     super.initState();
   }
@@ -33,7 +33,9 @@ class _PublisherModalState extends State<_PublisherModal> {
         ButtonWidget.icon(
           icon: HugeIcons.strokeRoundedCancel01,
           onTap: () {
-            widget.controller.nSelectedPublisher.value = initialPublisher;
+            widget.controller.updateSelectedFilters(
+              publisher: initialPublisher,
+            );
             context.pop();
           },
         ),
@@ -60,9 +62,9 @@ class _PublisherModalState extends State<_PublisherModal> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
         child: ValueListenableBuilder(
-          valueListenable: widget.controller.nFiltersPublishers,
+          valueListenable: widget.controller.nFilters,
           builder: (BuildContext context, filters, Widget? _) {
-            if (filters == null) {
+            if (filters.publishers.isEmpty) {
               return Expanded(
                 child: Align(
                   alignment: Alignment.center,
@@ -79,7 +81,7 @@ class _PublisherModalState extends State<_PublisherModal> {
               ),
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              children: filters.entries.map(tile).toList(),
+              children: filters.publishers.entries.map(tile).toList(),
             );
           }
         ),
@@ -95,17 +97,24 @@ class _PublisherModalState extends State<_PublisherModal> {
         return InkWell(
           borderRadius: gBorderRadius,
           onTap: () {
-            widget.controller.nSelectedPublisher.value == publisher
-              ? widget.controller.nSelectedPublisher.value = null
-              : widget.controller.nSelectedPublisher.value = publisher;
+            if (widget.controller.nSelectedFilters.value.publisher == publisher) {
+              widget.controller.updateSelectedFilters(
+                publisher: null,
+              );
+            }
+            else {
+              widget.controller.updateSelectedFilters(
+                publisher: publisher,
+              );
+            }
           },
           child: ValueListenableBuilder(
-            valueListenable: widget.controller.nSelectedPublisher,
-            builder: (BuildContext context, String? isSelected, Widget? _) {
+            valueListenable: widget.controller.nSelectedFilters,
+            builder: (BuildContext context, ({List<String> categories, String? publisher, int? year})? selectedFilters, Widget? _) {
               return Ink(
                 decoration: BoxDecoration(
                   borderRadius: gBorderRadius,
-                  color: isSelected == publisher
+                  color: selectedFilters!.publisher == publisher
                     ? Palettes.primary.value.withAlpha(190)
                     : Palettes.foreground.value,
                 ),

@@ -80,8 +80,8 @@ class _ListTileState extends State<_ListTile> {
       ),
       child: FutureBuilder(
         future: Future.wait([
-          widget.controller.getCover(widget.game.title),
-          widget.controller.getGameData(widget.game),
+          widget.controller.getThumbnail(widget.game.title),
+          widget.controller.getGameMetadata(widget.game),
         ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           double averageRating = 0.0;

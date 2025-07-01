@@ -5,9 +5,9 @@ class _Controller {
   // MARK: Constructor ⮟
 
   /// Manages local storage operations, including games, favorites, recent games, and cached requests.
-  final HiveRepository rHive;
+  final SembastRepository rSembast;
 
-  /// Manages AdMob advertising operations, includingloading, displaying, and disposing of banner and interstitial advertisements.
+  /// Manages AdMob advertising operations, including loading, displaying, and disposing of banner and interstitial advertisements.
   final AdMobService sAdMob;
 
   /// Manages Firebase Cloud Messaging operations, including notification handling and token management.
@@ -20,7 +20,7 @@ class _Controller {
   final SupabaseService sSupabase;
   
   _Controller({
-    required this.rHive, 
+    required this.rSembast,
     required this.sAdMob,
     required this.sFirebaseMessaging,
     required this.sGitHub,
@@ -37,8 +37,8 @@ class _Controller {
       nError = ValueNotifier<Object?>(null);
 
       await sAdMob.initialize();
-      await rHive.initialize();
       await sSupabase.initialize();
+      await rSembast.initialize();
 
       if (context.mounted) await sFirebaseMessaging.initialize(context);
 

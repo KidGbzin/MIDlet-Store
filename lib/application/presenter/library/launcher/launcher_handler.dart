@@ -12,12 +12,11 @@ import '../../../core/enumerations/progress_enumeration.dart';
 
 import '../../../core/extensions/router_extension.dart';
 
+import '../../../repositories/sembast_repository.dart';
 import '../../../services/admob_service.dart';
 import '../../../services/firebase_messaging_service.dart';
 import '../../../services/github_service.dart';
 import '../../../services/supabase_service.dart';
-
-import '../../../repositories/hive_repository.dart';
 
 import '../../widgets/error_message_widget.dart';
 import '../../widgets/loading_widget.dart';
@@ -37,7 +36,7 @@ class _LauncherState extends State<Launcher> {
   late final _Controller controller;
   late final AppLocalizations localizations;
 
-  late final HiveRepository rHive;
+  late final SembastRepository rSembast;
   late final AdMobService sAdMob;
   late final FirebaseMessagingService sFirebaseMessaging;
   late final GitHubService sGitHub;
@@ -49,7 +48,7 @@ class _LauncherState extends State<Launcher> {
 
     Logger.start("Initializing the Launcher handler...");
 
-    rHive = Provider.of<HiveRepository>(
+    rSembast = Provider.of<SembastRepository>(
       context,
       listen: false,
     );
@@ -71,7 +70,7 @@ class _LauncherState extends State<Launcher> {
     );
   
     controller = _Controller(
-      rHive: rHive,
+      rSembast: rSembast,
       sAdMob: sAdMob,
       sFirebaseMessaging: sFirebaseMessaging,
       sGitHub: sGitHub,

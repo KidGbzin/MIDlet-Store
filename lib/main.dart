@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -9,7 +10,6 @@ import 'package:provider/single_child_widget.dart';
 import 'package:timeago/timeago.dart';
 
 import '../application/repositories/bucket_repository.dart';
-import '../application/repositories/hive_repository.dart';
 import '../application/repositories/supabase_repository.dart';
 
 import '../application/services/activity_service.dart';
@@ -23,6 +23,7 @@ import '../application/services/supabase_service.dart';
 import '../application.dart';
 
 import '../logger.dart';
+import 'application/repositories/sembast_repository.dart';
 
 Future<void> main() async {
   runZonedGuarded(() async {
@@ -50,7 +51,16 @@ Future<void> main() async {
       ),
     );
 
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kReleaseMode || kProfileMode);
+
+    FlutterError.onError = (FlutterErrorDetails details) {
+      if (kReleaseMode || kProfileMode) {
+        FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+      }
+      else {
+        FlutterError.dumpErrorToConsole(details);
+      }
+    };
 
     // MARK: Provider Instances ⮟
 
@@ -78,7 +88,7 @@ Future<void> main() async {
       sGitHub: sGitHub,
     );
 
-    final HiveRepository rHive = HiveRepository(sGitHub);
+    final SembastRepository rSembast = SembastRepository(sGitHub);
     final SupabaseRepository rSupabase = SupabaseRepository(sSupabase);
     final FirebaseMessagingService sFirebaseMessaging = FirebaseMessagingService(rSupabase);
 
@@ -106,8 +116,8 @@ Future<void> main() async {
         Provider<BucketRepository>.value(
           value: rBucket,
         ),
-        Provider<HiveRepository>.value(
-          value: rHive,
+        Provider<SembastRepository>.value(
+          value: rSembast,
         ),
         Provider<SupabaseRepository>.value(
           value: rSupabase,
@@ -117,6 +127,14 @@ Future<void> main() async {
     ));
   },
   (error, stackTrace) {
-    FirebaseCrashlytics.instance.recordError(error, stackTrace);
+    if (kReleaseMode || kProfileMode) {
+      FirebaseCrashlytics.instance.recordError(error, stackTrace);
+    }
+    else {
+      Logger.error(
+        error.toString(),
+        stackTrace: stackTrace,
+      );
+    }
   });
 }
