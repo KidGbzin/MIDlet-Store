@@ -1,5 +1,3 @@
-import 'package:hive/hive.dart';
-
 /// A interface that represents all [Hive] boxes.
 ///
 /// This abstraction ensures a consistent API for interacting with Hive boxes, providing methods to open, close, and clear the box.

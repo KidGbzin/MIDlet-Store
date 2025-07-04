@@ -40,11 +40,6 @@ class _LauncherViewState extends State<_LauncherView> {
                       child: LoadingAnimation(),
                     );
                   }
-                  else if (progress == Progresses.isFinished) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (context.mounted) context.pushReplacement('/search');
-                    });
-                  }
                   else {
                     child = ErrorMessage(widget.controller.nError.value!);
                   }

@@ -112,7 +112,7 @@ class _Controller {
       if (message == null) {
         Logger.information("There's no notification message to handle, opening the default Search view.");
 
-        context.gtSearch(
+        context.gtHome(
           replace: true,
         );
 
@@ -124,10 +124,9 @@ class _Controller {
       if (title != null) {
         // TODO: Change the notification type to ID to show the game details.
         
-        // context.gtDetails(
-        //   game: rHive.boxGames.fromTitle(title),
-        //   replace: true,
-        // );
+        context.gtHome(
+          replace: true,
+        );
 
         return;
       }

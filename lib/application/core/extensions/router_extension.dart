@@ -100,6 +100,21 @@ extension RouterExtension on BuildContext {
     }
   }
 
+  void gtHome({
+    bool? replace = false,
+  }) {
+    if (replace == true) {
+      pushReplacement(
+        '/home',
+      );
+    }
+    else {
+      push(
+        '/home',
+      );
+    }
+  }
+
   void gtUpdate() => pushReplacement('/update');
 
   void gtLogin() => pushReplacement('/login');

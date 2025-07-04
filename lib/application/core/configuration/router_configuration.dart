@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../presenter/library/details/details_handler.dart';
+import '../../presenter/library/home/home_handler.dart';
 import '../../presenter/library/installation/installation_handler.dart';
 import '../../presenter/library/launcher/launcher_handler.dart';
 import '../../presenter/library/login/login_handler.dart';
@@ -30,6 +31,10 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/details',
       builder: (BuildContext context, GoRouterState state) => Details(state.extra as Game),
+    ),
+    GoRoute(
+      path: '/home',
+      builder: (BuildContext context, GoRouterState state) => Home(),
     ),
     GoRoute(
       path: '/installation',
