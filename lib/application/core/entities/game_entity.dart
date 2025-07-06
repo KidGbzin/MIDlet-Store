@@ -38,6 +38,8 @@ class Game {
   /// Publisher company name.
   final String publisher;
 
+  final DateTime lastUpdated;
+
   Game({
     required this.descriptionBR,
     required this.descriptionID,
@@ -48,6 +50,7 @@ class Game {
     required this.release,
     required this.tags,
     required this.title,
+    required this.lastUpdated,
   });
 
   // MARK: Formats ⮟
@@ -82,6 +85,11 @@ class Game {
       descriptionID: require<String>(jString, "descriptionID")!,
       descriptionUS: require<String>(jString, "descriptionUS")!,
       identifier: require<int>(jString, "identifier")!,
+      lastUpdated: require<DateTime>(
+        jString,
+        "updatedAt",
+        convert: (lastUpdated) => DateTime.parse(lastUpdated),
+      )!,
       midlets: require<List<MIDlet>>(
         jString,
         "midlets",
@@ -105,6 +113,7 @@ class Game {
       'descriptionID': descriptionID,
       'descriptionUS': descriptionUS,
       'identifier': identifier,
+      'updatedAt': lastUpdated.toIso8601String(),
       'midlets': midlets.map((midlets) => midlets.toJson()).toList(),
       'publisher': publisher,
       'release': release,

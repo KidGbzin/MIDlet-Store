@@ -43,8 +43,8 @@ class _ErrorMessageState extends State<ErrorMessage> {
       title = localizations.exFormatExceptionTitle;
     }
     else if (widget.error is HttpException) {
-      title = localizations.exHttpExceptionMessage;
-      message = localizations.exHttpExceptionTitle;
+      message = localizations.exHttpExceptionMessage;
+      title = localizations.exHttpExceptionTitle;
     }
     else {
       message = localizations.exUnknownExceptionMessage;

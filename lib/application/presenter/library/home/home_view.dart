@@ -2,7 +2,10 @@ part of '../home/home_handler.dart';
 
 class _View extends StatefulWidget {
 
-  const _View();
+  /// Controls the handler’s state and behavior logic.
+  final _Controller controller;
+
+  const _View(this.controller);
 
   @override
   State<_View> createState() => _ViewState();
@@ -34,6 +37,18 @@ class _ViewState extends State<_View> {
             ),
           ],
         ),
+      ),
+      body: ListView(
+        children: <Widget> [
+          // TODO: Translate.
+          GameHorizontalList(
+            collection: widget.controller.getLatestGames(),
+            description: "Estes são os jogos atualizados recentemente.",
+            fetchRating: widget.controller.fetchAverageRating,
+            fetchThumbnail: widget.controller.fetchThumbnail,
+            title: "ATUALIZADOS RECENTEMENTE",
+          ),
+        ],
       ),
     );
   }

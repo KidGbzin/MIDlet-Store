@@ -316,7 +316,7 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topPublisherGames.isEmpty) {
-      _topPublisherGames = await rSembast.boxGames.fromPublisher(game.publisher);
+      _topPublisherGames = await rSembast.boxGames.byPublisher(game.publisher);
       _topPublisherGames.shuffle();
       _topPublisherGames = _topPublisherGames.take(8).toList();
     }
@@ -345,7 +345,7 @@ class _Controller {
     final List<File> thumbnails = <File> []; 
 
     if (_topRelatedGames.isEmpty) {
-      _topRelatedGames = await rSembast.boxGames.topRelatedGames(game);
+      _topRelatedGames = await rSembast.boxGames.related(game);
     }
 
     for (Game element in _topRelatedGames) {
