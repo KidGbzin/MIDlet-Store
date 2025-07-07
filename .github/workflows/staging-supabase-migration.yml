@@ -1,0 +1,30 @@
+name: Supabase Migration (Staging)
+
+on:
+  pull_request:
+    branches:
+      - staging
+
+jobs:
+  push-db:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.STAGING_SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.STAGING_SUPABASE_DATABASE_PASSWORD }}
+      PROJECT_ID: ${{ secrets.STAGING_SUPABASE_PROJECT_IDENTIFIER }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.30.4
+
+      - name: Link to Supabase Project
+        run: supabase link --project-ref $PROJECT_ID
+
+      - name: Push Migrations to Supabase
+        run: supabase db push
