@@ -24,7 +24,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
     return ButtonWidget.widget(
       color: Palettes.foreground.value,
       onTap: () {
-        widget.controller.nProgress.value = Progresses.isLoading;
+        widget.controller.nProgress.value = (progress: Progresses.isLoading, error: null);
         widget.controller.googleSignIn(context);
       },
       width: double.infinity,

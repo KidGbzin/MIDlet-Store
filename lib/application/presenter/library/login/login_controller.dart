@@ -17,14 +17,17 @@ class _Controller {
     required this.sSupabase,
   });
 
-  late final ValueNotifier<Progresses> nProgress;
+  late final ValueNotifier<({Progresses progress, Object? error})> nProgress;
 
   /// Initializes the handler’s core services and state notifiers.
   ///
   /// This method must be called from the `initState` of the handler widget.
   /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
   Future<void> initialize(BuildContext context) async {
-    nProgress = ValueNotifier(Progresses.isLoading);
+    nProgress = ValueNotifier((
+      progress: Progresses.isLoading,
+      error: null,
+    ));
 
     try {
       final bool hasCachedSession = await _hasCachedSession();
@@ -32,15 +35,15 @@ class _Controller {
       if (hasCachedSession) {
         await sFirebaseMessaging.registerToken();
 
-        nProgress.value = Progresses.isFinished;
+        nProgress.value = (progress: Progresses.isFinished, error: null);
 
         return;
       }
 
-      nProgress.value = Progresses.requestSignIn;
+      nProgress.value = (progress: Progresses.requestSignIn, error: null);
     }
     catch (error, stackTrace) {
-      nProgress.value = Progresses.hasError;
+      nProgress.value = (progress: Progresses.hasError, error: error);
       
       Logger.error(
         "$error",
@@ -93,10 +96,10 @@ class _Controller {
 
       await sFirebaseMessaging.registerToken();
 
-      nProgress.value = Progresses.isFinished;
+      nProgress.value = (progress: Progresses.isFinished, error: null);
     }
     catch (error, stackTrace) {
-      nProgress.value = Progresses.hasError;
+      nProgress.value = (progress: Progresses.hasError, error: error);
 
       Logger.error(
         "$error",

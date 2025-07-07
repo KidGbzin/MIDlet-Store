@@ -24,14 +24,14 @@ class __LoginViewState extends State<_LoginView> {
     return Scaffold(
       body: ValueListenableBuilder(
         valueListenable: widget.controller.nProgress,
-        builder: (BuildContext context, Progresses progress, Widget? _) {
-          if (progress == Progresses.isLoading) {
+        builder: (BuildContext context, ({Object? error, Progresses progress}) progress, Widget? _) {
+          if (progress.progress == Progresses.isLoading) {
             return Align(
               alignment: Alignment.center,
               child: LoadingAnimation(),
             );
           }
-          else if (progress == Progresses.requestSignIn) {
+          else if (progress.progress == Progresses.requestSignIn) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(15, 150, 15, 150),
               child: Column(
@@ -45,7 +45,7 @@ class __LoginViewState extends State<_LoginView> {
               ),
             );
           }
-          else if (progress == Progresses.isFinished) {
+          else if (progress.progress == Progresses.isFinished) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               widget.controller.handleNotificationMessage(context);
             });
@@ -57,13 +57,11 @@ class __LoginViewState extends State<_LoginView> {
               ),
             );
           }
-          else if (progress == Progresses.hasError) {
-            return SizedBox();
+          else if (progress.progress == Progresses.hasError) {
+            return ErrorMessage(progress.error!);
           }
           else {
-            Logger.error('Encountered an unhandled Login progress state: "${progress.name.toUpperCase()}". This state should be handled explicitly!');
-
-            return SizedBox();
+            return ErrorMessage(StateError);
           }
         },
       ),

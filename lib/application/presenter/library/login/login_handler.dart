@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:midlet_store/application/presenter/widgets/error_message_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';

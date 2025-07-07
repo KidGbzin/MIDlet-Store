@@ -34,6 +34,9 @@ class _ErrorMessageState extends State<ErrorMessage> {
   }
 
   void _handleErrorMessage() {
+
+    // TODO: AuthException, PostgrestException
+
     if (widget.error is ClientException) {
       message = localizations.exClientExceptionMessage;
       title = localizations.exClientExceptionTitle;
