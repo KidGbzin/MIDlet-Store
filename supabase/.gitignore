@@ -1,6 +1,7 @@
 # Supabase files:
 .branches
 .temp
+config.toml
 
 # Enviroments:
 .env.keys
