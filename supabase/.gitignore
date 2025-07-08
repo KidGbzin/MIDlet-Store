@@ -1,0 +1,9 @@
+# Supabase related files:
+.branches
+.temp
+config.toml
+
+# Enviroments related:
+.env.keys
+.env.local
+.env.*.local

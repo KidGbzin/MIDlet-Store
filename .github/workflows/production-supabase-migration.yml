@@ -1,0 +1,30 @@
+name: Supabase Migration (Production)
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  push-db:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.PRODUCTION_SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.PRODUCTION_SUPABASE_DATABASE_PASSWORD }}
+      PROJECT_ID: ${{ secrets.PRODUCTION_SUPABASE_PROJECT_IDENTIFIER }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.30.4
+
+      - name: Link to Supabase Project
+        run: supabase link --project-ref $PROJECT_ID
+
+      - name: Push Migrations to Supabase
+        run: supabase db push
