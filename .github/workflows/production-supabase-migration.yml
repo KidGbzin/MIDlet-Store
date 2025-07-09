@@ -1,12 +1,13 @@
 name: Supabase Migration (Production)
 
 on:
-  pull_request:
+  push:
     branches:
       - master
 
 jobs:
-  push-db:
+  push-database-production:
+    name: Push Migrations to Supabase
     runs-on: ubuntu-latest
 
     env:
