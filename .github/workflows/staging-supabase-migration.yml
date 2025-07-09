@@ -6,7 +6,8 @@ on:
       - staging
 
 jobs:
-  push-db:
+  push-database-staging:
+    name: Push Migrations to Supabase
     runs-on: ubuntu-latest
 
     env:
@@ -15,8 +16,17 @@ jobs:
       PROJECT_ID: ${{ secrets.STAGING_SUPABASE_PROJECT_IDENTIFIER }}
 
     steps:
-      - name: Checkout Code
+      - name: Checkout PR Branch Code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Show PR Branch Information
+        run: |
+          echo "Running migrations for PR branch:"
+          echo "Repository: ${{ github.event.pull_request.head.repo.full_name }}"
+          echo "Branch: ${{ github.event.pull_request.head.ref }}"
 
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v1
