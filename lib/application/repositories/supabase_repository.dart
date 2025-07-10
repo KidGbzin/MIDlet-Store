@@ -141,6 +141,26 @@ class SupabaseRepository {
     return reviews;
   }
 
+  Future<List<({int identifier, double rating})>> getTop10RatedGames() async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "get_top_rated_games_limited",
+      params: <String, dynamic> {
+        "p_elements": 10,
+      }
+    );
+
+    final List<({int identifier, double rating})> results = <({int identifier, double rating})> [];
+
+    for (Map<String, dynamic> element in response) {
+      results.add((
+        identifier: element["game_key"] as int,
+        rating: element["average_rating"] as double,
+      ));
+    }
+
+    return results;
+  }
+
   /// Retrieves the current user's review for a given game from Supabase.
   ///
   /// This function calls the stored procedure `get_user_review_for_game`, passing the game's unique identifier (`game.identifier`).

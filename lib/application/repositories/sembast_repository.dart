@@ -42,7 +42,7 @@ class SembastRepository {
     final Directory directory = await getApplicationCacheDirectory();
     final Database database = await databaseFactoryIo.openDatabase(join(directory.path, "database.db"));
 
-    boxCachedRequests = BoxCachedRequests(intMapStoreFactory.store('CACHED_REQUESTS'), database);
+    boxCachedRequests = BoxCachedRequests(intMapStoreFactory.store('CACHED_REQUESTS'), database)..clear();
     boxGames = BoxGames(intMapStoreFactory.store('GAMES'), database);
     boxSettings = BoxSettings(stringMapStoreFactory.store('SETTINGS'), database);
     boxRecentGames = BoxRecentGames(intMapStoreFactory.store('RECENT_GAMES'), database);

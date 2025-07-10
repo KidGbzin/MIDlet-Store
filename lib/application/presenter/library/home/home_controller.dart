@@ -62,6 +62,28 @@ class _Controller {
     }
   }
 
+  Future<List<Game>> getTop10RatedGames() async {
+    try {
+      var temp = <Game> [];
+
+      var tempRequest = await rSupabase.getTop10RatedGames();
+
+      for (var x in tempRequest) {
+        temp.add(await rSembast.boxGames.byKey(x.identifier));
+      }
+
+      return temp;
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      rethrow;
+    }
+  }
+
   // MARK: -------------------------
   // 
   // 

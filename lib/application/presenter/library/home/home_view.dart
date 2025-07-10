@@ -48,6 +48,13 @@ class _ViewState extends State<_View> {
             fetchThumbnail: widget.controller.fetchThumbnail,
             title: "ATUALIZADOS RECENTEMENTE",
           ),
+          GameHorizontalList(
+            collection: widget.controller.getTop10RatedGames(),
+            description: "Estes são os jogos mais bem avaliados.",
+            fetchRating: widget.controller.fetchAverageRating,
+            fetchThumbnail: widget.controller.fetchThumbnail,
+            title: "MAIS BEM AVALIADOS",
+          ),
         ],
       ),
     );
