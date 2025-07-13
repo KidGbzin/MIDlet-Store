@@ -44,7 +44,6 @@ class _Controller {
   Future<void> initialize() async {
     try {
       nProgress = ValueNotifier(Progresses.isLoading);
-      nGameMetadata = ValueNotifier<GameMetadata?>(null);
       nThumbnail = ValueNotifier<File?>(null);
       
       fetchThumbnail();
@@ -82,10 +81,22 @@ class _Controller {
     _player.dispose();
   }
 
+  Future<({double average, (int, int, int, int, int) ratings, int total})> fetchRatingDistribution() async {
+    final (int s1, int s2, int s3, int s4, int s5) = await rSupabase.getRatingDistributionForGame(game);
+    final int total = s1 + s2 + s3 + s4 + s5;
+    final double average = total == 0 ? 0 : (1 * s1 + 2 * s2 + 3 * s3 + 4 * s4 + 5 * s5) / total;
+
+    return (
+      average: average,
+      ratings: (s1, s2, s3, s4, s5),
+      total: total,
+    );
+  }
+
   // MARK: Notifiers ⮟
 
   late final ValueNotifier<Progresses> nProgress;
-  late final ValueNotifier<GameMetadata?> nGameMetadata;
+  late final ValueNotifier<GameMetadata> nGameMetadata = ValueNotifier(GameMetadata.empty(game.identifier));
   late final ValueNotifier<File?> nThumbnail;
 
   // MARK: Reviews ⮟
@@ -101,12 +112,16 @@ class _Controller {
   /// 
   /// This function is initialized within the `initialize` function.
   Future<void> _fetchGameMetadata() async {
-    final GameMetadata metadata = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
-      identifier: game.identifier,
-    );
-
     try {
-      metadata.averageRating ??= await rSupabase.getAverageRatingForGame(game);
+      GameMetadata? metadata = await rSembast.boxCachedRequests.getMetadata(game.identifier);
+
+      if (metadata == null) {
+        metadata = await rSupabase.getGameMetadataForGame(game);
+        
+        await rSembast.boxCachedRequests.putMetadata(metadata);
+      }
+
+      nGameMetadata.value = metadata;
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -114,90 +129,77 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      metadata.averageRating = 0.0;
+      nGameMetadata.value = GameMetadata.empty(game.identifier);
     }
-
-    try {
-      metadata.myReview ??= await rSupabase.getUserReviewForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      metadata.myReview = Review.noReview();
-    }
-
-    try {
-      metadata.totalRatings ??= await rSupabase.countReviewsForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      metadata.totalRatings = 0;
-    }
-
-    try {
-      metadata.stars ??= await rSupabase.countRatingsByStarForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      metadata.stars = <String, int> {
-        "5": 0,
-        "4": 0,
-        "3": 0,
-        "2": 0,
-        "1": 0,
-      };
-    }
-  
-    await rSembast.boxCachedRequests.put(metadata);
-
-    nGameMetadata.value = metadata;
   }
 
   /// Inserts or updates the user's rating for a game.
   ///
   /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
-  Future<void> submitRating(BuildContext context, int rating, String body) async {
-    final GameMetadata metadata = nGameMetadata.value!;
-
+  Future<void> submitRating(int rating, String body) async {
     try {
       final Review review = await rSupabase.upsertReviewForGame(game, rating, body);
 
-      metadata.myReview = review;
+      try {
+        final GameMetadata metadata = await rSupabase.getGameMetadataForGame(game);
+        
+        await rSembast.boxCachedRequests.putOwnReview(game.identifier, review);
+        await rSembast.boxCachedRequests.putMetadata(metadata);
+
+        nGameMetadata.value = metadata;
+      }
+      catch (error, stackTrace) {
+        Logger.error(
+          '$error',
+          stackTrace: stackTrace,
+        );
+      }
+
+      cConfetti.play();
     }
     catch (error, stackTrace) {
       Logger.error(
         '$error',
         stackTrace: stackTrace,
       );
-
-      return;
     }
 
+    // TODO: Colcoar estados de erro e sucesso.
+  }
+
+  /// Retrieves a [Future] that resolves to a thumbnail [File] for a given game title.
+  ///
+  /// This method fetches the cover image file from the bucket storage using the provided [title].
+  Future<File?> fetchThumbnailT(Game game) { // TODO: Tem 3 fetch thumb aqui prcciso diff
     try {
-      metadata.totalRatings = await rSupabase.countReviewsForGame(game);
+      return rBucket.cover(game.title);
     }
     catch (error, stackTrace) {
       Logger.error(
-        '$error',
+        "$error",
         stackTrace: stackTrace,
       );
 
-      metadata.totalRatings = 0;
+      return Future.value(null);
     }
+  }
 
+  /// Retrieves the current average rating of the specified game.
+  /// 
+  /// This method first attempts to fetch the average rating from the cache using the game's identifier. 
+  /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
+  /// The fetched or defaulted value is then stored in the cache for future use.
+  Future<num> fetchAverageRating(Game game) async {
     try {
-      metadata.averageRating = await rSupabase.getAverageRatingForGame(game);
+      GameMetadata? metadata = await rSembast.boxCachedRequests.getMetadata(game.identifier);
+
+      if (metadata == null) {
+        metadata = await rSupabase.getGameMetadataForGame(game);
+        
+        await rSembast.boxCachedRequests.putMetadata(metadata);
+      }
+      
+      return metadata.averageRating;
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -205,35 +207,8 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      metadata.averageRating = 0.0;
+      return 0.0;
     }
-
-    try {
-      metadata.stars = await rSupabase.countRatingsByStarForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      metadata.stars = <String, int> {
-        "5": 0,
-        "4": 0,
-        "3": 0,
-        "2": 0,
-        "1": 0,
-      };
-    }
-  
-    await rSembast.boxCachedRequests.put(metadata);
-
-    nGameMetadata.value = null; // Force the reactive update.
-    nGameMetadata.value = metadata;
-
-    if (context.mounted) context.pop();
-
-    cConfetti.play();
   }
 
   /// The audio player used to manage and play the game's theme audio.
@@ -312,78 +287,37 @@ class _Controller {
   /// The function retrieves up to 8 games published by the same publisher, shuffling them for randomization.
   /// It collects their game objects, ratings, and thumbnail images to return in a structured format.
   Future<({List<Game> games, List<double> ratings, List<File> thumbnails})> getTopPublisherGames() async {
-    final List<double> ratings = <double> [];
-    final List<File> thumbnails = <File> []; 
-
-    if (_topPublisherGames.isEmpty) {
-      _topPublisherGames = await rSembast.boxGames.byPublisher(game.publisher);
-      _topPublisherGames.shuffle();
-      _topPublisherGames = _topPublisherGames.take(8).toList();
-    }
-
-    for (Game element in _topPublisherGames) {
-      ratings.add(await _getAverageRating(element));
-      thumbnails.add(await rBucket.cover(element.title).catchError((_) => File('/')));
-    }
-
-    ({List<Game> games, List<double> ratings, List<File> thumbnails}) record = (
-      games: _topPublisherGames,
-      ratings: ratings,
-      thumbnails: thumbnails,
+    return (
+      games: <Game> [],
+      ratings: <double> [],
+      thumbnails: <File> [],
     );
 
-    return record;
+    // TODO: Simplificar isso aqui que esta muito complicado.
+    // final List<double> ratings = <double> [];
+    // final List<File> thumbnails = <File> []; 
+
+    // if (_topPublisherGames.isEmpty) {
+    //   _topPublisherGames = await rSembast.boxGames.byPublisher(game.publisher);
+    //   _topPublisherGames.shuffle();
+    //   _topPublisherGames = _topPublisherGames.take(8).toList();
+    // }
+
+    // for (Game element in _topPublisherGames) {
+    //   ratings.add(await _getAverageRating(element));
+    //   thumbnails.add(await rBucket.cover(element.title).catchError((_) => File('/')));
+    // }
+
+    // ({List<Game> games, List<double> ratings, List<File> thumbnails}) record = (
+    //   games: _topPublisherGames,
+    //   ratings: ratings,
+    //   thumbnails: thumbnails,
+    // );
+
+    // return record;
   }
 
-  /// Retrieves the top related games along with their ratings and thumbnails.
-  ///
-  /// This function checks if the list of top related games is empty.
-  /// If it is, it fetches the related games using a call to `topRelatedGames`.
-  /// Then, for each game, it retrieves its rating and thumbnail image if available, and returns the results as a tuple containing the related games, their ratings, and thumbnails.
-  Future<({List<Game> games, List<double> ratings, List<File> thumbnails})> getTopRelatedGames() async {
-    final List<double> ratings = <double> [];
-    final List<File> thumbnails = <File> []; 
+  Future<List<Game>> get10PublisherGames() async => await rSembast.boxGames.byPublisher(game.publisher);
 
-    if (_topRelatedGames.isEmpty) {
-      _topRelatedGames = await rSembast.boxGames.related(game);
-    }
-
-    for (Game element in _topRelatedGames) {
-      ratings.add(await _getAverageRating(element));
-      thumbnails.add(await rBucket.cover(element.title).catchError((_) => File('/')));
-    }
-
-    ({List<Game> games, List<double> ratings, List<File> thumbnails}) record = (
-      games: _topRelatedGames,
-      ratings: ratings,
-      thumbnails: thumbnails,
-    );
-
-    return record;
-  }
-
-  /// Retrieves the current average rating of the specified game.
-  /// 
-  /// This method first attempts to fetch the average rating from the cache using the game's identifier. 
-  /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
-  /// The fetched or defaulted value is then stored in the cache for future use.
-  Future<double> _getAverageRating(Game game) async {
-    final GameMetadata data = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
-      identifier: game.identifier,
-    );
-    try {
-      data.averageRating ??= await rSupabase.getAverageRatingForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      data.averageRating = 0.0;
-    }
-    await rSembast.boxCachedRequests.put(data);
-
-    return data.averageRating!;
-  }
+  Future<List<Game>> getTop10RelatedGames() async => await rSembast.boxGames.related(game);
 }

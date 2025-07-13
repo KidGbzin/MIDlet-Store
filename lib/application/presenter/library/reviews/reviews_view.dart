@@ -57,7 +57,7 @@ class _View extends StatelessWidget {
             return Center(child: LoadingAnimation());
           }
           else {
-            return SizedBox();
+            return SizedBox(); // TODO errors e colocar texto quando vazio
           }
         },
       ),

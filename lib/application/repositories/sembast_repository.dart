@@ -10,6 +10,7 @@ import '../../logger.dart';
 
 import '../core/entities/game_entity.dart';
 import '../core/entities/game_metadata_entity.dart';
+import '../core/entities/review_entity.dart';
 
 import '../services/github_service.dart';
 
@@ -42,7 +43,7 @@ class SembastRepository {
     final Directory directory = await getApplicationCacheDirectory();
     final Database database = await databaseFactoryIo.openDatabase(join(directory.path, "database.db"));
 
-    boxCachedRequests = BoxCachedRequests(intMapStoreFactory.store('CACHED_REQUESTS'), database)..clear();
+    boxCachedRequests = BoxCachedRequests(database)..clear();
     boxGames = BoxGames(intMapStoreFactory.store('GAMES'), database);
     boxSettings = BoxSettings(stringMapStoreFactory.store('SETTINGS'), database);
     boxRecentGames = BoxRecentGames(intMapStoreFactory.store('RECENT_GAMES'), database);
@@ -100,46 +101,109 @@ class SembastRepository {
 // 
 // MARK: Box C. Requests ⮟
 
-/// A storage box for caching [GameMetadata] objects retrieved from Supabase.
-///
-/// Provides efficient access and management of cached game metadata using Sembast.
-/// The data is stored in a Sembast store with [int] keys and [Map<String, dynamic>] values.
 class BoxCachedRequests {
-
-  /// The Sembast store used to persist [GameMetadata] objects.
-  final StoreRef<int, Map<String, dynamic>> store;
 
   /// The Sembast database instance associated with this box.
   final Database database;
 
-  const BoxCachedRequests(this.store, this.database);
+  BoxCachedRequests(this.database);
 
-  /// Clears all stored [Game] objects from the box and returns a [Future] when complete.
-  Future<void> clear() => store.delete(database);
+  final StoreRef<int, Map<String, dynamic>> sMetadata = intMapStoreFactory.store('Cached-Metadata');
+  final StoreRef<int, Map<String, dynamic>> sOwnReview = intMapStoreFactory.store('Cached-Own-Reviews');
+  final StoreRef<int, dynamic> sReviews = intMapStoreFactory.store('Cached-Game-Reviews');
 
-  /// Retrieves a [GameMetadata] object from storage by the given key, or returns `null` if it does not exist.
-  /// 
-  /// Throws:
-  /// - `FormatException`: If the JSON cannot be parsed into a valid [Game] using [Game.fromJson].
-  Future<GameMetadata?> get(int key) async {
+  Future<void> clear() async {
+    await sMetadata.delete(database);
+    await sOwnReview.delete(database);
+    await sReviews.delete(database);
+  }
+
+  Future<List<Review>?> getGameReviews(int identifier) async {
     try {
-      final Map<String, dynamic>? record = await store.record(key).get(database);
+      final dynamic raw = await sReviews.record(identifier).get(database);
+      
+      if (raw == null) return <Review> [];
 
-      return record == null ? null : GameMetadata.fromJson(record);
+      return raw.map((json) => Review.fromJson(json)).toList();
     }
     catch (error, stackTrace) {
       Logger.error(
-        "Cached request error: $error",
-        stackTrace: stackTrace
+        "$error",
+        stackTrace: stackTrace,
       );
 
       return null;
     }
   }
 
-  /// Puts or updates a [GameMetadata] object in the storage box.
-  Future<void> put(GameMetadata metadata) async {
-    await store.record(metadata.identifier).put(database, metadata.toJson());
+  Future<void> putGameReviews(int identifier, List<Review> reviews) async {
+    try {
+      final List<Map<String, dynamic>> list = reviews.map((r) => r.toJson()).toList();
+
+      await sReviews.record(identifier).put(database, list);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<GameMetadata?> getMetadata(int identifier) async {
+    try {
+      final Map<String, Object?>? raw = await sMetadata.record(identifier).get(database);
+
+      return raw == null ? null : GameMetadata.fromJson(raw);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      return null;
+    }
+  }
+
+  Future<void> putMetadata(GameMetadata metadata) async {
+    try {
+      await sMetadata.record(metadata.identifier).put(database, metadata.toJson());
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<Review?> getOwnReview(int identifier) async {
+    try {
+      final Map<String, Object?>? raw = await sOwnReview.record(identifier).get(database);
+
+      return raw == null ? null : Review.fromJson(raw);
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      return null;
+    }
+  }
+
+  Future<void> putOwnReview(int identifier, Review review) async {
+    try {
+      await sOwnReview.record(identifier).put(database, review.toJson());
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+    }
   }
 }
 

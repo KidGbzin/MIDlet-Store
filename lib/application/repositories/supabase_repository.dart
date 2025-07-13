@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:midlet_store/application/core/entities/game_metadata_entity.dart';
+
 import '../../logger.dart';
 
 import '../core/entities/game_entity.dart';
@@ -22,35 +24,7 @@ class SupabaseRepository {
 
   // MARK: Counts ⮟
 
-  /// Counts the number of ratings per star value (1 to 5) for the specified [Game].
-  ///
-  /// This function calls the Supabase stored procedure `count_ratings_by_star_for_game`, passing the game's unique identifier (`game.identifier`).
-  /// It returns a map where the keys are the star values (`"1"` to `"5"`) and the values are the corresponding count of ratings.
-  Future<Map<String, int>> countRatingsByStarForGame(Game game) async {
-    final List<dynamic> response = await supabase.client.rpc(
-      "count_ratings_by_star_for_game",
-      params: <String, dynamic> {
-        "p_game_key": game.identifier,
-      },
-    );
-
-    final Map<String, int> ratings = <String, int> {};
-
-    for (final Map<String, dynamic> row in response) {
-      ratings[row['star']!.toString()] = row['count']!;
-    }
-
-    Logger.success(
-      "${game.fTitle} ratings: "
-      "{5★: ${ratings["5"]}}, "
-      "{4★: ${ratings["4"]}}, "
-      "{3★: ${ratings["3"]}}, "
-      "{2★: ${ratings["2"]}}, "
-      "{1★: ${ratings["1"]}}.",
-    );
-
-    return ratings;
-  }
+  
 
   /// Retrieves the number of reviews for a given game from Supabase.
   ///
@@ -90,6 +64,33 @@ class SupabaseRepository {
 
   // MARK: Gets ⮟
 
+  /// Counts the number of ratings per star value (1 to 5) for the specified [Game].
+  ///
+  /// This function calls the Supabase stored procedure `count_ratings_by_star_for_game`, passing the game's unique identifier (`game.identifier`).
+  /// It returns a map where the keys are the star values (`"1"` to `"5"`) and the values are the corresponding count of ratings.
+  Future<(int, int, int, int, int)> getRatingDistributionForGame(Game game) async {
+    final dynamic response = await supabase.client.rpc(
+      "get_rating_distribution_for_game",
+      params: <String, dynamic> {
+        "p_game_key": game.identifier,
+      },
+    ).single();
+
+    Logger.information(response.toString());
+
+    final (int, int, int, int, int) ratings = (
+      response['stars_1'] as int,
+      response['stars_2'] as int,
+      response['stars_3'] as int,
+      response['stars_4'] as int,
+      response['stars_5'] as int,
+    );
+
+    Logger.success("${game.fTitle} ratings: ${ratings.toString()}.");
+
+    return ratings;
+  }
+
   /// Retrieves the average rating for a given game from Supabase.
   ///
   /// This function calls the stored procedure `get_average_rating_for_game` on Supabase, passing the game's unique identifier (`game.identifier`).
@@ -105,6 +106,27 @@ class SupabaseRepository {
     Logger.success("${game.fTitle} average rating: ${response.toStringAsFixed(2)}.");
 
     return response;
+  }
+
+  Future<GameMetadata> getGameMetadataForGame(Game game) async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "get_game_metadata_for_game",
+      params: <String, dynamic> {
+        "p_game_key": game.identifier,
+      },
+    );
+
+    final Map<String, dynamic> metadata = response.first;
+
+    Logger.success("Game ${game.identifier} metadata: {Downloads: ${metadata['downloads']}}, {Score: ${metadata['score']}}, {Average Rating: ${metadata['average_rating']}}, {Total Reviews: ${metadata['total_reviews']}}.");
+
+    return GameMetadata(
+      averageRating: (response.first['average_rating']), 
+      downloads: response.first['downloads'],
+      identifier: response.first['game_key'],
+      score: response.first['score'],
+      totalReviews: response.first['total_reviews'],
+    );
   }
 
   /// Retrieves all user reviews for the specified [Game] from Supabase.
@@ -145,7 +167,7 @@ class SupabaseRepository {
     final List<dynamic> response = await supabase.client.rpc(
       "get_top_rated_games_limited",
       params: <String, dynamic> {
-        "p_elements": 10,
+        "p_limit": 10,
       }
     );
 
@@ -166,7 +188,7 @@ class SupabaseRepository {
   /// This function calls the stored procedure `get_user_review_for_game`, passing the game's unique identifier (`game.identifier`).
   /// If a review exists, it returns a [Review] object parsed from the response.
   /// If no review is found, it returns a special [Review.notReviewed()] instance.
-  Future<Review> getUserReviewForGame(Game game) async {
+  Future<Review?> getUserReviewForGame(Game game) async {
     final List<dynamic> response = await supabase.client.rpc(
       "get_user_review_for_game",
       params: <String, dynamic> {
@@ -177,7 +199,7 @@ class SupabaseRepository {
     if (response.isEmpty) {
       Logger.success("The user has not reviewed this game yet.");
 
-      return Review.noReview();
+      return null;
     }
 
     final Review review = Review.fromJson(response.first);
@@ -187,49 +209,15 @@ class SupabaseRepository {
     return review;
   }
 
-  Future<(int, int)> getScoreForReview(Review review) async {
-    final List<dynamic> response = await supabase.client.rpc(
-      "get_score_for_review",
-      params: <String, dynamic> {
-        "p_review_key": review.identifier,
-      },
-    );
-
-    final Map<String, dynamic> row = response.first;
-
-    Logger.success("Review score: $row.");
-
-    return (row["total_score"] as int, row["user_vote"] as int);
-  }
-
-  // MARK: Gets or Inserts ⮟
-  
-  /// Retrieves the downloads count for a given game from Supabase, inserting it if not present.
-  ///
-  /// This function calls the stored procedure `get_or_insert_downloads_for_game` on Supabase, passing the game's unique identifier (`game.identifier`).
-  /// If the downloads record doesn't exist yet, the procedure will insert it and return the initial count of zero.
-  Future<int> getOrInsertDownloadsForGame(Game game) async {
-    final int response = await supabase.client.rpc(
-      "get_or_insert_downloads_for_game",
-      params: <String, dynamic> {
-        "p_game_key": game.identifier,
-      },
-    );
-
-    Logger.success("${game.fTitle} downloads count: $response.");
-
-    return response;
-  }
-
   // MARK: Upserts ⮟
 
   /// Registers or updates the Firebase Cloud Messaging (FCM) token in Supabase.
   ///
   /// This function calls the remote procedure `upsert_firebase_cloud_messaging_token` in Supabase, passing the FCM token and the device's current locale.
   /// This ensuresthe backend has the latest token to send push notifications to the user.
-  Future<void> upsertFirebaseCloudMessagingToken(String token) async {
+  Future<void> upsertNotificationToken(String token) async {
     await supabase.client.rpc(
-      "upsert_firebase_cloud_messaging_token",
+      "upsert_notification_token",
       params: <String, dynamic> {
         "p_token": token,
         "p_locale": PlatformDispatcher.instance.locale.toString(),
@@ -262,19 +250,17 @@ class SupabaseRepository {
     return Review.fromJson(response.first);
   }
 
-  Future<(int, int)> upsertVoteForReview(Review review, int vote) async {
-    final List<dynamic> response = await supabase.client.rpc(
+  Future<Review> upsertVoteForReview(Review review, int vote) async {
+    final dynamic response = await supabase.client.rpc(
       "upsert_vote_for_review",
       params: <String, dynamic> {
         "p_review_key": review.identifier,
         "p_vote": vote,
       },
-    );
-
-    final Map<String, dynamic> row = response.first;
+    ).single();
 
     Logger.success("Submited vote!: $vote.");
 
-    return (row["total_score"] as int, row["user_vote"] as int);
+    return Review.fromJson(response);
   }
 }

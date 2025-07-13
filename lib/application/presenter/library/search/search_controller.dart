@@ -337,13 +337,17 @@ class _Controller {
   /// Returns a [Map<String, dynamic>] containing the following values:
   /// - `Average-Rating`: The average rating of the game.
   /// - `Downloads`: The total number of downloads for the game.
-  Future<Map<String, dynamic>> getGameMetadata(Game game) async {
-    final GameMetadata data = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
-      identifier: game.identifier,
-    );
-
+  Future<GameMetadata> getGameMetadata(Game game) async {
     try {
-      data.averageRating ??= await rSupabase.getAverageRatingForGame(game);
+      GameMetadata? metadata = await rSembast.boxCachedRequests.getMetadata(game.identifier);
+
+      if (metadata == null) {
+        metadata = await rSupabase.getGameMetadataForGame(game);
+        
+        await rSembast.boxCachedRequests.putMetadata(metadata);
+      }
+
+      return metadata;
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -351,27 +355,8 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      data.averageRating = 0.0;
+      return GameMetadata.empty(game.identifier);
     }
-
-    try {
-      data.downloads ??= await rSupabase.getOrInsertDownloadsForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        "$error",
-        stackTrace: stackTrace,
-      );
-
-      data.downloads = 0;
-    }
-
-    rSembast.boxCachedRequests.put(data);
-
-    return <String, dynamic> {
-      "Average-Rating": data.averageRating,
-      "Downloads": data.downloads,
-    };
   }
 
   // MARK: -------------------------

@@ -25,7 +25,7 @@ import '../widgets/section_widget.dart';
 
 class GameHorizontalList extends StatefulWidget {
 
-  final Future<double> Function(Game) fetchRating;
+  final Future<num> Function(Game) fetchRating;
 
   final Future<File?> Function(Game) fetchThumbnail;
 
@@ -128,7 +128,7 @@ class _Tile extends StatefulWidget {
 
   final Game game;
 
-  final Future<double> Function(Game) fetchRating;
+  final Future<num> Function(Game) fetchRating;
 
   final Future<File?> Function(Game) fetchThumbnail;
 
@@ -151,7 +151,7 @@ class _TileState extends State<_Tile> {
       width: widget.width,
       child: AsyncBuilder(
         future: fetch(widget.game),
-        onSuccess: (BuildContext context, ({double rating, File? thumbnail}) snapshot) {
+        onSuccess: (BuildContext context, ({num rating, File? thumbnail}) snapshot) {
           return body(
             rating: snapshot.rating,
             thumbnail: snapshot.thumbnail,
@@ -166,8 +166,8 @@ class _TileState extends State<_Tile> {
     );
   }
 
-  Future<({double rating, File? thumbnail})> fetch(Game game) async {
-    final double rating = await widget.fetchRating(game);
+  Future<({num rating, File? thumbnail})> fetch(Game game) async {
+    final num rating = await widget.fetchRating(game);
     final File? thumbnail = await widget.fetchThumbnail(game);
 
     return (
@@ -177,7 +177,7 @@ class _TileState extends State<_Tile> {
   }
 
   Widget body({
-    required double rating,
+    required num rating,
     required File? thumbnail,
     bool isLoading = false,
   }) {

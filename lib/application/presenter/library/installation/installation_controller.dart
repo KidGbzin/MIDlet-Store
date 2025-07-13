@@ -92,17 +92,12 @@ class _Controller {
   ///
   /// Increments downloads remotely and locally, saves metadata, and opens the MIDlet in the selected emulator.
   Future<void> tryDownloadAndInstallMIDlet(BuildContext context) async {
-    final GameMetadata metadata = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
-      identifier: game.identifier,
-    );
     final File file = await rBucket.midlet(midlet);
 
     await rSupabase.incrementDownloadsForGame(game);
-      
-    metadata.downloads ??= 0;
-    metadata.downloads = metadata.downloads! + 1;
     
-    await rSembast.boxCachedRequests.put(metadata);
+    final GameMetadata metadata = await rSupabase.getGameMetadataForGame(game);
+    await rSembast.boxCachedRequests.putMetadata(metadata);
     await sActivity.emulator(file, nEmulator.value);
 
     if (context.mounted) context.pop();

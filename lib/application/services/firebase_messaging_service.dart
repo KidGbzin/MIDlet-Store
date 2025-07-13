@@ -44,11 +44,11 @@ class FirebaseMessagingService {
     final String? token = await _instance.getToken();
     
     if (token != null) {
-      await rSupabase.upsertFirebaseCloudMessagingToken(token);
+      await rSupabase.upsertNotificationToken(token);
     }
     
     _instance.onTokenRefresh.listen((newToken) async {
-      await rSupabase.upsertFirebaseCloudMessagingToken(newToken);
+      await rSupabase.upsertNotificationToken(newToken);
     });
   }
 

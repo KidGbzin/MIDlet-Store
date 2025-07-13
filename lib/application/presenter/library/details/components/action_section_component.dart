@@ -27,10 +27,7 @@ class __ActionsSectionState extends State<_ActionsSection> {
       padding: const EdgeInsets.fromLTRB(15, 2.5, 15, 2.5),
       child: ValueListenableBuilder(
         valueListenable: widget.controller.nGameMetadata,
-        builder: (BuildContext context, GameMetadata? metadata, Widget? _) {
-          final String reviews = (metadata?.totalRatings ?? "-").toString();
-          final String downloads = (metadata?.downloads ?? "-").toString();
-
+        builder: (BuildContext context, GameMetadata metadata, Widget? _) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 7.5,
@@ -56,8 +53,8 @@ class __ActionsSectionState extends State<_ActionsSection> {
                   },
                   child: label(
                     icon: HugeIcons.strokeRoundedStar,
-                    title: "Reviews",
-                    value: reviews,
+                    title: "Reviews", // TODO: Translate
+                    value: metadata.totalReviews.toString(),
                   ),
                 ),
               ),
@@ -65,10 +62,10 @@ class __ActionsSectionState extends State<_ActionsSection> {
                 child: AnimatedSwitcher(
                   duration: gAnimationDuration,
                   child: label(
-                    key: ValueKey(downloads),
+                    key: ValueKey(metadata.downloads),
                     icon: HugeIcons.strokeRoundedDownload01,
                     title: widget.localizations.lbDownloads,
-                    value: downloads,
+                    value: metadata.downloads.toString(),
                   ),
                 ),
               ),

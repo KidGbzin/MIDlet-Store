@@ -95,12 +95,17 @@ class _Controller {
   /// This method first attempts to fetch the average rating from the cache using the game's identifier. 
   /// If the value is not cached, it queries the database to retrieve the rating, handling any errors that might occur during the process by setting a default value of 0.0.
   /// The fetched or defaulted value is then stored in the cache for future use.
-  Future<double> fetchAverageRating(Game game) async {
-    final GameMetadata metadata = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
-      identifier: game.identifier,
-    );
+  Future<num> fetchAverageRating(Game game) async {
     try {
-      metadata.averageRating ??= await rSupabase.getAverageRatingForGame(game);
+      GameMetadata? metadata = await rSembast.boxCachedRequests.getMetadata(game.identifier);
+
+      if (metadata == null) {
+        metadata = await rSupabase.getGameMetadataForGame(game);
+        
+        await rSembast.boxCachedRequests.putMetadata(metadata);
+      }
+      
+      return metadata.averageRating;
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -108,11 +113,7 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      metadata.averageRating = 0.0;
+      return 0.0;
     }
-
-    await rSembast.boxCachedRequests.put(metadata);
-
-    return metadata.averageRating!;
   }
 }

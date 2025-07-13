@@ -19,7 +19,7 @@ class RatingStarsWidget extends StatelessWidget {
   ///
   /// This score determines the number of filled stars displayed. 
   /// Values are rounded to the nearest whole number for star representation.
-  final double rating;
+  final num rating;
 
   /// The size of each star in the rating display.
   ///

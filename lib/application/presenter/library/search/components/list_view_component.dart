@@ -89,9 +89,9 @@ class _ListTileState extends State<_ListTile> {
           int downloads = 0;
 
           if (snapshot.hasData) {
-            averageRating = snapshot.data![1]["Average-Rating"];
+            averageRating = snapshot.data![1].averageRating;
             cover = snapshot.data![0];
-            downloads = snapshot.data![1]["Downloads"];
+            downloads = snapshot.data![1].downloads;
           }
 
           return Column(

@@ -21,10 +21,7 @@ class _ViewState extends State<_View> with WidgetsBindingObserver, RouteAware {
   late final double padding = MediaQuery.of(context).padding.top;
 
   late final List<Widget> children = <Widget> [
-    _RatingSection(
-      controller: widget.controller,
-      localizations: widget.localizations,
-    ),
+    _RatingSection(widget.controller),
     gDivider,
     _TopReviewsSection(
       controller: widget.controller,
@@ -52,18 +49,20 @@ class _ViewState extends State<_View> with WidgetsBindingObserver, RouteAware {
     gDivider,
     Advertisement.banner(widget.controller.getAdvertisement("2")),
     gDivider,
-    _RelatedGamesSection(
-      collection: widget.controller.getTopPublisherGames(),
-      controller: widget.controller,
-      description: widget.localizations.scRelatedPublisherDescription.replaceFirst("@publisher", widget.controller.game.publisher),
-      title: widget.controller.game.publisher,
+    GameHorizontalList(
+      collection: widget.controller.get10PublisherGames(),
+      fetchRating: widget.controller.fetchAverageRating,
+      fetchThumbnail: widget.controller.fetchThumbnailT,
+      description: widget.localizations.scRelatedGamesDescription.replaceFirst("@title", widget.controller.game.fTitle),
+      title: widget.localizations.scRelatedGames,
     ),
     gDivider,
     Advertisement.banner(widget.controller.getAdvertisement("3")),
     gDivider,
-    _RelatedGamesSection(
-      collection: widget.controller.getTopRelatedGames(),
-      controller: widget.controller,
+    GameHorizontalList(
+      collection: widget.controller.getTop10RelatedGames(),
+      fetchRating: widget.controller.fetchAverageRating,
+      fetchThumbnail: widget.controller.fetchThumbnailT,
       description: widget.localizations.scRelatedGamesDescription.replaceFirst("@title", widget.controller.game.fTitle),
       title: widget.localizations.scRelatedGames,
     ),

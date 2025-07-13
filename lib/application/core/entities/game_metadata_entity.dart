@@ -1,55 +1,72 @@
-import '../entities/review_entity.dart';
+import '../configuration/global_configuration.dart';
 
+/// Represents aggregated metadata of a game, stored on the server.
+///
+/// This class models the dynamic metadata of a game, which is maintained and updated automatically by database triggers to improve performance and consistency.
+/// For example, submitting a review will automatically update this metadata with the new Bayesian score, average rating, total number of reviews...
 class GameMetadata {
 
   /// The average rating of the game.
-  double? averageRating;
+  final num averageRating;
 
   /// The total number of downloads.
-  int? downloads;
+  final int downloads;
 
   /// A unique identifier for the game.
   final int identifier;
 
-  /// The review given by the current user.
-  Review? myReview;
-
-  /// A map representing the distribution of star ratings.
-  Map<String, int>? stars;
+  /// Bayesian score of the game.
+  final num score;
 
   /// The total number of ratings the game has received.
-  int? totalRatings;
+  final int totalReviews;
   
-  GameMetadata({
-    this.averageRating,
-    this.downloads,
+  const GameMetadata({
+    required this.averageRating,
+    required this.downloads,
     required this.identifier,
-    this.myReview,
-    this.stars,
-    this.totalRatings,
+    required this.score,
+    required this.totalReviews,
   });
 
-  /// Creates a [GameMetadata] instance from a JSON object.
-  factory GameMetadata.fromJson(dynamic json) {
+  const GameMetadata.empty(int identifier) : this(
+    averageRating: 0,
+    downloads: 0,
+    identifier: identifier,
+    score: 0,
+    totalReviews: 0,
+  );
+
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Serialization ⮟
+
+  /// Creates a [GameMetadata] instance from a JSON string.
+  /// 
+  /// The [jString] parameter is expected to be a dynamic object containing key-value pairs that map to the properties of this class.
+  /// 
+  /// Throws:
+  /// - [FormatException]: If a required field is missing, null, or does not match the expected type during parsing.
+  factory GameMetadata.fromJson(dynamic jString) {
     return GameMetadata(
-      averageRating: json['Average-Rating'],
-      downloads: json['Downloads'],
-      identifier: json['Identifier'],
-      myReview: json['My-Review'] != null ? Review.fromJson(json['My-Review']) : null,
-      stars: json['Stars'] != null ? Map<String, int>.from(json['Stars']) : null,
-      totalRatings: json['Total-Ratings'],
+      averageRating: require<double>(jString, 'Average-Rating')!,
+      downloads: require<int>(jString, 'Downloads')!,
+      identifier: require<int>(jString, 'Identifier')!,
+      score: require<double>(jString, 'Score')!,
+      totalReviews: require<int>(jString, 'Total-Ratings')!,
     );
   }
 
-  /// Converts the [GameMetadata] instance into a JSON object.
+  /// Converts this [GameMetadata] instance into a JSON-compatible map.
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{
+    return <String, dynamic> {
       'Average-Rating': averageRating,
       'Downloads': downloads,
       'Identifier': identifier,
-      'My-Review': myReview?.toJson(),
-      'Stars': stars,
-      'Total-Ratings': totalRatings,
+      'Score': score,
+      'Total-Ratings': totalReviews,
     };
   }
 }

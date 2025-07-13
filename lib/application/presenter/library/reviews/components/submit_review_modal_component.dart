@@ -26,7 +26,7 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
   late final String? initialComment;
   late final TextEditingController? cTextField;
 
-  Review? review;
+  late Review review;
 
   @override
   initState() {
@@ -37,7 +37,7 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
     
     localizations = widget.localizations;
 
-    getUserReview();
+    getOwnReview();
   }
 
   @override
@@ -48,7 +48,7 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
     super.dispose();
   }
 
-  Future<void> getUserReview() async {
+  Future<void> getOwnReview() async {
     review = await widget.controller.getUserReview();
     
     initialComment = review!.comment;

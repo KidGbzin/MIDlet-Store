@@ -64,6 +64,8 @@ class _Controller {
   ///
   /// This method can be used to determine whether to proceed with automatic login or prompt the user to sign in manually.
   Future<bool> _hasCachedSession() async {
+    if (kDebugMode) return false;
+
     final GoogleSignInAuthentication? googleSignInAuthentication = await sGoogleOAuth.signInSilently();
       
     if (googleSignInAuthentication != null) {

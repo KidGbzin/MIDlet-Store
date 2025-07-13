@@ -5,13 +5,7 @@ class _RatingSection extends StatefulWidget {
   /// Controls the handler’s state and behavior logic.
   final _Controller controller;
 
-  /// Provides localized strings and messages based on the user’s language and region.
-  final AppLocalizations localizations;
-
-  const _RatingSection({
-    required this.controller,
-    required this.localizations,
-  });
+  const _RatingSection(this.controller);
 
   @override
   State<_RatingSection> createState() => __RatingSectionState();
@@ -21,29 +15,48 @@ class __RatingSectionState extends State<_RatingSection> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: widget.controller.nGameMetadata,
-      builder: (BuildContext context, GameMetadata? metadata, Widget? _) {
-        final Map<String, int> emptyStars = <String, int> {
-          "5": 0,
-          "4": 0,
-          "3": 0,
-          "2": 0,
-          "1": 0,
-        };
+    return FutureBuilder(
+      future: widget.controller.fetchRatingDistribution(),
+      builder: (BuildContext context, AsyncSnapshot<({double average, (int, int, int, int, int) ratings, int total})> snapshot) {
+        Widget leading = SizedBox.shrink();
+        bool isReady = false;
+        double average = 0;
+        (int, int, int, int, int) ratings = (0, 0, 0, 0, 0);
+        int total = 0;
     
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            ratings = snapshot.data!.ratings;
+            average = snapshot.data!.average;
+            total = snapshot.data!.total;
+
+            leading = score(average, total);
+          }
+          else {
+            Logger.error(
+              snapshot.error.toString(),
+              stackTrace: snapshot.stackTrace,
+            );
+
+            leading = error();
+          }
+
+          isReady = true;
+        }
+        else if (snapshot.connectionState == ConnectionState.waiting) {
+          leading = loading();
+        }
+        else {
+          Logger.error(
+            "Unhandled state: ${snapshot.connectionState}!",
+            stackTrace: snapshot.stackTrace,
+          );
+
+          leading = error();
+        }
         return InkWell(
           onTap: () {
-            if (metadata != null) {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (BuildContext context) => _SubmitRatingModal(
-                  controller: widget.controller,
-                  localizations: widget.localizations
-                ),
-              );
-            }
+            if (isReady) context.gtReviews(widget.controller.game);
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
@@ -58,28 +71,41 @@ class __RatingSectionState extends State<_RatingSection> {
                       switchInCurve: Curves.easeOutCubic,
                       switchOutCurve: Curves.easeInCubic,
                       duration: Durations.extralong4,
-                      child: metadata == null ? loading() : leadingScore(metadata.averageRating!, metadata.totalRatings!),
+                      child: leading,
                     ),
                   ),
                   Expanded(
-                    child: ratingBarsGraph(metadata == null ? emptyStars : metadata.stars!),
+                    child: body(total, ratings),
                   ),
                 ],
               ),
             ),
           ),
         );
-      }
+      },
     );
   }
 
-  Widget loading() => SizedBox.square(
-    key: Key("Loading"),
-    dimension: 95,
-    child: LoadingAnimation(),
-  );
+  Widget loading() {
+    return SizedBox.square(
+      key: Key("Loading"),
+      dimension: 95,
+      child: LoadingAnimation(),
+    );
+  }
 
-  Widget leadingScore(double averageRating, int ratingsCount) {
+  Widget error() {
+    return SizedBox.square(
+      key: Key("Error"),
+      dimension: 95,
+      child: Icon(
+        HugeIcons.strokeRoundedBug01,
+        color: Palettes.grey.value,
+      ),
+    );
+  }
+
+  Widget score(double rating, int total) {
     return SizedBox(
       key: Key("Leading-Score"),
       width: 95,
@@ -89,15 +115,15 @@ class __RatingSectionState extends State<_RatingSection> {
         spacing: 5,
         children: <Widget> [
           Text(
-            averageRating == 0 ? '-' : '$averageRating',
+            rating == 0 ? '-' : '$rating',
             style: TypographyEnumeration.rating(Palettes.elements).style,
           ),
           RatingStarsWidget(
-            rating: averageRating,
+            rating: rating,
             starSize: 17.5,
           ),
           Text(
-            '$ratingsCount',
+            '$total',
             style: TypographyEnumeration.body(Palettes.grey).style,
           ),
         ],
@@ -105,65 +131,31 @@ class __RatingSectionState extends State<_RatingSection> {
     );
   }
 
-  Widget ratingBarsGraph(Map<String, int> starsCount) {
-    final int totalRatings = (starsCount["5"]! + starsCount["4"]! + starsCount["3"]! + starsCount["2"]! + starsCount["1"]!);
-    
+  Widget body(int total, (int, int, int, int, int) ratings) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget> [
-        for (int index = 5; index >= 1; index --) starTile(
-          stars: index,
-          starRatingCount: starsCount["$index"]!,
-          totalRatingsCount: totalRatings,
-        ),
+        tile(5, ratings.$5, total),
+        tile(4, ratings.$4, total),
+        tile(3, ratings.$3, total),
+        tile(2, ratings.$2, total),
+        tile(1, ratings.$1, total),
       ],
     );
   }
 
-  Widget starTile({
-    required int stars,
-    required int starRatingCount,
-    required int totalRatingsCount,
-  }) {
-    final double percentage = totalRatingsCount == 0 ? 0 : starRatingCount / totalRatingsCount;
+  Widget tile(int stars, int count, int total) {
+    final double percentage = total == 0 ? 0 : count / total;
 
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Row(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget> [
-            RatingStarsWidget(
-              rating: stars.toDouble(),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                child: Stack(
-                  children: <Widget> [
-                    backgroundStarTile(),
-                    foregroundStarTile(percentage),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget backgroundStarTile() {
-    return Container(
+    Widget background = Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
         color: Palettes.foreground.value,
       ),
       height: 10,
     );
-  }
 
-  Widget foregroundStarTile(double percentage) {
-    return LayoutBuilder(
+    Widget foreground = LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Align(
           alignment: Alignment.centerLeft,
@@ -182,6 +174,27 @@ class __RatingSectionState extends State<_RatingSection> {
               ),
             ),
           ),
+        );
+      },
+    );
+
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget> [
+            RatingStarsWidget(
+              rating: stars.toDouble(),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                child: Stack(
+                  children: <Widget> [background, foreground],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

@@ -16,10 +16,14 @@ class Review {
   final String identifier;
 
   final String locale;
+
+  final int score;
   
   final int rating;
 
   final String updatedAt;
+
+  final int userVote;
 
   Review({
     required this.userKey,
@@ -27,16 +31,20 @@ class Review {
     required this.identifier,
     required this.locale,
     required this.rating,
+    required this.score,
     required this.updatedAt,
     required this.userName,
+    required this.userVote,
   });
 
   Review.noReview() :
     userKey = "",
+    userVote = 0,
     comment = "",
     identifier = "",
     locale = "",
     rating = 0,
+    score = 0,
     updatedAt = "",
     userName = "";
 
@@ -47,8 +55,10 @@ class Review {
       "key": identifier,
       'locale': locale,
       'rating': rating,
+      'score': score,
       "updated_at": updatedAt,
-      "user_name": userName,
+      "user_name": "@",
+      "user_vote": userVote,
     };
   }
 
@@ -58,9 +68,11 @@ class Review {
       identifier: require<String>(jString, "key")!,
       locale: require<String>(jString, "locale")!,
       rating: require<int>(jString, "rating")!,
+      score: require<int>(jString, "score")!,
       updatedAt: require<String>(jString, "updated_at")!,
-      userName: require<String>(jString, "user_name")!,
+      userName: "@",
       userKey: require<String>(jString, "user_key")!,
+      userVote: require<int>(jString, "user_vote")!,
     );
   }
 

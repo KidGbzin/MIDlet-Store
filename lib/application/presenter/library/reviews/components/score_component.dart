@@ -18,40 +18,23 @@ class _Score extends StatefulWidget {
 }
 
 class _ScoreState extends State<_Score> {
-  late final ValueNotifier<(int, int)?> nScore;
-
-  @override
-  void initState() {
-    super.initState();
-
-    nScore = ValueNotifier<(int, int)?>(null);
-
-    fetchScore();
-  }
-
-  @override
-  void dispose() {
-    nScore.dispose();
-    
-    super.dispose();
-  }
+  late final ValueNotifier<Review?> nReview = ValueNotifier<Review>(widget.review);
 
   Future<void> submitVote(int vote) async {
-    nScore.value = await widget.controller.submitVote(widget.review, vote);
-  }
-
-  Future<void> fetchScore() async {
-    nScore.value = await widget.controller.getReviewScore(widget.review);
+    if (nReview.value!.userVote == vote) return;
+    
+    nReview.value = null;
+    nReview.value = await widget.controller.submitVote(widget.review, vote);
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: nScore,
-      builder: (BuildContext context, (int, int)? score, Widget? _) {
+      valueListenable: nReview,
+      builder: (BuildContext context, Review? review, Widget? _) {
         Widget child;
 
-        if (score == null) {
+        if (review == null) {
           child = LoadingAnimation();
         }
 
@@ -61,7 +44,7 @@ class _ScoreState extends State<_Score> {
             spacing: 7.5,
             children: <Widget> [
               voteButton(
-                color: score.$2 == 1 ? Palettes.green.value : Palettes.grey.value,
+                color: review.userVote == 1 ? Palettes.green.value : Palettes.grey.value,
                 icon: HugeIcons.strokeRoundedThumbsUp,
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 1),
                 voteValue: 1,
@@ -70,13 +53,13 @@ class _ScoreState extends State<_Score> {
                 child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    score.$1.toString(),
+                    review.score.toString(),
                     style: TypographyEnumeration.number(Palettes.grey).style,
                   ),
                 ),
               ),
               voteButton(
-                color: score.$2 == -1 ? Palettes.red.value : Palettes.grey.value,
+                color: review.userVote == -1 ? Palettes.red.value : Palettes.grey.value,
                 icon: HugeIcons.strokeRoundedThumbsDown,
                 padding: EdgeInsets.fromLTRB(0, 1, 0, 0),
                 voteValue: -1,
@@ -112,12 +95,8 @@ class _ScoreState extends State<_Score> {
     assert(voteValue == 1 || voteValue == -1);
 
     return GestureDetector(
-      onTap: () {
-        if (nScore.value!.$2 != voteValue) {
-          nScore.value = null;
-          submitVote(voteValue);
-        }
-      },
+      behavior: HitTestBehavior.opaque,
+      onTap: () => submitVote(voteValue),
       child: Container(
         height: 35,
         padding: padding,

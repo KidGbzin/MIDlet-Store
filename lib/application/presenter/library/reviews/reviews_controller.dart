@@ -97,11 +97,8 @@ class _Controller {
   // 
   // MARK: Votes ⮟
 
-  /// Fetches the score (e.g., upvotes and downvotes) for a given review.
-  Future<(int, int)> getReviewScore(Review review) async => rSupabase.getScoreForReview(review);
-
   /// Submits or updates a vote for a given review.
-  Future<(int, int)> submitVote(Review review, int vote) async => rSupabase.upsertVoteForReview(review, vote);
+  Future<Review> submitVote(Review review, int vote) async => await rSupabase.upsertVoteForReview(review, vote);
 
   // MARK: -------------------------
   // 
@@ -114,12 +111,16 @@ class _Controller {
   /// If the cached review is missing, fetches it from the remote service and caches it.
   /// On error, logs the issue and returns a default empty review.
   Future<Review> getUserReview() async {
-    final GameMetadata metadata = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
-      identifier: game.identifier,
-    );
-
     try {
-      metadata.myReview ??= await rSupabase.getUserReviewForGame(game);
+      Review? review = await rSembast.boxCachedRequests.getOwnReview(game.identifier);
+
+      if (review == null) {
+        review = await rSupabase.getUserReviewForGame(game);
+
+        await rSembast.boxCachedRequests.putOwnReview(game.identifier, review ??= Review.noReview());
+      }
+
+      return review;
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -127,26 +128,30 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      metadata.myReview = Review.noReview();
+      return Review.noReview();
     }
-
-    await rSembast.boxCachedRequests.put(metadata);
-
-    return metadata.myReview!;
   }
 
-  /// Inserts or updates the user's rating for a game.
-  ///
-  /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
   Future<void> submitRating(BuildContext context, int rating, String body) async {
-    final GameMetadata metadata = await rSembast.boxCachedRequests.get(game.identifier) ?? GameMetadata(
-      identifier: game.identifier,
-    );
-
     try {
       final Review review = await rSupabase.upsertReviewForGame(game, rating, body);
 
-      metadata.myReview = review;
+      try {
+        final GameMetadata metadata = await rSupabase.getGameMetadataForGame(game);
+      
+        await rSembast.boxCachedRequests.putOwnReview(game.identifier, review);
+        await rSembast.boxCachedRequests.putMetadata(metadata);
+      }
+      catch (error, stackTrace) {
+        Logger.error(
+          '$error',
+          stackTrace: stackTrace,
+        );
+      }
+
+      refreshReviews(review);
+
+      cConfetti.play();
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -154,61 +159,19 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      return;
+      // TODO: Eu tenho que apresentar o erro ao usuário.
     }
-
-    try {
-      metadata.totalRatings = await rSupabase.countReviewsForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      metadata.totalRatings = 0;
-    }
-
-    try {
-      metadata.averageRating = await rSupabase.getAverageRatingForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      metadata.averageRating = 0.0;
-    }
-
-    try {
-      metadata.stars = await rSupabase.countRatingsByStarForGame(game);
-    }
-    catch (error, stackTrace) {
-      Logger.error(
-        '$error',
-        stackTrace: stackTrace,
-      );
-
-      metadata.stars = <String, int> {
-        "5": 0,
-        "4": 0,
-        "3": 0,
-        "2": 0,
-        "1": 0,
-      };
-    }
-  
-    await rSembast.boxCachedRequests.put(metadata);
-    updateLocalReview(metadata.myReview!);
-
+    
     if (context.mounted) context.pop();
 
-    cConfetti.play();
+    // TODO: Eu tenho que apresentar o sucesso ao usuário, para não apenas fechar a tela.
   }
 
-  /// Updates an existing review by identifier or inserts it at the start if not found.
-  void updateLocalReview(Review review) {
+  /// Updates an existing review in the list if it matches the given identifier.
+  /// If a matching review is not found, the new review is inserted at the start of the list.
+  /// 
+  /// This ensures that the latest review is always at the front if it's newly added.
+  void refreshReviews(Review review) {
     final List<Review> temporary = nReviews.value;
     final int index = temporary.indexWhere((r) => r.identifier == review.identifier);
 

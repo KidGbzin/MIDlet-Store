@@ -63,12 +63,12 @@ class Logger {
   /// - 37: White.
   static void _log(String message, String code, String emoji, StackTrace? stackTrace) {
     final String timestamp = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
-    final String caller = _caller(StackTrace.current).toUpperCase().padRight(34);
+    final String caller = _caller(StackTrace.current).toUpperCase();
     final String stack = stackTrace == null ? "" : "\n$stackTrace";
     final String text = "[ $timestamp | $caller ] : $message$stack";
 
     dart.log(
-      ": \x1b[${code}m$emoji $message\x1B[0m",
+      ": \x1b[${code}m$emoji $caller | $message\x1B[0m",
       name: " $timestamp ",
       stackTrace: stackTrace,
     );
