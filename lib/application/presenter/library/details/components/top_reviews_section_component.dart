@@ -110,7 +110,7 @@ class __TopReviewTile extends StatelessWidget {
               runSpacing: 7.5,
               children: <Widget> [
                 Text(
-                  "${review.flag} • ${review.userName.toUpperCase()}",
+                  "${review.flag} • ${review.nickname.toUpperCase()}",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TypographyEnumeration.headline(Palettes.elements).style,

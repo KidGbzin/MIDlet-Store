@@ -67,9 +67,9 @@ extension RouterExtension on BuildContext {
   }
 
   void gtReviews(Game game, {
-    bool? replace = false,
+    bool replace = false,
   }) {
-    if (replace == true) {
+    if (replace) {
       pushReplacement(
         '/reviews',
         extra: game,
@@ -84,9 +84,9 @@ extension RouterExtension on BuildContext {
   }
 
   void gtMIDlets(Game game, {
-    bool? replace = false,
+    bool replace = false,
   }) {
-    if (replace == true) {
+    if (replace) {
       pushReplacement(
         '/midlets',
         extra: game,
@@ -101,18 +101,15 @@ extension RouterExtension on BuildContext {
   }
 
   void gtHome({
-    bool? replace = false,
+    bool replace = false,
   }) {
-    if (replace == true) {
-      pushReplacement(
-        '/home',
-      );
-    }
-    else {
-      push(
-        '/home',
-      );
-    }
+    replace ? pushReplacement('/home') : push('/home');
+  }
+
+  void gtProfile({
+    bool replace = false,
+  }) {
+    replace ? pushReplacement('/profile') : push('/profile');
   }
 
   void gtUpdate() => pushReplacement('/update');

@@ -124,6 +124,35 @@
       "description": "Message shown for data parsing errors like format or conversion failures."
     },
 
+    "exPostgrestExceptionTitle": "Database Error",
+    "@exPostgrestExceptionTitle": {
+      "description": "Title shown when a PostgrestException occurs, usually due to a database-related failure."
+    },
+
+    "exPostgrestExceptionMessage": "An error occurred while communicating with the database. Please try again. If the problem continues, contact our support team.",
+    "@exPostgrestExceptionMessage": {
+      "description": "Message for database access issues such as query failures or constraint violations."
+    },
+
+    "exAuthExceptionTitle": "Authentication Failed",
+    "@exAuthExceptionTitle": {
+      "description": "Title shown when an AuthException occurs, usually due to invalid credentials or expired sessions."
+    },
+
+    "exAuthExceptionMessage": "There was a problem with your login session. Please sign in again.",
+    "@exAuthExceptionMessage": {
+      "description": "Message for authentication issues such as session expiration or invalid login tokens."
+    },
+
+    "exStateErrorTitle": "Application Error",
+    "@exStateErrorTitle": {
+      "description": "Title shown when a StateError occurs, typically caused by trying to access a state (like a progress indicator) that is not defined in the current view context."
+    },
+    "exStateErrorMessage": "The application encountered an unexpected situation due to a missing state. Please try again later. If the problem persists, contact our support team.",
+    "@exStateErrorMessage": {
+      "description": "Message shown when the app tries to access a state (e.g., progress) that isn't defined for the current view. Includes retry and support instructions."
+    },
+
     "exHttpExceptionTitle": "Server Unavailable",
     "@exHttpExceptionTitle": {
       "description": "Title shown when the server cannot provide the requested resource."

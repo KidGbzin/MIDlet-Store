@@ -49,17 +49,23 @@ class SupabaseRepository {
   ///
   /// This function calls the Supabase stored procedure `increment_downloads_for_game`, passing the game's unique identifier (`game.identifier`).
   /// If the game is not yet present in the metadata table, it will be inserted automatically with an initial download count of 1.
-  Future<int> incrementDownloadsForGame(Game game) async {
-    final int response = await supabase.client.rpc(
+  Future<GameMetadata> incrementDownloadsForGame(Game game) async {
+    final dynamic response = await supabase.client.rpc(
       "increment_downloads_for_game",
       params: <String, dynamic> {
         "p_game_key": game.identifier,
       },
+    ).single();
+
+    Logger.success("${game.fTitle} and user downloads count +1.");
+
+    return GameMetadata(
+      averageRating: (response['r_average_rating']), 
+      downloads: response['r_downloads'],
+      identifier: response['r_game_key'],
+      score: response['r_score'],
+      totalReviews: response['r_total_reviews'],
     );
-
-    Logger.success("${game.fTitle} downloads count +1.");
-
-    return response;
   }
 
   // MARK: Gets ⮟
@@ -75,8 +81,6 @@ class SupabaseRepository {
         "p_game_key": game.identifier,
       },
     ).single();
-
-    Logger.information(response.toString());
 
     final (int, int, int, int, int) ratings = (
       response['stars_1'] as int,
@@ -129,6 +133,51 @@ class SupabaseRepository {
     );
   }
 
+  Future<({
+    String identifier,
+    int downloads,
+    String nickname,
+  })> getProfileForUser(String? identifier) async {
+    dynamic response;
+    try {
+      response = await supabase.client.rpc(
+        "get_profile_for_user",
+        params: <String, dynamic> {
+          "p_user_key": identifier ?? supabase.client.auth.currentUser!.id,
+        },
+      ).single();
+    }
+    catch (error, stackTrace) {
+      await upsertProfileNickname("Anonymous");
+
+      response = await supabase.client.rpc(
+        "get_profile_for_user",
+        params: <String, dynamic> {
+          "p_user_key": identifier ?? supabase.client.auth.currentUser!.id,
+        },
+      ).single();
+    }
+
+    return (
+      identifier: response["r_user_key"] as String,
+      downloads: response["r_downloads"] as int,
+      nickname: response["r_nickname"] as String,
+    );
+  }
+
+  Future<bool> upsertProfileNickname(String nickname) async {
+    final dynamic response = await supabase.client.rpc(
+      "upsert_profile",
+      params: <String, dynamic> {
+        "p_nickname": nickname,
+      },
+    );
+
+    print(response);
+
+    return true;
+  } 
+
   /// Retrieves all user reviews for the specified [Game] from Supabase.
   ///
   /// This function calls the stored procedure `get_reviews_for_game`, passing the game's unique identifier (`game.identifier`).
@@ -144,6 +193,33 @@ class SupabaseRepository {
     Logger.success("${game.fTitle} total reviews: ${response.length}.");
 
     return response.map((review) => Review.fromJson(review as Map<String, dynamic>)).toList();
+  }
+
+  Future<List<Review>> getReviewsByUser(String identifier, {int limit = 0}) async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "get_reviews_for_user_limited",
+      params: <String, dynamic> {
+        "p_user_key": identifier,
+        "p_limit": limit,
+      }
+    );
+
+    Logger.success("User total reviews: ${response.length}.");
+
+    return response.map((review) {
+      return Review(
+        comment: review['r_comment'] as String,
+        identifier: review['r_key'] as String,
+        locale: review['r_locale'] as String,
+        gameKey: review['r_game_key'] as int,
+        nickname: review['r_nickname'],
+        rating: review['r_rating'],
+        score: review['r_score'],
+        userKey: review['r_user_key'],
+        updatedAt: review['r_updated_at'],
+        userVote: review['r_user_vote'],
+      );
+    }).toList();
   }
 
   Future<List<Review>> getTop3ReviewsForGame(Game game) async {

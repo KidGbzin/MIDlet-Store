@@ -1,6 +1,16 @@
 part of '../login/login_handler.dart';
 
-class _Controller {
+enum _States {
+  requestSignIn,
+  isLoading,
+  isReady,
+  noProfile,
+}
+
+class _Controller implements IController {
+
+  /// Handles main database interactions, including fetching and updating game data, ratings, and related metadata.
+  final SupabaseRepository rSupabase;
   
   /// Manages Firebase Cloud Messaging operations, including notification handling and token management.
   final FirebaseMessagingService sFirebaseMessaging;
@@ -12,38 +22,47 @@ class _Controller {
   final SupabaseService sSupabase;
 
   _Controller({
+    required this.rSupabase,
     required this.sFirebaseMessaging,
     required this.sGoogleOAuth,
     required this.sSupabase,
   });
 
-  late final ValueNotifier<({Progresses progress, Object? error})> nProgress;
+  @override
+  void dispose() {
+    nProgress.dispose();
+  }
 
-  /// Initializes the handler’s core services and state notifiers.
-  ///
-  /// This method must be called from the `initState` of the handler widget.
-  /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
-  Future<void> initialize(BuildContext context) async {
-    nProgress = ValueNotifier((
-      progress: Progresses.isLoading,
-      error: null,
-    ));
-
+  @override
+  Future<void> initialize() async {
     try {
       final bool hasCachedSession = await _hasCachedSession();
 
       if (hasCachedSession) {
         await sFirebaseMessaging.registerToken();
 
-        nProgress.value = (progress: Progresses.isFinished, error: null);
+        nProgress.value = (
+          state: Progresses.isReady,
+          error: null,
+        );
 
         return;
       }
 
-      nProgress.value = (progress: Progresses.requestSignIn, error: null);
+      nProgress.value = (
+        state: Progresses.isReady,
+        error: null,
+      );
+      nLoginState.value = (
+        state: _States.requestSignIn,
+        error: null,
+      );
     }
     catch (error, stackTrace) {
-      nProgress.value = (progress: Progresses.hasError, error: error);
+      nProgress.value = (
+        state: Progresses.hasError,
+        error: error,
+      );
       
       Logger.error(
         "$error",
@@ -52,10 +71,62 @@ class _Controller {
     }
   }
 
-  /// Disposes the handler’s resources and notifiers.
-  ///
-  /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
-  void dispose() => nProgress.dispose();
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Notifiers ⮟
+
+  final ValueNotifier<({
+    Progresses state,
+    Object? error,
+  })> nProgress = ValueNotifier((
+    state: Progresses.isLoading,
+    error: null,
+  ));
+
+  final ValueNotifier<({
+    _States state,
+    Object? error,
+  })> nLoginState = ValueNotifier((
+    state: _States.isLoading,
+    error: null,
+  ));
+
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Profile ⮟
+
+  Future<void> checkProfile() async {
+    try {
+      await rSupabase.getProfileForUser(null);
+
+      nLoginState.value = (
+        state: _States.isReady,
+        error: null,
+      );
+    }
+    on PostgrestException catch (_) {
+      nLoginState.value = (
+        state: _States.noProfile,
+        error: null,
+      );
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Login ⮟
 
   /// Attempts to restore a cached user session via silent Google Sign-In.
   ///
@@ -81,12 +152,14 @@ class _Controller {
 
   /// Initiates the manual Google Sign-In flow and logs the user into Supabase.
   ///
-  /// If the sign-in is successful, navigates to the `Search` view.
+  /// If the sign-in is successful, navigates to the `Home` view.
   /// If the sign-in is cancelled or fails, the error is logged.
   ///
   /// This method requires a [BuildContext] to perform navigation upon successful login.
   Future<void> googleSignIn(BuildContext context) async {
     try {
+      nLoginState.value = (state: _States.isLoading, error: null);
+
       final GoogleSignInAuthentication? authentication = await sGoogleOAuth.signIn();
 
       if (authentication == null) return;
@@ -98,11 +171,9 @@ class _Controller {
 
       await sFirebaseMessaging.registerToken();
 
-      nProgress.value = (progress: Progresses.isFinished, error: null);
+      nLoginState.value = (state: _States.isReady, error: null);
     }
     catch (error, stackTrace) {
-      nProgress.value = (progress: Progresses.hasError, error: error);
-
       Logger.error(
         "$error",
         stackTrace: stackTrace,
@@ -110,6 +181,11 @@ class _Controller {
     }
   }
 
+  // MARK: -------------------------
+  // 
+  // 
+  // 
+  // MARK: Notifications ⮟
   void handleNotificationMessage(BuildContext context) {
     try {
       final RemoteMessage? message = sFirebaseMessaging.message;

@@ -97,6 +97,36 @@
       "description": "Pesan umum untuk kesalahan tak terduga yang tidak sesuai dengan jenis pengecualian yang dikenal."
     },
 
+    "exPostgrestExceptionTitle": "Kesalahan Basis Data",
+    "@exPostgrestExceptionTitle": {
+      "description": "Judul ditampilkan saat terjadi PostgrestException, biasanya karena kegagalan yang berhubungan dengan basis data."
+    },
+
+    "exPostgrestExceptionMessage": "Terjadi kesalahan saat mengakses basis data. Silakan coba lagi. Jika masalah berlanjut, hubungi tim dukungan kami.",
+    "@exPostgrestExceptionMessage": {
+      "description": "Pesan untuk masalah akses basis data seperti kegagalan kueri atau pelanggaran batasan."
+    },
+
+    "exAuthExceptionTitle": "Gagal Autentikasi",
+    "@exAuthExceptionTitle": {
+      "description": "Judul ditampilkan saat terjadi AuthException, biasanya karena kredensial tidak valid atau sesi kedaluwarsa."
+    },
+
+    "exAuthExceptionMessage": "Terjadi masalah dengan sesi login Anda. Silakan masuk kembali.",
+    "@exAuthExceptionMessage": {
+      "description": "Pesan untuk masalah autentikasi seperti sesi yang kedaluwarsa atau token login yang tidak valid."
+    },
+
+    "exStateErrorTitle": "Kesalahan Aplikasi",
+    "@exStateErrorTitle": {
+      "description": "Judul ditampilkan saat terjadi StateError, biasanya karena mencoba mengakses state (seperti progress) yang tidak tersedia dalam konteks tampilan saat ini."
+    },
+
+    "exStateErrorMessage": "Aplikasi mengalami keadaan yang tidak terduga karena state yang hilang. Silakan coba lagi nanti. Jika masalah berlanjut, hubungi tim dukungan kami.",
+    "@exStateErrorMessage": {
+      "description": "Pesan ditampilkan saat aplikasi mencoba mengakses state (misalnya progress) yang tidak tersedia untuk tampilan saat ini. Termasuk instruksi untuk mencoba ulang dan menghubungi dukungan."
+    },
+
     "hdReviews": "ULASAN",
     "@hdReviews": {
         "description": "Judul halaman yang ditampilkan di AppBar untuk halaman ulasan."

@@ -2,8 +2,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:midlet_store/application/core/configuration/global_configuration.dart';
 import 'package:midlet_store/application/presenter/widgets/error_message_widget.dart';
+import 'package:midlet_store/application/presenter/widgets/gradient_button_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
 
@@ -15,11 +20,14 @@ import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../core/extensions/router_extension.dart';
 
+import '../../../interfaces/controller_interface.dart';
+import '../../../repositories/supabase_repository.dart';
 import '../../../services/google_authentication_service.dart';
 import '../../../services/firebase_messaging_service.dart';
 import '../../../services/supabase_service.dart';
 
 import '../../widgets/button_widget.dart';
+import '../../widgets/handler_widget.dart';
 import '../../widgets/loading_widget.dart';
 
 part '../login/components/google_sign_in_button.dart';
@@ -39,6 +47,7 @@ class _LoginState extends State<Login> {
   late final _Controller controller;
   late final AppLocalizations localizations;
 
+  late final SupabaseRepository rSupabase;
   late final FirebaseMessagingService sFirebaseMessaging;
   late final GoogleOAuthService sGoogleOAuth;
   late final SupabaseService sSupabase;
@@ -49,6 +58,10 @@ class _LoginState extends State<Login> {
 
     Logger.start("Initializing the Login handler...");
 
+    rSupabase = Provider.of<SupabaseRepository>(
+      context,
+      listen: false,
+    );
     sFirebaseMessaging = Provider.of<FirebaseMessagingService>(
       context,
       listen: false,
@@ -63,11 +76,11 @@ class _LoginState extends State<Login> {
     );
 
     controller = _Controller(
+      rSupabase: rSupabase,
       sFirebaseMessaging: sFirebaseMessaging,
       sGoogleOAuth: sGoogleOAuth,
       sSupabase: sSupabase,
-    );
-    controller.initialize(context);
+    )..initialize();
   }
 
   @override
@@ -87,8 +100,8 @@ class _LoginState extends State<Login> {
   }
 
   @override
-  Widget build(BuildContext context) => _LoginView(
-    controller: controller,
-    localizations: localizations,
+  Widget build(BuildContext context) => Handler(
+    nProgress: controller.nProgress,
+    onReady: _LoginView(controller),
   );
 }

@@ -97,6 +97,36 @@
       "description": "Mensagem genérica para erros inesperados que não se encaixam em tipos conhecidos."
     },
 
+    "exPostgrestExceptionTitle": "Erro no Banco de Dados",
+    "@exPostgrestExceptionTitle": {
+      "description": "Título exibido quando ocorre um PostgrestException, geralmente devido a uma falha no banco de dados."
+    },
+
+    "exPostgrestExceptionMessage": "Ocorreu um erro ao se comunicar com o banco de dados. Por favor, tente novamente. Se o problema persistir, entre em contato com o suporte.",
+    "@exPostgrestExceptionMessage": {
+      "description": "Mensagem para falhas no acesso ao banco de dados, como erros de consulta ou violação de restrições."
+    },
+    
+    "exAuthExceptionTitle": "Falha na Autenticação",
+    "@exAuthExceptionTitle": {
+      "description": "Título exibido quando ocorre um AuthException, geralmente devido a credenciais inválidas ou sessões expiradas."
+    },
+
+    "exAuthExceptionMessage": "Houve um problema com sua sessão. Por favor, entre novamente.",
+    "@exAuthExceptionMessage": {
+      "description": "Mensagem para problemas de autenticação, como sessão expirada ou token inválido."
+    },
+
+    "exStateErrorTitle": "Erro na Aplicação",
+    "@exStateErrorTitle": {
+      "description": "Título exibido quando ocorre um StateError, geralmente causado por tentativa de acessar um estado (como um progresso) que não está definido no contexto da view atual."
+    },
+
+    "exStateErrorMessage": "O aplicativo encontrou uma situação inesperada ao tentar acessar um estado ausente. Tente novamente mais tarde. Se o problema persistir, entre em contato com o suporte.",
+    "@exStateErrorMessage": {
+      "description": "Mensagem exibida quando o app tenta acessar um estado (por exemplo, progresso) que não está definido para a view atual. Inclui instruções para tentar novamente e contatar o suporte."
+    },
+
     "hdReviews": "AVALIAÇÕES",
     "@hdReviews": {
         "description": "Título da tela exibido na AppBar da página de avaliações."

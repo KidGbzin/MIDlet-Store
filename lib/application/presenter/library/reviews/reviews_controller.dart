@@ -173,7 +173,7 @@ class _Controller {
   /// This ensures that the latest review is always at the front if it's newly added.
   void refreshReviews(Review review) {
     final List<Review> temporary = nReviews.value;
-    final int index = temporary.indexWhere((r) => r.identifier == review.identifier);
+    final int index = temporary.indexWhere((r) => r.gameKey == review.gameKey);
 
     if (index != -1) {
       temporary[index] = review;

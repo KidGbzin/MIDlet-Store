@@ -21,8 +21,9 @@ class _ViewState extends State<_View> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget> [
-            SizedBox.square(
-              dimension: 40,
+            ButtonWidget.icon(
+              icon: HugeIcons.strokeRoundedProfile02,
+              onTap: () => context.gtProfile(),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 1, 0, 0),

@@ -9,9 +9,11 @@ class Review {
 
   final String userKey;
 
-  final String userName;
+  final String nickname;
 
   final String comment;
+
+  final int gameKey;
 
   final String identifier;
 
@@ -28,12 +30,13 @@ class Review {
   Review({
     required this.userKey,
     required this.comment,
+    required this.gameKey,
     required this.identifier,
     required this.locale,
     required this.rating,
     required this.score,
     required this.updatedAt,
-    required this.userName,
+    required this.nickname,
     required this.userVote,
   });
 
@@ -41,23 +44,25 @@ class Review {
     userKey = "",
     userVote = 0,
     comment = "",
+    gameKey = 0,
     identifier = "",
     locale = "",
     rating = 0,
     score = 0,
     updatedAt = "",
-    userName = "";
+    nickname = "";
 
   Map<String, dynamic> toJson() {
     return <String, dynamic> {
       "user_key": userKey,
       "comment": comment,
+      "game_key": gameKey,
       "key": identifier,
       'locale': locale,
       'rating': rating,
       'score': score,
       "updated_at": updatedAt,
-      "user_name": "@",
+      "nickname": nickname,
       "user_vote": userVote,
     };
   }
@@ -66,11 +71,12 @@ class Review {
     return Review(
       comment: require<String>(jString, "comment")!,
       identifier: require<String>(jString, "key")!,
+      gameKey: require<int>(jString, "game_key")!,
       locale: require<String>(jString, "locale")!,
       rating: require<int>(jString, "rating")!,
       score: require<int>(jString, "score")!,
       updatedAt: require<String>(jString, "updated_at")!,
-      userName: "@",
+      nickname: require<String>(jString, "nickname")!,
       userKey: require<String>(jString, "user_key")!,
       userVote: require<int>(jString, "user_vote")!,
     );
