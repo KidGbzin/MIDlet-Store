@@ -95,23 +95,6 @@ class SupabaseRepository {
     return ratings;
   }
 
-  /// Retrieves the average rating for a given game from Supabase.
-  ///
-  /// This function calls the stored procedure `get_average_rating_for_game` on Supabase, passing the game's unique identifier (`game.identifier`).
-  /// The procedure returns the current average rating as a `double`.
-  Future<double> getAverageRatingForGame(Game game) async {
-    final double response = await supabase.client.rpc(
-      "get_average_rating_for_game",
-      params: <String, dynamic> {
-        "p_game_key": game.identifier,
-      },
-    );
-
-    Logger.success("${game.fTitle} average rating: ${response.toStringAsFixed(2)}.");
-
-    return response;
-  }
-
   Future<GameMetadata> getGameMetadataForGame(Game game) async {
     final List<dynamic> response = await supabase.client.rpc(
       "get_game_metadata_for_game",
@@ -206,20 +189,7 @@ class SupabaseRepository {
 
     Logger.success("User total reviews: ${response.length}.");
 
-    return response.map((review) {
-      return Review(
-        comment: review['r_comment'] as String,
-        identifier: review['r_key'] as String,
-        locale: review['r_locale'] as String,
-        gameKey: review['r_game_key'] as int,
-        nickname: review['r_nickname'],
-        rating: review['r_rating'],
-        score: review['r_score'],
-        userKey: review['r_user_key'],
-        updatedAt: review['r_updated_at'],
-        userVote: review['r_user_vote'],
-      );
-    }).toList();
+    return response.map((review) => Review.fromJson(review as Map<String, dynamic>)).toList();
   }
 
   Future<List<Review>> getTop3ReviewsForGame(Game game) async {
@@ -310,20 +280,23 @@ class SupabaseRepository {
   ///
   /// If a rating already exists for the user and game, it will be updated.
   /// Otherwise, a new rating entry will be created.
-  Future<Review> upsertReviewForGame(Game game, int rating, String comment) async {
-    final List<dynamic> response = await supabase.client.rpc(
+  Future<Review> upsertReviewForGame(Game game, Review review) async {
+    final dynamic response = await supabase.client.rpc(
       "upsert_review_for_game",
       params: <String, dynamic> {
         "p_game_key": game.identifier,
-        "p_rating": rating,
-        "p_comment": comment,
+        "p_rating": review.rating,
+        "p_comment": review.comment,
+        "p_difficulty": review.difficulty,
+        "p_time_spent": review.playthroughTime,
+        "p_completion_level": review.completionLevel,
         "p_locale": PlatformDispatcher.instance.locale.toString(),
       },
-    );
+    ).single();
 
     Logger.success("Upserted review!");
 
-    return Review.fromJson(response.first);
+    return Review.fromJson(response);
   }
 
   Future<Review> upsertVoteForReview(Review review, int vote) async {
@@ -335,8 +308,22 @@ class SupabaseRepository {
       },
     ).single();
 
-    Logger.success("Submited vote!: $vote.");
+    Logger.success("Submited vote: $vote.");
 
-    return Review.fromJson(response);
+    return Review(
+      comment: response["r_comment"],
+      identifier: response["r_key"],
+      locale: response["r_locale"],
+      gameKey: response["r_game_key"],
+      nickname: response["r_nickname"],
+      rating: response["r_rating"],
+      score: response["r_score"],
+      userKey: response["r_user_key"],
+      updatedAt: response["r_updated_at"],
+      userVote: response["r_user_vote"],
+      difficulty: response["r_difficulty"],
+      playthroughTime: response["r_time_spent"],
+      completionLevel: response["r_completion_level"],
+    );
   }
 }

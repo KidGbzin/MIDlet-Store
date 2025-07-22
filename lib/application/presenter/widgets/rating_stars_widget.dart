@@ -87,3 +87,4 @@ class _Star extends StatelessWidget {
     );
   }
 }
+

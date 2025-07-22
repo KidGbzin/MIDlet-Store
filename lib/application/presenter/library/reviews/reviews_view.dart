@@ -1,25 +1,23 @@
 part of '../reviews/reviews_handler.dart';
 
-class _View extends StatelessWidget {
+class _View extends StatefulWidget {
 
   /// Controls the handler’s state and behavior logic.
   final _Controller controller;
 
-  /// Provides localized strings and messages based on the user’s language and region.
-  final AppLocalizations localizations;
+  const _View(this.controller);
 
-  const _View({
-    required this.controller,
-    required this.localizations,
-  });
+  @override
+  State<_View> createState() => _ViewState();
+}
+
+class _ViewState extends State<_View> {
+  late final AppLocalizations l10n = AppLocalizations.of(context)!;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: _SubmitReviewButton(
-        controller: controller,
-        localizations: localizations,
-      ),
+      floatingActionButton: _FloatingButton(widget.controller),
       floatingActionButtonLocation: gFABPadding,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -34,7 +32,7 @@ class _View extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 1, 0, 0),
               child: Text(
-                localizations.hdReviews,
+                l10n.hdReviews,
                 style: TypographyEnumeration.headline(Palettes.elements).style,
               ),
             ),
@@ -44,23 +42,7 @@ class _View extends StatelessWidget {
           ],
         ),
       ),
-      body: ValueListenableBuilder(
-        valueListenable: controller.nState,
-        builder: (BuildContext context, Progresses state, Widget? _) {
-          if (state == Progresses.isReady) {
-            return _ListView(
-              controller: controller,
-              localizations: localizations,
-            );
-          }
-          else if (state == Progresses.isLoading) {
-            return Center(child: LoadingAnimation());
-          }
-          else {
-            return SizedBox(); // TODO errors e colocar texto quando vazio
-          }
-        },
-      ),
+      body: _ReviewsList(widget.controller),
     );
   }
 }

@@ -1,21 +1,24 @@
 part of '../reviews_handler.dart';
 
-class _ReviewTile extends StatelessWidget {
+class _ReviewTile extends StatefulWidget {
 
   /// Controls the handler’s state and behavior logic.
   final _Controller controller;
-
-  /// Provides localized strings and messages based on the user’s language and region.
-  final AppLocalizations localizations;
 
   /// Contains the user's review data, such as rating, comment, and metadata.
   final Review review;
 
   const _ReviewTile({
     required this.controller,
-    required this.localizations,
     required this.review,
   });
+
+  @override
+  State<_ReviewTile> createState() => _ReviewTileState();
+}
+
+class _ReviewTileState extends State<_ReviewTile> {
+  late final AppLocalizations l10n = AppLocalizations.of(context)!;
 
   @override
   Widget build(BuildContext context) {
@@ -23,41 +26,52 @@ class _ReviewTile extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
       child: Column(
         spacing: 7.5,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget> [
-          Wrap(
-            alignment: WrapAlignment.start,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            direction: Axis.horizontal,
+          Row(
             spacing: 7.5,
-            runSpacing: 7.5,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget> [
               Text(
-                "${review.flag} • ${review.nickname.toUpperCase()}",
+                "${widget.review.flag} • ${widget.review.nickname.toUpperCase()}",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TypographyEnumeration.headline(Palettes.elements).style,
               ),
-              Text(
-                review.fRelativeDate,
-                style: TypographyEnumeration.body(Palettes.grey).style,
+              const Spacer(),
+              Icon(
+                HugeIcons.strokeRoundedArrowRight01,
+                color: Palettes.elements.value,
+                size: gIconSmall,
               ),
             ],
           ),
-          RatingStarsWidget(
-            rating: review.rating.toDouble(),
+          Text(
+            widget.review.fRelativeDate,
+            style: TypographyEnumeration.body(Palettes.grey).style,
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 7.5, 0, 0),
-            child: Text(
-              review.fBody(localizations),
-              style: TypographyEnumeration.body(Palettes.elements).style,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget> [
+              Rating.star(widget.review.rating),
+              Text(
+                " / ",
+                style: TypographyEnumeration.body(Palettes.grey).style,
+              ),
+              Rating.difficulty(widget.review.difficulty),
+              Text(
+                " / ",
+                style: TypographyEnumeration.body(Palettes.grey).style,
+              ),
+              Rating.playthroughTime(widget.review.playthroughTime),
+            ],
           ),
-          _Score(
-            controller: controller,
-            review: review,
+          Text(
+            widget.review.fBody(l10n),
+            style: TypographyEnumeration.body(Palettes.elements).style,
           ),
+          // _Score(controller: widget.controller, review: widget.review),
         ],
       ),
     );

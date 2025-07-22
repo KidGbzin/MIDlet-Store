@@ -1,6 +1,6 @@
 part of '../reviews/reviews_handler.dart';
 
-class _Controller {
+class _Controller implements IController {
 
   /// Controls and triggers confetti animations for visual feedback or celebration effects.
   final ConfettiController cConfetti;
@@ -31,19 +31,16 @@ class _Controller {
   // 
   // MARK: Initialization ⮟
 
-  /// Initializes the handler’s core services and state notifiers.
-  ///
-  /// This method must be called from the `initState` of the handler widget.
-  /// It prepares essential services and, if necessary, manages the initial navigation flow based on the current application state.
+  @override
   Future<void> initialize() async {
     try {
       sAdMob.clear(Views.reviews);
 
-      nState = ValueNotifier<Progresses>(Progresses.isLoading);
-      nReviews = ValueNotifier<List<Review>>(List.empty());
-
       nReviews.value = await rSupabase.getReviewsForGame(game);
-      nState.value = Progresses.isReady;
+      nProgress.value = (
+        state: Progresses.isReady,
+        error: null,
+      );
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -51,15 +48,16 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      nState.value = Progresses.hasError;
+      nProgress.value = (
+        state: Progresses.hasError,
+        error: error,
+      );
     }
   }
 
-  /// Disposes the handler’s resources and notifiers.
-  ///
-  /// This method must be called from the `dispose` method of the handler widget to ensure proper cleanup and prevent memory leaks.
+  @override
   void dispose() {
-    nState.dispose();
+    nProgress.dispose();
     nReviews.dispose();
 
     sAdMob.clear(Views.reviews);
@@ -72,10 +70,16 @@ class _Controller {
   // MARK: Notifiers ⮟
 
   /// Notifies listeners about changes in the current progress state of the handler.
-  late final ValueNotifier<Progresses> nState;
+  late final ValueNotifier<({
+    Progresses state,
+    Object? error,
+  })> nProgress = ValueNotifier((
+    state: Progresses.isLoading,
+    error: null,
+  ));
   
   /// Holds and notifies listeners about the current list of user reviews.
-  late final ValueNotifier<List<Review>> nReviews;
+  late final ValueNotifier<List<Review>> nReviews = ValueNotifier(<Review> []);
 
   // MARK: -------------------------
   // 
@@ -117,7 +121,7 @@ class _Controller {
       if (review == null) {
         review = await rSupabase.getUserReviewForGame(game);
 
-        await rSembast.boxCachedRequests.putOwnReview(game.identifier, review ??= Review.noReview());
+        await rSembast.boxCachedRequests.putOwnReview(game.identifier, review ??= Review.empty());
       }
 
       return review;
@@ -128,50 +132,48 @@ class _Controller {
         stackTrace: stackTrace,
       );
 
-      return Review.noReview();
+      return Review.empty();
     }
   }
 
-  Future<void> submitRating(BuildContext context, int rating, String body) async {
+  /// Submits a new review or updates an existing one for the current game.
+  ///
+  /// Sends the review to the remote service and updates the local cache with the updated review and refresh the current reviews list.
+  Future<void> submitReview(Review review) async {
+    final Review updatedReview = await rSupabase.upsertReviewForGame(game, review);
+
     try {
-      final Review review = await rSupabase.upsertReviewForGame(game, rating, body);
+      final GameMetadata metadata = await rSupabase.getGameMetadataForGame(game);
+    
+      await rSembast.boxCachedRequests.putOwnReview(game.identifier, updatedReview);
+      await rSembast.boxCachedRequests.putMetadata(metadata);
+    }
 
-      try {
-        final GameMetadata metadata = await rSupabase.getGameMetadataForGame(game);
-      
-        await rSembast.boxCachedRequests.putOwnReview(game.identifier, review);
-        await rSembast.boxCachedRequests.putMetadata(metadata);
-      }
-      catch (error, stackTrace) {
-        Logger.error(
-          '$error',
-          stackTrace: stackTrace,
-        );
-      }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+    }
 
-      refreshReviews(review);
-
-      cConfetti.play();
+    try {
+      _refreshReviews(updatedReview);
     }
     catch (error, stackTrace) {
       Logger.error(
         '$error',
         stackTrace: stackTrace,
       );
-
-      // TODO: Eu tenho que apresentar o erro ao usuário.
     }
     
-    if (context.mounted) context.pop();
-
-    // TODO: Eu tenho que apresentar o sucesso ao usuário, para não apenas fechar a tela.
+    cConfetti.play();
   }
 
   /// Updates an existing review in the list if it matches the given identifier.
   /// If a matching review is not found, the new review is inserted at the start of the list.
   /// 
   /// This ensures that the latest review is always at the front if it's newly added.
-  void refreshReviews(Review review) {
+  void _refreshReviews(Review review) {
     final List<Review> temporary = nReviews.value;
     final int index = temporary.indexWhere((r) => r.gameKey == review.gameKey);
 

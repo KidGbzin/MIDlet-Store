@@ -13,16 +13,24 @@ import '../../core/enumerations/typographies_enumeration.dart';
 
 import '../widgets/loading_widget.dart';
 
-
 class Handler extends StatefulWidget {
 
   final ValueNotifier<({Progresses state, Object? error})> nProgress;
 
   final Widget onReady;
 
+  final bool isWidget;
+
+  final Future<void> Function()? initialize; // TODO: Set this on every view.
+
+  final List<Widget> actions;
+
   const Handler({
     required this.nProgress,
     required this.onReady,
+    this.isWidget = false,
+    this.initialize,
+    this.actions = const [],
     super.key,
   });
 
@@ -31,17 +39,19 @@ class Handler extends StatefulWidget {
 }
 
 class _HandlerState extends State<Handler> {
-  late final AppLocalizations l10n;
+  late final AppLocalizations l10n = AppLocalizations.of(context)!;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
-    l10n = AppLocalizations.of(context)!;
+    if (widget.initialize != null) widget.initialize!();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isWidget) return builder();
+
     return Scaffold(
       body: builder(),
     );
@@ -54,9 +64,39 @@ class _HandlerState extends State<Handler> {
         if (progress.state == Progresses.isReady) return widget.onReady;
         if (progress.state == Progresses.isLoading) return onLoading();
         if (progress.state == Progresses.hasError) return onError(progress.error);
+        if (progress.state == Progresses.isFinished) return onFinished();
 
         return onError(progress.error);
       }
+    );
+  }
+
+  Widget onFinished() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(25, 15, 25, 15),
+      child: Align(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 15,
+          children: <Widget> [
+            Text(
+              "SUCCESS".toUpperCase(),
+              style: TypographyEnumeration.headline(Palettes.elements).style,
+            ),
+            HugeIcon(
+              icon: HugeIcons.strokeRoundedCheckmarkBadge01,
+              color: Palettes.grey.value,
+            ),
+            Text(
+              "Review submitted successfully!",
+              style: TypographyEnumeration.body(Palettes.elements).style,
+              textAlign: TextAlign.center,
+            ),
+            if (widget.actions.isNotEmpty) showActions(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -73,7 +113,7 @@ class _HandlerState extends State<Handler> {
   Widget onError(Object? error) {
     error ??= StateError("Error was null!");
 
-    final (String title, String message) = localizeError(error);
+    final (String title, String message) = l10nError(error);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(25, 15, 25, 15),
@@ -96,13 +136,22 @@ class _HandlerState extends State<Handler> {
               style: TypographyEnumeration.body(Palettes.elements).style,
               textAlign: TextAlign.center,
             ),
+            if (widget.actions.isNotEmpty) showActions(),
           ],
         ),
       ),
     );
   }
 
-  (String title, String message) localizeError(Object error) {
+  Widget showActions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 15,
+      children: widget.actions,
+    );
+  }
+
+  (String title, String message) l10nError(Object error) {
     if (error is StateError) return (l10n.exStateErrorTitle, l10n.exStateErrorMessage);
     if (error is AuthException) return (l10n.exAuthExceptionTitle, l10n.exAuthExceptionMessage);
     if (error is PostgrestException) return (l10n.exPostgrestExceptionTitle, l10n.exPostgrestExceptionMessage);

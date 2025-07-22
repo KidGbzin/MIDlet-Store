@@ -27,6 +27,12 @@ class Review {
 
   final int userVote;
 
+  final int difficulty;
+
+  final int playthroughTime;
+
+  final int completionLevel;
+
   Review({
     required this.userKey,
     required this.comment,
@@ -38,9 +44,44 @@ class Review {
     required this.updatedAt,
     required this.nickname,
     required this.userVote,
+    required this.difficulty,
+    required this.playthroughTime,
+    required this.completionLevel,
   });
 
-  Review.noReview() :
+   Review copyWith({
+    String? userKey,
+    String? comment,
+    int? gameKey,
+    String? identifier,
+    String? locale,
+    int? rating,
+    int? score,
+    String? updatedAt,
+    String? nickname,
+    int? userVote,
+    int? difficulty,
+    int? timeSpent,
+    int? completionLevel,
+  }) {
+    return Review(
+      userKey: userKey ?? this.userKey,
+      comment: comment ?? this.comment,
+      gameKey: gameKey ?? this.gameKey,
+      identifier: identifier ?? this.identifier,
+      locale: locale ?? this.locale,
+      rating: rating ?? this.rating,
+      score: score ?? this.score,
+      updatedAt: updatedAt ?? this.updatedAt,
+      nickname: nickname ?? this.nickname,
+      userVote: userVote ?? this.userVote,
+      difficulty: difficulty ?? this.difficulty,
+      playthroughTime: timeSpent ?? this.playthroughTime,
+      completionLevel: completionLevel ?? this.completionLevel,
+    );
+  }
+
+  Review.empty() :
     userKey = "",
     userVote = 0,
     comment = "",
@@ -50,35 +91,44 @@ class Review {
     rating = 0,
     score = 0,
     updatedAt = "",
+    difficulty = 0,
+    playthroughTime = 0,
+    completionLevel = 0,
     nickname = "";
 
   Map<String, dynamic> toJson() {
     return <String, dynamic> {
-      "user_key": userKey,
-      "comment": comment,
-      "game_key": gameKey,
-      "key": identifier,
-      'locale': locale,
-      'rating': rating,
-      'score': score,
-      "updated_at": updatedAt,
-      "nickname": nickname,
-      "user_vote": userVote,
+      "r_user_key": userKey,
+      "r_comment": comment,
+      "r_game_key": gameKey,
+      "r_key": identifier,
+      'r_locale': locale,
+      'r_rating': rating,
+      'r_score': score,
+      "r_updated_at": updatedAt,
+      "r_nickname": nickname,
+      "r_user_vote": userVote,
+      "r_difficulty": difficulty,
+      "r_time_spent": playthroughTime,
+      "r_completion_level": completionLevel
     };
   }
 
   factory Review.fromJson(dynamic jString) {
     return Review(
-      comment: require<String>(jString, "comment")!,
-      identifier: require<String>(jString, "key")!,
-      gameKey: require<int>(jString, "game_key")!,
-      locale: require<String>(jString, "locale")!,
-      rating: require<int>(jString, "rating")!,
-      score: require<int>(jString, "score")!,
-      updatedAt: require<String>(jString, "updated_at")!,
-      nickname: require<String>(jString, "nickname")!,
-      userKey: require<String>(jString, "user_key")!,
-      userVote: require<int>(jString, "user_vote")!,
+      difficulty: require<int>(jString, "r_difficulty")!,
+      playthroughTime: require<int>(jString, "r_time_spent")!,
+      completionLevel: require<int>(jString, "r_completion_level")!,
+      comment: require<String>(jString, "r_comment")!,
+      identifier: require<String>(jString, "r_key")!,
+      gameKey: require<int>(jString, "r_game_key")!,
+      locale: require<String>(jString, "r_locale")!,
+      rating: require<int>(jString, "r_rating")!,
+      score: require<int>(jString, "r_score")!,
+      updatedAt: require<String>(jString, "r_updated_at")!,
+      nickname: require<String>(jString, "r_nickname")!,
+      userKey: require<String>(jString, "r_user_key")!,
+      userVote: require<int>(jString, "r_user_vote")!,
     );
   }
 

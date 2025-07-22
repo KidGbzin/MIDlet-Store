@@ -100,3 +100,7 @@ T? require<T>(
 
   return value;
 }
+
+double gIconSmall = 18;
+
+double gIconTiny = 15;

@@ -136,14 +136,14 @@ class _Controller {
   /// Inserts or updates the user's rating for a game.
   ///
   /// After submitting a rating, it updates all relevant variables, including the user's rating, the game's average rating, and the count of ratings by stars.
-  Future<void> submitRating(int rating, String body) async {
+  Future<void> submitRating(Review review) async {
     try {
-      final Review review = await rSupabase.upsertReviewForGame(game, rating, body);
+      final Review lastReview = await rSupabase.upsertReviewForGame(game, review);
 
       try {
         final GameMetadata metadata = await rSupabase.getGameMetadataForGame(game);
         
-        await rSembast.boxCachedRequests.putOwnReview(game.identifier, review);
+        await rSembast.boxCachedRequests.putOwnReview(game.identifier, lastReview);
         await rSembast.boxCachedRequests.putMetadata(metadata);
 
         nGameMetadata.value = metadata;

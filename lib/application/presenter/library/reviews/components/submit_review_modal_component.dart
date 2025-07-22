@@ -5,37 +5,30 @@ class _SubmitReviewModal extends StatefulWidget {
   /// Controls the handler’s state and behavior logic.
   final _Controller controller;
 
-  /// Provides localized strings and messages based on the user’s language and region.
-  final AppLocalizations localizations;
-
-  const _SubmitReviewModal({
-    required this.controller,
-    required this.localizations,
-  });
+  const _SubmitReviewModal(this.controller);
 
   @override
   State<_SubmitReviewModal> createState() => _SubmitReviewModalState();
 }
 
-class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTickerProviderStateMixin {
-  late final ValueNotifier<int> nRating;
-  late final ValueNotifier<Progresses> nState;
+class _SubmitReviewModalState extends State<_SubmitReviewModal> {
+  TextEditingController? cTextField = TextEditingController();
 
-  late final AppLocalizations localizations;
-  late final int initialRating;
-  late final String? initialComment;
-  late final TextEditingController? cTextField;
+  late final ValueNotifier<({
+    Progresses state,
+    Object? error,
+  })> nProgress = ValueNotifier((
+    state: Progresses.isLoading,
+    error: null,
+  ));
 
-  late Review review;
+  late final ValueNotifier<Review> nReview = ValueNotifier(Review.empty());
+  late final AppLocalizations l10n = AppLocalizations.of(context)!;
+  late Review lastReview = Review.empty();
 
   @override
   initState() {
     super.initState();
-
-    nState = ValueNotifier(Progresses.isLoading);
-    nRating = ValueNotifier<int>(0);
-    
-    localizations = widget.localizations;
 
     getOwnReview();
   }
@@ -43,80 +36,100 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
   @override
   void dispose() {
     if (cTextField != null) cTextField!.dispose();
-    nState.dispose();
+    nProgress.dispose();
+    nReview.dispose();
 
     super.dispose();
   }
 
   Future<void> getOwnReview() async {
-    review = await widget.controller.getUserReview();
-    
-    initialComment = review!.comment;
-    initialRating = review!.rating;
+    lastReview = await widget.controller.getUserReview();
+    nReview.value = lastReview;
 
     cTextField = TextEditingController(
-      text: initialComment,
+      text: lastReview.comment,
     );
 
-    nRating.value = review!.rating;
-    nState.value = Progresses.isWaiting;
+    nProgress.value = (
+      state: Progresses.isReady,
+      error: null,
+    );
+  }
+
+  Future<void> submitReview() async {
+    try {
+      await widget.controller.submitReview(nReview.value);
+
+      nProgress.value = (
+        state: Progresses.isFinished,
+        error: null,
+      );
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+
+      nProgress.value = (
+        state: Progresses.hasError,
+        error: error,
+      );
+    }
+  }
+
+  void onTimeSpentUpdate(int value) {
+    nReview.value = nReview.value.copyWith(
+      timeSpent: value,
+    );
+  }
+
+  void onDifficultyUpdate(int value) {
+    nReview.value = nReview.value.copyWith(
+      difficulty: value,
+    );
+  }
+
+  void onCompletionLevelUpdate(int value) {
+    nReview.value = nReview.value.copyWith(
+      completionLevel: value,
+    );
+  }
+  
+  void onRateUpdate(int value) {
+    nReview.value = nReview.value.copyWith(
+      rating: value,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: nState,
-      builder: (BuildContext context, Progresses state, Widget? _) {
-        Widget child;
+    return Handler(
+      isWidget: true,
+      nProgress: nProgress,
+      onReady: modal(body()),
+      initialize: getOwnReview,
+    );
+  }
 
-        if (state == Progresses.isWaiting) {
-          child = Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget> [
-                  section(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    child: textField(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 25, 0, 25),
-                    child: submitButton(),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-        else if (state == Progresses.isLoading) {
-          child = Container(
-            height: 268, // The default size of the modal's body.
-            padding: const EdgeInsets.fromLTRB(0, 15, 0, 25),
-            child: Align(
-              alignment: Alignment.center,
-              child: LoadingAnimation(),
-            ),
-          );
-        }
-        else {
-          child = Icon(
-            HugeIcons.strokeRoundedAlert01,
-            color: Palettes.grey.value,
-            size: 18,
-          );
-        }
-
-        return ModalWidget(
-          actions: <Widget> [
-            const Spacer(),
-            ButtonWidget.icon(
-              icon: HugeIcons.strokeRoundedCancel01,
-              onTap: context.pop,
-            ),
-          ],
+  ModalWidget modal(Widget child) {
+    return ModalWidget(
+        actions: <Widget> [
+          SizedBox.square(
+            dimension: 40,
+          ),
+          const Spacer(),
+          Text(
+            l10n.btSubmitRating,
+            style: TypographyEnumeration.headline(Palettes.elements).style,
+          ),
+          const Spacer(),
+          ButtonWidget.icon(
+            icon: HugeIcons.strokeRoundedCancel01,
+            onTap: context.pop,
+          ),
+        ],
+        child: Expanded(
           child: AnimatedSize(
             duration: gAnimationDuration,
             curve: Curves.easeOutCubic,
@@ -127,12 +140,49 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
               child: child,
             ),
           ),
-        );
-      },
+        ),
+      );
+  }
+
+  Widget throbber() {
+    return Align(
+      alignment: Alignment.center,
+      child: LoadingAnimation(),
     );
   }
 
-  Widget textField() {
+  Widget body() {
+    return ValueListenableBuilder(
+      valueListenable: nReview,
+      builder: (BuildContext context, Review review, Widget? _) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 15,
+              children: <Widget> [
+                RatingSliders.star(lastReview.rating, onRateUpdate),
+                gDivider,
+                RatingSliders.difficulty(lastReview.difficulty, onDifficultyUpdate),
+                gDivider,
+                RatingSliders.playthroughTime(lastReview.playthroughTime, onTimeSpentUpdate),
+                gDivider,
+                Playthrough(),
+                textBox(),
+                _SubmitReviewButton(
+                  onSubmitReview: submitReview,
+                  nReview: nReview,
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
+
+  Widget textBox() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: gBorderRadius,
@@ -167,94 +217,136 @@ class _SubmitReviewModalState extends State<_SubmitReviewModal> with SingleTicke
             ),
           ),
           helperStyle: TypographyEnumeration.body(Palettes.grey).style,
-          helperText: widget.localizations.txSubmitReview,
+          helperText: l10n.txSubmitReview,
         ),
         style: TypographyEnumeration.body(Palettes.elements).style,
       ),
     );
   }
+}
 
-  Widget section() {
-    return Section(
-      description: review!.rating == 0
-        ? localizations.scSubmitRatingDescriptionNotRated
-        : localizations.scSubmitRatingDescriptionRated.replaceFirst("@star", "${review!.rating}"),
-      
-      title: localizations.scSubmitRating,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 25, 15, 0),
-        child: Align(
+class Playthrough extends StatefulWidget {
+
+  const Playthrough({super.key});
+
+  @override
+  State<Playthrough> createState() => _PlaythroughState();
+}
+
+class _PlaythroughState extends State<Playthrough> {
+  int _selectedIndex = 0; // 0 = Played, 1 = Beat, 2 = Conquered
+int _animatingIndex = -1;
+
+  void _onTap(int index) async {
+  setState(() {
+    _selectedIndex = index;
+    _animatingIndex = index;
+  });
+
+  // Espera 200ms e remove o efeito pulse
+  await Future.delayed(const Duration(milliseconds: 500));
+  if (mounted) {
+    setState(() {
+      _animatingIndex = -1;
+    });
+  }
+}
+
+Widget _buildItemContainer({
+  required int index,
+  required IconData icon,
+  required String label,
+  required Color backgroundColor,
+  required Color iconColor,
+  required TextStyle textStyle,
+}) {
+  final content = Container(
+    decoration: BoxDecoration(
+      color: backgroundColor,
+      borderRadius: gBorderRadius,
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    height: 70,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Icon(icon, color: iconColor, size: 20),
+        const SizedBox(height: 7.5),
+        Align(
           alignment: Alignment.center,
-          child: RatingBar(
-            initialRating: review!.rating.toDouble(),
-            itemSize: 50,
-            glow: false,
-            onRatingUpdate: (double rating) {
-              nRating.value = rating.toInt();
-            },
-            ratingWidget: RatingWidget(
-              full: Icon(
-                HugeIcons.strokeRoundedStar,
-                color: Palettes.gold.value,
-              ),
-              half: Icon(
-                HugeIcons.strokeRoundedStarHalf,
-                color: Palettes.gold.value,
-              ),
-              empty: Icon(
-                HugeIcons.strokeRoundedStar,
-                color: Palettes.divider.value,
-              ),
-            ),
-          ),
+          child: Text(label, style: textStyle),
         ),
-      ),
-    );
-  }
+      ],
+    ),
+  );
 
-  Widget submitButton() {
-    return ValueListenableBuilder(
-      valueListenable: nRating,
-      builder: (BuildContext context, int rating, Widget? _) {
-        final bool isReadyToSubmit = (rating != 0 && rating != initialRating) ||
-                                     (rating != 0 && cTextField!.value.text != initialComment);
+  // Envolve com brilho dourado se for o "Conquered It" selecionado
+  return content;
+}
 
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-          child: AnimatedSwitcher(
-            duration: Durations.long2,
-            child: isReadyToSubmit ? activeButton(rating) : disabledButton(),
+
+  Widget _buildItem({
+    required int index,
+    required IconData icon,
+    required String label,
+  }) {
+    final bool isSelected = _selectedIndex == index;
+    final Color backgroundColor = isSelected ? Palettes.primary.value : Colors.transparent;
+    final Color iconColor = isSelected ? Palettes.elements.value : Palettes.disabled.value;
+    final TextStyle textStyle = TypographyEnumeration.body(
+      isSelected ? Palettes.elements : Palettes.disabled
+    ).style;
+  
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _onTap(index),
+        child: TweenAnimationBuilder<double>(
+          tween: Tween<double>(
+            begin: isSelected ? 0.75 : 1.0,
+            end: isSelected ? 1.0 : 0.75,
           ),
-        );
-      },
-    );
-  }
+          duration: Durations.long2,
+          curve: Curves.easeOutBack,
+          builder: (context, scale, child) {
+            return Transform.scale(
+    scale: scale,
+    child: _buildItemContainer(
+      index: index,
+      icon: icon,
+      label: label,
+      backgroundColor: backgroundColor,
+      iconColor: iconColor,
+      textStyle: textStyle,
+    ),
+  );
 
-  Widget disabledButton() {
-    return GradientButton(
-      key: Key("Disabled-Button"),
-      icon: HugeIcons.strokeRoundedUnavailable,
-      onTap: () {},
-      primaryColor: Palettes.foreground,
-      secondaryColor: Palettes.foreground,
-      text: localizations.btUpdateYourRating,
-    );
-  }
+        },
+      ),
+    ),
+  );
+}
 
-  Widget activeButton(int rating) {
-    return GradientButton(
-      key: Key("Active-Button"),
-      icon: HugeIcons.strokeRoundedSent,
-      onTap: () {
-        try {
-          nState.value = Progresses.isLoading;
-          widget.controller.submitRating(context, rating, cTextField!.text);
-        }
-        catch (error) {
-          nState.value = Progresses.hasError;
-        }
-      },
-      text: localizations.btSubmitRating,
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        _buildItem(
+          index: 0,
+          icon: HugeIcons.strokeRoundedGameController03,
+          label: "Played It",
+        ),
+        _buildItem(
+          index: 1,
+          icon: HugeIcons.strokeRoundedCheckmarkCircle01,
+          label: "Beat It",
+        ),
+        _buildItem(
+          index: 2,
+          icon: HugeIcons.strokeRoundedCrown,
+          label: "Conquered It",
+        ),
+      ],
     );
   }
 }

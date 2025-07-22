@@ -1,23 +1,17 @@
 part of '../reviews_handler.dart';
 
-class _ListView extends StatefulWidget {
+class _ReviewsList extends StatefulWidget {
 
   /// Controls the handler’s state and behavior logic.
   final _Controller controller;
 
-  /// Provides localized strings and messages based on the user’s language and region.
-  final AppLocalizations localizations;
-
-  const _ListView({
-    required this.controller,
-    required this.localizations,
-  });
+  const _ReviewsList(this.controller);
 
   @override
-  State<_ListView> createState() => _ListViewState();
+  State<_ReviewsList> createState() => _ReviewsListState();
 }
 
-class _ListViewState extends State<_ListView> {
+class _ReviewsListState extends State<_ReviewsList> {
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +30,11 @@ class _ListViewState extends State<_ListView> {
         
             return _ReviewTile(
               controller: widget.controller,
-              localizations: widget.localizations,
               review: reviews[iReview],
             );
           },
           itemCount: reviews.length + (reviews.length ~/ 5),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 45 + 25), // FAB padding design.
           separatorBuilder: (BuildContext _, int __) => gDivider
         );
       }

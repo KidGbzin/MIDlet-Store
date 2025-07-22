@@ -8,7 +8,12 @@ import '../../core/enumerations/palette_enumeration.dart';
 /// The [LoadingAnimation] uses an [AnimationController] to rotate the icon continuously, providing a visual indication of loading or processing.
 class LoadingAnimation extends StatefulWidget {
 
-  const LoadingAnimation({super.key});
+  final double size;
+
+  const LoadingAnimation({
+    this.size = 25,
+    super.key,
+  });
 
   @override
   State<LoadingAnimation> createState() => _LoadingAnimationState();
@@ -49,7 +54,7 @@ class _LoadingAnimationState extends State<LoadingAnimation> with SingleTickerPr
       child: HugeIcon(
         icon: HugeIcons.strokeRoundedLoading03,
         color: Palettes.elements.value,
-        size: 25,
+        size: widget.size,
       ),
     );
   }

@@ -18,63 +18,73 @@ class _Score extends StatefulWidget {
 }
 
 class _ScoreState extends State<_Score> {
-  late final ValueNotifier<Review?> nReview = ValueNotifier<Review>(widget.review);
+  late final ValueNotifier<({
+    Progresses state,
+    Review review,
+    Object? error,
+  })> nProgress = ValueNotifier((
+    state: Progresses.isReady,
+    review: widget.review,
+    error: null,
+  ));
 
   Future<void> submitVote(int vote) async {
-    if (nReview.value!.userVote == vote) return;
+    if (nProgress.value.review.userVote == vote) return;
     
-    nReview.value = null;
-    nReview.value = await widget.controller.submitVote(widget.review, vote);
+    nProgress.value = (
+      state: Progresses.isLoading,
+      review: widget.review,
+      error: null,
+    );
+
+    try {
+      final Review review = await widget.controller.submitVote(widget.review, vote);
+
+      nProgress.value = (
+        state: Progresses.isReady,
+        review: review,
+        error: null,
+      );
+    }
+    catch (error, stackTrace) {
+      nProgress.value = (
+        state: Progresses.hasError,
+        review: nProgress.value.review,
+        error: error,
+      );
+
+      Logger.error(
+        '$error',
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: nReview,
-      builder: (BuildContext context, Review? review, Widget? _) {
+      valueListenable: nProgress,
+      builder: (BuildContext context, ({Object? error, Progresses state, Review review}) progress, Widget? _) {
         Widget child;
 
-        if (review == null) {
-          child = LoadingAnimation();
+        if (progress.state == Progresses.isLoading) {
+          child = onLoading();
         }
-
+        else if (progress.state == Progresses.isReady) {
+          child = body(progress.review);
+        }
         else {
-          child = Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            spacing: 7.5,
-            children: <Widget> [
-              voteButton(
-                color: review.userVote == 1 ? Palettes.green.value : Palettes.grey.value,
-                icon: HugeIcons.strokeRoundedThumbsUp,
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 1),
-                voteValue: 1,
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    review.score.toString(),
-                    style: TypographyEnumeration.number(Palettes.grey).style,
-                  ),
-                ),
-              ),
-              voteButton(
-                color: review.userVote == -1 ? Palettes.red.value : Palettes.grey.value,
-                icon: HugeIcons.strokeRoundedThumbsDown,
-                padding: EdgeInsets.fromLTRB(0, 1, 0, 0),
-                voteValue: -1,
-              ),
-            ],
-          );
+          child = onError();
         }
         
         return Container(
           decoration: BoxDecoration(
             borderRadius: gBorderRadius,
-            color: Palettes.foreground.value,
+            color: Palettes.background.value,
           ),
-          height: 35,
           width: 125,
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          height: 30,
           child: AnimatedSwitcher(
             duration: gAnimationDuration,
             switchInCurve: Curves.easeOutCubic,
@@ -86,26 +96,66 @@ class _ScoreState extends State<_Score> {
     );
   }
 
-  Widget voteButton({
+  Widget onError() {
+    return Align(
+      alignment: Alignment.center,
+      child: Icon(
+        HugeIcons.strokeRoundedBug02,
+        color: Palettes.red.value,
+        size: gIconSmall,
+      ),
+    );
+  }
+
+  Widget body(Review review) {
+    return Row(
+      children: <Widget> [
+        button(
+          color: review.userVote == 1 ? Palettes.green.value : Palettes.disabled.value,
+          icon: HugeIcons.strokeRoundedThumbsUp,
+          vote: 1,
+        ),
+        const Spacer(),
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            review.score.toString(),
+            style: TypographyEnumeration.body(Palettes.grey).style,
+          ),
+        ),
+        const Spacer(),
+        button(
+          color: review.userVote == -1 ? Palettes.red.value : Palettes.disabled.value,
+          icon: HugeIcons.strokeRoundedThumbsDown,
+          vote: -1,
+        ),
+      ],
+    );
+  }
+
+  Widget onLoading() {
+    return Align(
+      alignment: Alignment.center,
+      child: LoadingAnimation(
+        size: gIconSmall,
+      ),
+    );
+  }
+
+  Widget button({
     required Color color,
     required IconData icon,
-    required EdgeInsets padding,
-    required int voteValue,
+    required int vote,
   }){
-    assert(voteValue == 1 || voteValue == -1);
+    assert(vote == 1 || vote == -1);
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => submitVote(voteValue),
-      child: Container(
-        height: 35,
-        padding: padding,
-        width: 35,
-        child: Icon(
-          icon,
-          size: 18,
-          color: color,
-        ),
+      onTap: () => submitVote(vote),
+      child: Icon(
+        icon,
+        size: gIconSmall,
+        color: color,
       ),
     );
   }

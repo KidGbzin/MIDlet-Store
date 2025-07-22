@@ -2,15 +2,19 @@ part of '../reviews_handler.dart';
 
 class _SubmitReviewButton extends StatefulWidget {
 
-  /// Controls the handler’s state and behavior logic.
-  final _Controller controller;
+  /// Called when the submit button is tapped.
+  ///
+  /// Triggered only if the review is considered complete (rating, difficulty, and playthrough time are all set).
+  final void Function() onSubmitReview;
 
-  /// Provides localized strings and messages based on the user’s language and region.
-  final AppLocalizations localizations;
+  /// The current review state notifier.
+  ///
+  /// Used to dynamically update the button's appearance based on the review's values.
+  final ValueNotifier<Review> nReview;
 
   const _SubmitReviewButton({
-    required this.controller,
-    required this.localizations,
+    required this.nReview,
+    required this.onSubmitReview,
   });
 
   @override
@@ -18,34 +22,31 @@ class _SubmitReviewButton extends StatefulWidget {
 }
 
 class _SubmitReviewButtonState extends State<_SubmitReviewButton> {
-  
+  late final AppLocalizations l10n = AppLocalizations.of(context)!;
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Palettes.transparent.value,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
-        child: Ink(
-          decoration: BoxDecoration(
-            boxShadow: kElevationToShadow[3],
-          ),
+    return ValueListenableBuilder(
+      valueListenable: widget.nReview,
+      builder: (BuildContext context, Review review, Widget? child) {
+        final bool isReadyToSubmit = review.rating != 0 && review.difficulty != 0 && review.playthroughTime != 0;
+
+        return AnimatedSwitcher(
+          duration: gAnimationDuration,
+          switchInCurve: Curves.easeOut,
+          switchOutCurve: Curves.easeIn,
           child: GradientButton(
-            icon: HugeIcons.strokeRoundedStar,
+            key: Key(isReadyToSubmit.toString()),
+            icon: isReadyToSubmit ? HugeIcons.strokeRoundedSent02 : HugeIcons.strokeRoundedEdit01,
             onTap: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (BuildContext context) => _SubmitReviewModal(
-                  controller: widget.controller,
-                  localizations: widget.localizations
-                ),
-              );
+              if (isReadyToSubmit) widget.onSubmitReview();
             },
-            text: widget.localizations.btSubmitReview,
-            width: (MediaQuery.sizeOf(context).width - 45) / 2,
+            primaryColor: isReadyToSubmit ? Palettes.primary : Palettes.foreground,
+            secondaryColor: isReadyToSubmit ? Palettes.accent : Palettes.foreground,
+            text: isReadyToSubmit ? l10n.btSubmitRating : l10n.btUpdateYourRating,
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 }
