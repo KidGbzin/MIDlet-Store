@@ -25,7 +25,6 @@ class _ReviewTileState extends State<_ReviewTile> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
       child: Column(
-        spacing: 7.5,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget> [
@@ -47,31 +46,36 @@ class _ReviewTileState extends State<_ReviewTile> {
               ),
             ],
           ),
-          Text(
-            widget.review.fRelativeDate,
-            style: TypographyEnumeration.body(Palettes.grey).style,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            child: Text(
+              widget.review.fRelativeDate,
+              style: TypographyEnumeration.body(Palettes.grey).style,
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget> [
-              Rating.star(widget.review.rating),
-              Text(
-                " / ",
-                style: TypographyEnumeration.body(Palettes.grey).style,
-              ),
-              Rating.difficulty(widget.review.difficulty),
-              Text(
-                " / ",
-                style: TypographyEnumeration.body(Palettes.grey).style,
-              ),
-              Rating.playthroughTime(widget.review.playthroughTime),
-            ],
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget> [
+                Rating.star(widget.review.rating),
+                Text(
+                  " / ",
+                  style: TypographyEnumeration.body(Palettes.grey).style,
+                ),
+                Rating.difficulty(widget.review.difficulty),
+                Text(
+                  " / ",
+                  style: TypographyEnumeration.body(Palettes.grey).style,
+                ),
+                Rating.playthroughTime(widget.review.playthroughTime),
+              ],
+            ),
           ),
           Text(
             widget.review.fBody(l10n),
             style: TypographyEnumeration.body(Palettes.elements).style,
           ),
-          // _Score(controller: widget.controller, review: widget.review),
         ],
       ),
     );

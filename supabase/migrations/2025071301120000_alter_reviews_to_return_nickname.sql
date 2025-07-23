@@ -325,3 +325,60 @@ where r.user_key = p_user_key
 order by r.updated_at desc
 limit case when p_limit > 0 then p_limit else null end;
 $$;
+
+drop function if exists get_recent_reviews_limited;
+
+create or replace function get_recent_reviews_limited(p_limit integer)
+returns table (
+  r_key uuid,
+  r_game_key int2,
+  r_user_key uuid,
+  r_nickname text,
+  r_rating int2,
+  r_comment text,
+  r_updated_at timestamptz,
+  r_score int,
+  r_locale text,
+  r_user_vote int,
+  r_difficulty int2,
+  r_time_spent int2,
+  r_completion_level int2
+)
+language sql
+security invoker
+set search_path = public
+as $$
+select
+  r.key,
+  r.game_key,
+  r.user_key,
+  p.nickname,
+  r.rating,
+  r.comment,
+  r.updated_at,
+  r.score,
+  r.locale,
+  coalesce(rv.vote, 0),
+  r.difficulty,
+  r.time_spent,
+  r.completion_level
+from reviews r
+left join profiles p on p.user_key = r.user_key
+left join review_votes rv on rv.review_key = r.key and rv.user_key = auth.uid()
+order by r.updated_at desc
+limit case when p_limit > 0 then p_limit else null end;
+$$;
+
+create or replace function get_global_stats()
+returns table (
+  r_total_downloads int,
+  r_total_reviews int
+)
+language sql
+set search_path = public
+as $$
+  select
+    sum(downloads)::int as total_downloads,
+    sum(total_reviews)::int as total_reviews
+  from game_metadata;
+$$;

@@ -292,6 +292,20 @@ class BoxGames {
   /// Clears all stored [Game] objects from the box and returns a [Future] when complete.
   Future<void> clear() => store.delete(database);
 
+  /// Counts how many games and total midlets exist in the storage.
+  /// 
+  /// Throws:
+  /// - `FormatException`: If a game cannot be parsed from JSON.
+  Future<({int games, int midlets})> countGamesAndMIDlets() async {
+    final List<Game> games = await all();
+    final int midlets = games.fold(0, (sum, game) => sum + (game.midlets.length));
+
+    return (
+      games: games.length,
+      midlets: midlets,
+    );
+  }
+
   /// Retrieves the 10 most recently updated games, sorted by last updated in descending order.
   /// 
   /// Throws:

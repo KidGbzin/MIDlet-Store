@@ -4,22 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../l10n/l10n_localizations.dart';
 import '../../../../logger.dart';
 
+import '../../../core/configuration/global_configuration.dart';
 import '../../../core/entities/game_entity.dart';
 import '../../../core/entities/game_metadata_entity.dart';
+import '../../../core/entities/review_entity.dart';
 import '../../../core/enumerations/palette_enumeration.dart';
 import '../../../core/enumerations/typographies_enumeration.dart';
 
 import '../../../core/extensions/router_extension.dart';
 
+import '../../../interfaces/controller_interface.dart';
 import '../../../repositories/bucket_repository.dart';
 import '../../../repositories/sembast_repository.dart';
 import '../../../repositories/supabase_repository.dart';
 
 import '../../../services/admob_service.dart';
+import '../../widgets/async_builder_widget.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/game_horizontal_list_widget.dart';
+
+part 'components/overview_component.dart';
 
 part '../home/home_controller.dart';
 part '../home/home_view.dart';

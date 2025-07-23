@@ -1,6 +1,6 @@
 part of '../home/home_handler.dart';
 
-class _Controller {
+class _Controller implements IController {
 
   /// Manages cloud storage operations, including downloading and caching assets such as game previews and thumbnails.
   final BucketRepository rBucket;
@@ -17,6 +17,10 @@ class _Controller {
     required this.rSupabase,
   });
 
+  @override
+  Future<void> initialize() async {}
+
+  @override
   void dispose() {}
 
   // MARK: -------------------------
@@ -42,11 +46,69 @@ class _Controller {
     }
   }
 
+  Future<({int games, int midlets, int reviews, int downloads})> getGlobalStats() async {
+    try {
+      ({int games, int midlets}) rGamesAndMIDlets = await rSembast.boxGames.countGamesAndMIDlets();
+      ({int totalDownloads, int totalReviews}) rDownloadsAndReviews = await rSupabase.getTotalDownloadsAndReviews();
+
+      return (
+        games: rGamesAndMIDlets.games,
+        midlets: rGamesAndMIDlets.midlets,
+        reviews: rDownloadsAndReviews.totalReviews,
+        downloads: rDownloadsAndReviews.totalDownloads,
+      );
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      return (
+        games: 0,
+        midlets: 0,
+        reviews: 0,
+        downloads: 0,
+      );
+    }
+  }
+
   // MARK: -------------------------
   // 
   // 
   // 
   // MARK: Cache ⮟
+
+  Future<List<({Review review, String title})>> getRecentReviews() async {
+    try {
+      final List<Review> reviews = await rSupabase.getRecentReviewsLimited(10);
+      final List<String> titles = <String> [];
+
+      for (Review iReview in reviews) {
+        final Game game = await rSembast.boxGames.byKey(iReview.gameKey);
+
+        titles.add(game.fTitle);
+      }
+
+      return List.generate(
+        reviews.length,
+        (int index) {
+          return (
+            review: reviews[index],
+            title: titles[index],
+          );
+        },
+      );
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      return [];
+    }
+  }
 
   Future<List<Game>> getLatestGames() async {
     try {

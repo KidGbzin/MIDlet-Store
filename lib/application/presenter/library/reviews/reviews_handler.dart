@@ -38,7 +38,6 @@ import '../../widgets/reviews/rating_sliders_widget.dart';
 
 part 'components/reviews_list_component.dart';
 part '../reviews/components/review_tile_component.dart';
-part '../reviews/components/score_component.dart';
 part 'components/floating_button_component.dart';
 part '../reviews/components/submit_review_modal_component.dart';
 part '../reviews/components/submit_review_button_component.dart';

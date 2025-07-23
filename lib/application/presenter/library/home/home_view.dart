@@ -41,6 +41,7 @@ class _ViewState extends State<_View> {
       ),
       body: ListView(
         children: <Widget> [
+          _Overview(widget.controller),
           // TODO: Translate.
           GameHorizontalList(
             collection: widget.controller.getLatestGames(),
@@ -49,6 +50,7 @@ class _ViewState extends State<_View> {
             fetchThumbnail: widget.controller.fetchThumbnail,
             title: "ATUALIZADOS RECENTEMENTE",
           ),
+          gDivider,
           GameHorizontalList(
             collection: widget.controller.getTop10RatedGames(),
             description: "Estes são os jogos mais bem avaliados.",
@@ -56,6 +58,7 @@ class _ViewState extends State<_View> {
             fetchThumbnail: widget.controller.fetchThumbnail,
             title: "MAIS BEM AVALIADOS",
           ),
+          gDivider,
         ],
       ),
     );

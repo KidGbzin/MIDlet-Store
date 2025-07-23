@@ -178,6 +178,30 @@ class SupabaseRepository {
     return response.map((review) => Review.fromJson(review as Map<String, dynamic>)).toList();
   }
 
+  Future<List<Review>> getRecentReviewsLimited(int limit) async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "get_recent_reviews_limited",
+      params: <String, dynamic> {
+        "p_limit": limit,
+      }
+    );
+
+    Logger.success("Got ${response.length} recent reviews.");
+
+    return response.map((review) => Review.fromJson(review as Map<String, dynamic>)).toList();
+  }
+
+  Future<({int totalDownloads, int totalReviews})> getTotalDownloadsAndReviews() async {
+    final dynamic response = await supabase.client.rpc(
+      "get_global_stats",
+    ).single();
+
+    return (
+      totalDownloads: response["r_total_downloads"] as int,
+      totalReviews: response["r_total_reviews"] as int,
+    );
+  }
+
   Future<List<Review>> getReviewsByUser(String identifier, {int limit = 0}) async {
     final List<dynamic> response = await supabase.client.rpc(
       "get_reviews_for_user_limited",
