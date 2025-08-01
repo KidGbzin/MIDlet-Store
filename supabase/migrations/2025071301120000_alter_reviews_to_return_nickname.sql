@@ -1,12 +1,12 @@
 alter table reviews
 add column difficulty int2 not null check (difficulty between 1 and 5),
-add column time_spent int2 not null check (time_spent in (1, 3, 5, 10, 20)),
+add column completion_time int2 not null check (completion_time in (1, 3, 5, 10, 20)),
 add column completion_level int2 not null check (completion_level in (0, 1, 2));
 
 comment on column reviews.completion_level is
   '0 = Played It, 1 = Beat It, 2 = Conquered It';
 
-comment on column reviews.time_spent is
+comment on column reviews.completion_time is
   'Estimated time spent in hours: 1, 3, 5, 10, 20';
 
 comment on column reviews.difficulty is
@@ -26,7 +26,7 @@ create or replace function get_top_3_reviews_for_game (p_game_key integer) retur
   r_locale text,
   r_user_vote int,
   r_difficulty int2,
-  r_time_spent int2,
+  r_completion_time int2,
   r_completion_level int2
 ) language sql security invoker
 set search_path = public as $$
@@ -42,7 +42,7 @@ select
   r.locale,
   coalesce(rv.vote, 0),
   r.difficulty,
-  r.time_spent,
+  r.completion_time,
   r.completion_level
 from reviews r
 left join profiles p on p.user_key = r.user_key
@@ -66,7 +66,7 @@ create or replace function get_reviews_for_game (p_game_key integer) returns tab
   r_locale text,
   r_user_vote int,
   r_difficulty int2,
-  r_time_spent int2,
+  r_completion_time int2,
   r_completion_level int2
 ) language sql security invoker
 set search_path = public as $$
@@ -82,7 +82,7 @@ select
   r.locale,
   coalesce(rv.vote, 0),
   r.difficulty,
-  r.time_spent,
+  r.completion_time,
   r.completion_level
 from reviews r
 left join profiles p on p.user_key = r.user_key
@@ -104,7 +104,7 @@ create or replace function get_recent_reviews_limited (p_limit integer) returns 
   r_score int,
   r_user_vote int,
   r_difficulty int2,
-  r_time_spent int2,
+  r_completion_time int2,
   r_completion_level int2
 ) language sql security invoker
 set search_path = public as $$
@@ -119,7 +119,7 @@ select
   r.score,
   coalesce(rv.vote, 0),
   r.difficulty,
-  r.time_spent,
+  r.completion_time,
   r.completion_level
 from reviews r
 left join profiles p on p.user_key = r.user_key
@@ -142,7 +142,7 @@ create or replace function get_user_review_for_game (p_game_key integer) returns
   r_user_vote int,
   r_score int,
   r_difficulty int2,
-  r_time_spent int2,
+  r_completion_time int2,
   r_completion_level int2
 ) language sql security invoker
 set search_path = public as $$
@@ -158,7 +158,7 @@ select
   r.score,
   coalesce(rv.vote, 0),
   r.difficulty,
-  r.time_spent,
+  r.completion_time,
   r.completion_level
 from reviews r
 left join profiles p on p.user_key = r.user_key
@@ -177,7 +177,7 @@ create or replace function upsert_review_for_game (
   p_comment text,
   p_locale text,
   p_difficulty integer,
-  p_time_spent integer,
+  p_completion_time integer,
   p_completion_level integer
 ) returns table (
   r_key uuid,
@@ -191,22 +191,22 @@ create or replace function upsert_review_for_game (
   r_updated_at timestamptz,
   r_user_vote int,
   r_difficulty int2,
-  r_time_spent int2,
+  r_completion_time int2,
   r_completion_level int2
 ) language plpgsql security invoker
 set search_path = public as $$
 declare
   v_review_key uuid;
 begin
-  insert into reviews (user_key, game_key, rating, comment, locale, updated_at, difficulty, time_spent, completion_level)
-  values (auth.uid(), p_game_key, p_rating, p_comment, p_locale, now(), p_difficulty, p_time_spent, p_completion_level)
+  insert into reviews (user_key, game_key, rating, comment, locale, updated_at, difficulty, completion_time, completion_level)
+  values (auth.uid(), p_game_key, p_rating, p_comment, p_locale, now(), p_difficulty, p_completion_time, p_completion_level)
   on conflict on constraint unique_user_for_game_review do update
   set
     rating = excluded.rating,
     comment = excluded.comment,
     locale = excluded.locale,
     difficulty = excluded.difficulty,
-    time_spent = excluded.time_spent,
+    completion_time = excluded.completion_time,
     completion_level = excluded.completion_level,
     updated_at = now()
   returning reviews.key into v_review_key;
@@ -224,7 +224,7 @@ begin
     r.updated_at,
     coalesce(rv.vote, 0),
     r.difficulty,
-    r.time_spent,
+    r.completion_time,
     r.completion_level
   from reviews r
   left join profiles p on p.user_key = r.user_key
@@ -248,7 +248,7 @@ create or replace function upsert_vote_for_review (p_review_key uuid, p_vote int
   r_locale text,
   r_user_vote int,
   r_difficulty int2,
-  r_time_spent int2,
+  r_completion_time int2,
   r_completion_level int2
 ) language plpgsql security invoker
 set search_path = public as $$
@@ -271,7 +271,7 @@ begin
     r.locale,
     coalesce(rv.vote, 0),
     r.difficulty,
-    r.time_spent,
+    r.completion_time,
     r.completion_level
   from reviews r
   left join profiles p on p.user_key = r.user_key
@@ -297,7 +297,7 @@ returns table (
   r_locale text,
   r_user_vote int,
   r_difficulty int2,
-  r_time_spent int2,
+  r_completion_time int2,
   r_completion_level int2
 )
 language sql
@@ -316,7 +316,7 @@ select
   r.locale,
   coalesce(rv.vote, 0),
   r.difficulty,
-  r.time_spent,
+  r.completion_time,
   r.completion_level
 from reviews r
 left join profiles p on p.user_key = r.user_key
@@ -341,7 +341,7 @@ returns table (
   r_locale text,
   r_user_vote int,
   r_difficulty int2,
-  r_time_spent int2,
+  r_completion_time int2,
   r_completion_level int2
 )
 language sql
@@ -360,7 +360,7 @@ select
   r.locale,
   coalesce(rv.vote, 0),
   r.difficulty,
-  r.time_spent,
+  r.completion_time,
   r.completion_level
 from reviews r
 left join profiles p on p.user_key = r.user_key

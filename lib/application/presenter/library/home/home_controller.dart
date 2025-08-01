@@ -79,23 +79,24 @@ class _Controller implements IController {
   // 
   // MARK: Cache ⮟
 
-  Future<List<({Review review, String title})>> getRecentReviews() async {
+  Future<List<(Game, GameMetadata)>> getLatestGames() async {
     try {
-      final List<Review> reviews = await rSupabase.getRecentReviewsLimited(10);
-      final List<String> titles = <String> [];
+      final List<Game> games = await rSembast.boxGames.latest();
+      final List<GameMetadata> metadatas = <GameMetadata> [];
 
-      for (Review iReview in reviews) {
-        final Game game = await rSembast.boxGames.byKey(iReview.gameKey);
+      for (final Game game in games) {
+        final GameMetadata metadata = await rSembast.boxCachedRequests.getMetadata(game.identifier) ?? await rSupabase.getGameMetadataForGame(game);
 
-        titles.add(game.fTitle);
+        metadatas.add(metadata);
+
+        await rSembast.boxCachedRequests.putMetadata(metadata);
       }
 
       return List.generate(
-        reviews.length,
-        (int index) {
+        games.length, (int index) {
           return (
-            review: reviews[index],
-            title: titles[index],
+            games[index],
+            metadatas[index],
           );
         },
       );
@@ -106,13 +107,29 @@ class _Controller implements IController {
         stackTrace: stackTrace,
       );
 
-      return [];
+      return <(Game, GameMetadata)> [];
     }
   }
 
-  Future<List<Game>> getLatestGames() async {
+  Future<List<(Game, GameMetadata)>> getTop10RatedGames() async {
     try {
-      return await rSembast.boxGames.latest();
+      final List<Game> games = <Game> [];
+      final List<GameMetadata> response = await rSupabase.getTop10RatedGames();
+
+      for (final GameMetadata metadata in response) {
+        await rSembast.boxCachedRequests.putMetadata(metadata);
+
+        games.add(await rSembast.boxGames.byKey(metadata.identifier));
+      }
+
+      return List.generate(
+        games.length, (int index) {
+          return (
+            games[index],
+            response[index],
+          );
+        },
+      );
     }
     catch (error, stackTrace) {
       Logger.error(
@@ -120,21 +137,52 @@ class _Controller implements IController {
         stackTrace: stackTrace,
       );
 
-      return <Game> [];
+      rethrow;
     }
   }
 
-  Future<List<Game>> getTop10RatedGames() async {
+  Future<List<(Game, GameMetadata)>> getTop10MostDifficultGames() async {
     try {
-      var temp = <Game> [];
+      final List<Game> games = <Game> [];
+      final List<GameMetadata> response = await rSupabase.getTop10MostDifficultGames();
 
-      var tempRequest = await rSupabase.getTop10RatedGames();
+      for (final GameMetadata metadata in response) {
+        await rSembast.boxCachedRequests.putMetadata(metadata);
 
-      for (var x in tempRequest) {
-        temp.add(await rSembast.boxGames.byKey(x.identifier));
+        games.add(await rSembast.boxGames.byKey(metadata.identifier));
       }
 
-      return temp;
+      return List.generate(
+        games.length, (int index) {
+          return (
+            games[index],
+            response[index],
+          );
+        },
+      );
+    }
+    catch (error, stackTrace) {
+      Logger.error(
+        "$error",
+        stackTrace: stackTrace,
+      );
+
+      rethrow;
+    }
+  }
+
+  Future<List<Game>> getTop10LongestGames() async {
+    try {
+      final List<Game> games = <Game> [];
+      final List<GameMetadata> response = await rSupabase.getTop10LongestGames();
+
+      for (final GameMetadata metadata in response) {
+        await rSembast.boxCachedRequests.putMetadata(metadata);
+
+        games.add(await rSembast.boxGames.byKey(metadata.identifier));
+      }
+
+      return games;
     }
     catch (error, stackTrace) {
       Logger.error(

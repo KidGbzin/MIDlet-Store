@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:midlet_store/application/presenter/widgets/button_widget.dart';
+import 'package:midlet_store/application/core/entities/game_metadata_entity.dart';
 
 import '../../core/configuration/global_configuration.dart';
 import '../../core/entities/game_entity.dart';
@@ -15,7 +15,6 @@ import '../../core/enumerations/typographies_enumeration.dart';
 import '../widgets/async_builder_widget.dart';
 import '../widgets/loading_widget.dart';
 import '../widgets/rating_stars_widget.dart';
-import '../widgets/section_widget.dart';
 
 // MARK: -------------------------
 // 
@@ -25,11 +24,9 @@ import '../widgets/section_widget.dart';
 
 class GameHorizontalList extends StatefulWidget {
 
-  final Future<num> Function(Game) fetchRating;
-
   final Future<File?> Function(Game) fetchThumbnail;
 
-  final Future<List<Game>> collection;
+  final Future<List<(Game, GameMetadata)>> collection;
 
   /// The section'a description.
   final String description;
@@ -40,7 +37,6 @@ class GameHorizontalList extends StatefulWidget {
   const GameHorizontalList({
     required this.collection,
     required this.description,
-    required this.fetchRating,
     required this.fetchThumbnail,
     required this.title,
     super.key, 
@@ -73,45 +69,60 @@ class _GameHorizontalListState extends State<GameHorizontalList> {
 
   @override
   Widget build(BuildContext context) {
-    return Section(
-      description: widget.description,
-      title: widget.title,
-      child: Container(
-        height: thumbnailSize.height + titleHeight + ratingHeight,
-        margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-        child: AsyncBuilder(
-          future: widget.collection,
-          onSuccess: (BuildContext context, List<Game> games) {
-            return ListView.separated(
-              itemBuilder: (BuildContext context, int index) {
-                if (index == games.length) {
-                  return ButtonWidget.icon(
-                    icon: HugeIcons.strokeRoundedArrowRight01,
-                    onTap: () => context.gtSearch(),
-                  );
-                }
-            
-                return _Tile(
-                  game: games[index],
-                  fetchRating: widget.fetchRating,
-                  fetchThumbnail: widget.fetchThumbnail,
-                  width: tileWidth,
-                );
-              },
-              itemCount: games.length + 1,
-              separatorBuilder: (BuildContext context, int index) {
-                return VerticalDivider(
-                  width: 15,
-                  color: Palettes.transparent.value,
-                );
-              },
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-              scrollDirection: Axis.horizontal,
-            );
-          },
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget> [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(15 - 1, 25, 15, 15),
+          child: Row(
+            children: <Widget> [
+              Text(
+                widget.title.toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TypographyEnumeration.headline(Palettes.elements).style,
+              ),
+            ],
+          ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: Text(
+            widget.description,
+            style: TypographyEnumeration.body(Palettes.grey).style,
+          ),
+        ),
+        Container(
+          height: thumbnailSize.height + titleHeight + ratingHeight,
+          margin: const EdgeInsets.fromLTRB(0, 15, 0, 25),
+          child: AsyncBuilder(
+            future: widget.collection,
+            onSuccess: (BuildContext context, List<(Game, GameMetadata)> games) {
+              return ListView.separated(
+                itemBuilder: (BuildContext context, int index) {
+                  return _Tile(
+                    game: games[index].$1,
+                    fetchThumbnail: widget.fetchThumbnail,
+                    width: tileWidth,
+                    metadata: games[index].$2,
+                  );
+                },
+                itemCount: games.length,
+                separatorBuilder: (BuildContext context, int index) {
+                  return VerticalDivider(
+                    width: 15,
+                    color: Palettes.transparent.value,
+                  );
+                },
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                scrollDirection: Axis.horizontal,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -128,13 +139,13 @@ class _Tile extends StatefulWidget {
 
   final Game game;
 
-  final Future<num> Function(Game) fetchRating;
+  final GameMetadata metadata;
 
   final Future<File?> Function(Game) fetchThumbnail;
 
   const _Tile({
     required this.game,
-    required this.fetchRating,
+    required this.metadata,
     required this.fetchThumbnail,
     required this.width,
   });
@@ -150,11 +161,11 @@ class _TileState extends State<_Tile> {
     return SizedBox(
       width: widget.width,
       child: AsyncBuilder(
-        future: fetch(widget.game),
-        onSuccess: (BuildContext context, ({num rating, File? thumbnail}) snapshot) {
+        future: widget.fetchThumbnail(widget.game),
+        onSuccess: (BuildContext context, File? snapshot) {
           return body(
-            rating: snapshot.rating,
-            thumbnail: snapshot.thumbnail,
+            rating: widget.metadata.averageRating,
+            thumbnail: snapshot,
           );
         },
         onLoading: body(
@@ -163,16 +174,6 @@ class _TileState extends State<_Tile> {
           isLoading: true,
         ),
       ),
-    );
-  }
-
-  Future<({num rating, File? thumbnail})> fetch(Game game) async {
-    final num rating = await widget.fetchRating(game);
-    final File? thumbnail = await widget.fetchThumbnail(game);
-
-    return (
-      rating: rating,
-      thumbnail: thumbnail,
     );
   }
 

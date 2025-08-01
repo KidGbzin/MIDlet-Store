@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:midlet_store/application/presenter/widgets/section_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';

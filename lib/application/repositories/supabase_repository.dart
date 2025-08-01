@@ -59,13 +59,7 @@ class SupabaseRepository {
 
     Logger.success("${game.fTitle} and user downloads count +1.");
 
-    return GameMetadata(
-      averageRating: (response['r_average_rating']), 
-      downloads: response['r_downloads'],
-      identifier: response['r_game_key'],
-      score: response['r_score'],
-      totalReviews: response['r_total_reviews'],
-    );
+    return GameMetadata.fromJson(response);
   }
 
   // MARK: Gets ⮟
@@ -96,24 +90,18 @@ class SupabaseRepository {
   }
 
   Future<GameMetadata> getGameMetadataForGame(Game game) async {
-    final List<dynamic> response = await supabase.client.rpc(
+    final dynamic response = await supabase.client.rpc(
       "get_game_metadata_for_game",
       params: <String, dynamic> {
         "p_game_key": game.identifier,
       },
-    );
+    ).single();
 
-    final Map<String, dynamic> metadata = response.first;
+    final Map<String, dynamic> metadata = response;
 
     Logger.success("Game ${game.identifier} metadata: {Downloads: ${metadata['downloads']}}, {Score: ${metadata['score']}}, {Average Rating: ${metadata['average_rating']}}, {Total Reviews: ${metadata['total_reviews']}}.");
 
-    return GameMetadata(
-      averageRating: (response.first['average_rating']), 
-      downloads: response.first['downloads'],
-      identifier: response.first['game_key'],
-      score: response.first['score'],
-      totalReviews: response.first['total_reviews'],
-    );
+    return GameMetadata.fromJson(response);
   }
 
   Future<({
@@ -233,7 +221,7 @@ class SupabaseRepository {
     return reviews;
   }
 
-  Future<List<({int identifier, double rating})>> getTop10RatedGames() async {
+  Future<List<GameMetadata>> getTop10RatedGames() async {
     final List<dynamic> response = await supabase.client.rpc(
       "get_top_rated_games_limited",
       params: <String, dynamic> {
@@ -241,13 +229,44 @@ class SupabaseRepository {
       }
     );
 
-    final List<({int identifier, double rating})> results = <({int identifier, double rating})> [];
+    final List<GameMetadata> results = [];
 
     for (Map<String, dynamic> element in response) {
-      results.add((
-        identifier: element["game_key"] as int,
-        rating: element["average_rating"] as double,
-      ));
+      results.add(GameMetadata.fromJson(element));
+    }
+
+    return results;
+  }
+
+  Future<List<GameMetadata>> getTop10MostDifficultGames() async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "get_most_difficult_games_limited",
+      params: <String, dynamic> {
+        "p_limit": 10,
+      }
+    );
+
+    final List<GameMetadata> results = [];
+
+    for (Map<String, dynamic> element in response) {
+      results.add(GameMetadata.fromJson(element));
+    }
+
+    return results;
+  }
+
+  Future<List<GameMetadata>> getTop10LongestGames() async {
+    final List<dynamic> response = await supabase.client.rpc(
+      "get_games_with_longest_completion_time_limited",
+      params: <String, dynamic> {
+        "p_limit": 10,
+      }
+    );
+
+    final List<GameMetadata> results = [];
+
+    for (Map<String, dynamic> element in response) {
+      results.add(GameMetadata.fromJson(element));
     }
 
     return results;
@@ -312,7 +331,7 @@ class SupabaseRepository {
         "p_rating": review.rating,
         "p_comment": review.comment,
         "p_difficulty": review.difficulty,
-        "p_time_spent": review.playthroughTime,
+        "p_completion_time": review.playthroughTime,
         "p_completion_level": review.completionLevel,
         "p_locale": PlatformDispatcher.instance.locale.toString(),
       },

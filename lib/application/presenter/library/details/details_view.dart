@@ -49,23 +49,23 @@ class _ViewState extends State<_View> with WidgetsBindingObserver, RouteAware {
     gDivider,
     Advertisement.banner(widget.controller.getAdvertisement("2")),
     gDivider,
-    GameHorizontalList(
-      collection: widget.controller.get10PublisherGames(),
-      fetchRating: widget.controller.fetchAverageRating,
-      fetchThumbnail: widget.controller.fetchThumbnailT,
-      description: widget.localizations.scRelatedGamesDescription.replaceFirst("@title", widget.controller.game.fTitle),
-      title: widget.localizations.scRelatedGames,
-    ),
+    // GameHorizontalList(
+    //   collection: widget.controller.get10PublisherGames(),
+    //   fetchRating: widget.controller.fetchAverageRating,
+    //   fetchThumbnail: widget.controller.fetchThumbnailT,
+    //   description: widget.localizations.scRelatedGamesDescription.replaceFirst("@title", widget.controller.game.fTitle),
+    //   title: widget.localizations.scRelatedGames,
+    // ),
     gDivider,
     Advertisement.banner(widget.controller.getAdvertisement("3")),
     gDivider,
-    GameHorizontalList(
-      collection: widget.controller.getTop10RelatedGames(),
-      fetchRating: widget.controller.fetchAverageRating,
-      fetchThumbnail: widget.controller.fetchThumbnailT,
-      description: widget.localizations.scRelatedGamesDescription.replaceFirst("@title", widget.controller.game.fTitle),
-      title: widget.localizations.scRelatedGames,
-    ),
+    // GameHorizontalList(
+    //   collection: widget.controller.getTop10RelatedGames(),
+    //   fetchRating: widget.controller.fetchAverageRating,
+    //   fetchThumbnail: widget.controller.fetchThumbnailT,
+    //   description: widget.localizations.scRelatedGamesDescription.replaceFirst("@title", widget.controller.game.fTitle),
+    //   title: widget.localizations.scRelatedGames,
+    // ),
   ];
 
   @override

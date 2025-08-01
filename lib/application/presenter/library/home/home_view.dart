@@ -45,18 +45,16 @@ class _ViewState extends State<_View> {
           // TODO: Translate.
           GameHorizontalList(
             collection: widget.controller.getLatestGames(),
-            description: "Estes são os jogos atualizados recentemente.",
-            fetchRating: widget.controller.fetchAverageRating,
+            description: "Discover the latest games added or improved in our collection.",
             fetchThumbnail: widget.controller.fetchThumbnail,
-            title: "ATUALIZADOS RECENTEMENTE",
+            title: "Recently Updated Games",
           ),
           gDivider,
           GameHorizontalList(
             collection: widget.controller.getTop10RatedGames(),
-            description: "Estes são os jogos mais bem avaliados.",
-            fetchRating: widget.controller.fetchAverageRating,
+            description: "Check out the most loved games in our archive.",
             fetchThumbnail: widget.controller.fetchThumbnail,
-            title: "MAIS BEM AVALIADOS",
+            title: "TOP RATED GAMES",
           ),
           gDivider,
         ],

@@ -109,7 +109,7 @@ class Review {
       "r_nickname": nickname,
       "r_user_vote": userVote,
       "r_difficulty": difficulty,
-      "r_time_spent": playthroughTime,
+      "r_completion_time": playthroughTime,
       "r_completion_level": completionLevel
     };
   }
@@ -117,7 +117,7 @@ class Review {
   factory Review.fromJson(dynamic jString) {
     return Review(
       difficulty: require<int>(jString, "r_difficulty")!,
-      playthroughTime: require<int>(jString, "r_time_spent")!,
+      playthroughTime: require<int>(jString, "r_completion_time")!,
       completionLevel: require<int>(jString, "r_completion_level")!,
       comment: require<String>(jString, "r_comment")!,
       identifier: require<String>(jString, "r_key")!,

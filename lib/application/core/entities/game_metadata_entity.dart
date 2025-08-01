@@ -20,6 +20,10 @@ class GameMetadata {
 
   /// The total number of ratings the game has received.
   final int totalReviews;
+
+  final num averageDifficulty;
+
+  final num averageCompletionTime;
   
   const GameMetadata({
     required this.averageRating,
@@ -27,6 +31,8 @@ class GameMetadata {
     required this.identifier,
     required this.score,
     required this.totalReviews,
+    required this.averageDifficulty,
+    required this.averageCompletionTime,
   });
 
   const GameMetadata.empty(int identifier) : this(
@@ -35,6 +41,8 @@ class GameMetadata {
     identifier: identifier,
     score: 0,
     totalReviews: 0,
+    averageDifficulty: 0,
+    averageCompletionTime: 0,
   );
 
   // MARK: -------------------------
@@ -51,22 +59,26 @@ class GameMetadata {
   /// - [FormatException]: If a required field is missing, null, or does not match the expected type during parsing.
   factory GameMetadata.fromJson(dynamic jString) {
     return GameMetadata(
-      averageRating: require<double>(jString, 'Average-Rating')!,
-      downloads: require<int>(jString, 'Downloads')!,
-      identifier: require<int>(jString, 'Identifier')!,
-      score: require<double>(jString, 'Score')!,
-      totalReviews: require<int>(jString, 'Total-Ratings')!,
+      averageRating: require<double>(jString, 'r_average_rating')!,
+      downloads: require<int>(jString, 'r_downloads')!,
+      identifier: require<int>(jString, 'r_game_key')!,
+      score: require<double>(jString, 'r_score')!,
+      totalReviews: require<int>(jString, 'r_total_reviews')!,
+      averageDifficulty: require<double>(jString, 'r_average_difficulty')!,
+      averageCompletionTime: require<double>(jString, 'r_average_completion_time')!,
     );
   }
 
   /// Converts this [GameMetadata] instance into a JSON-compatible map.
   Map<String, dynamic> toJson() {
     return <String, dynamic> {
-      'Average-Rating': averageRating,
-      'Downloads': downloads,
-      'Identifier': identifier,
-      'Score': score,
-      'Total-Ratings': totalReviews,
+      'r_average_rating': averageRating,
+      'r_downloads': downloads,
+      'r_game_key': identifier,
+      'r_score': score,
+      'r_total_reviews': totalReviews,
+      'r_average_difficulty': averageDifficulty,
+      'r_average_completion_time': averageCompletionTime,
     };
   }
 }
