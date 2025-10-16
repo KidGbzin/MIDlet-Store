@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:midlet_store/application/core/entities/active_filters_entity.dart';
+import 'package:midlet_store/application/interfaces/controller_interface.dart';
+import 'package:midlet_store/application/presenter/widgets/handler_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/l10n_localizations.dart';
@@ -31,24 +34,18 @@ import '../../../services/admob_service.dart';
 
 import '../../widgets/advertisement_widget.dart';
 import '../../widgets/button_widget.dart';
-import '../../widgets/error_message_widget.dart';
 import '../../widgets/loading_widget.dart';
-import '../../widgets/modal_widget.dart';
 import '../../widgets/rating_stars_widget.dart';
-import '../../widgets/section_widget.dart';
 import '../../widgets/thumbnail_widget.dart';
 
 part '../search/components/filter_button_component.dart';
+part '../search/components/game_tile_component.dart';
 part '../search/components/list_view_component.dart';
-part '../search/components/modal_categories_component.dart';
-part '../search/components/modal_publisher_component.dart';
-part '../search/components/modal_release_component.dart';
 part '../search/components/search_bar_component.dart';
 part '../search/components/suggestion_overlay_component.dart';
 
-part '../search/views/search_view.dart';
-
 part '../search/search_controller.dart';
+part '../search/search_view.dart';
 
 /// The application's search view.
 ///
@@ -108,7 +105,6 @@ class _SearchViewState extends State<Search> {
       rSupabase: rSupabase,
       sAdMob: sAdMob,
     );
-    controller.initialize();
   }
 
   @override
@@ -121,5 +117,9 @@ class _SearchViewState extends State<Search> {
   }
 
   @override
-  Widget build(BuildContext context) => _SearchView(controller);
+  Widget build(BuildContext context) => Handler(
+    nProgress: controller.nProgress,
+    initialize: controller.initialize,
+    onReady: _SearchView(controller),
+  );
 }

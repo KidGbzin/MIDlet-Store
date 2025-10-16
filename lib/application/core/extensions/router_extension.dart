@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:midlet_store/application/core/entities/active_filters_entity.dart';
+
+import '../../../l10n/l10n_localizations.dart';
 
 import '../entities/game_entity.dart';
 import '../entities/midlet_entity.dart';
@@ -40,6 +43,24 @@ extension RouterExtension on BuildContext {
         extra: publisher,
       );
     }
+  }
+
+  void gtSearchFilters({
+    required ActiveFilters activeFilters,
+    required List<Game> games,
+    required Future<void> Function(ActiveFilters) onApply,
+  }) {
+    final arguments = (
+      active: activeFilters,
+      games: games,
+      onApply: onApply,
+      l10n: AppLocalizations.of(this)!,
+    );
+    
+    push(
+      '/search/filters',
+      extra: arguments,
+    );
   }
 
   void gtInstallation({

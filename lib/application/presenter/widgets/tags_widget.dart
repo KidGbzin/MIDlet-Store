@@ -20,7 +20,7 @@ class TagsWidget extends StatelessWidget {
   /// A list of game tags.
   /// 
   /// Each tag represents a specific label or category related to the game, such as genre, features, or other descriptors.
-  final List<TagEnumeration> tags;
+  final List<Category> tags;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class TagsWidget extends StatelessWidget {
   ///
   /// The tag name is styled inside a [Container] with rounded corners and padding.
   /// The [Text] widget displays the tag name with the specified typography style.
-  Widget _tag(TagEnumeration tag) {
+  Widget _tag(Category tag) {
     return FittedBox(
       child: Container(
         decoration: BoxDecoration(

@@ -14,6 +14,7 @@ enum Palettes {
   googleBlue(Color(0xff4285F4)),
   pink(Color(0xFFE91E63)),
   red(Colors.red),
+  red2(Color.fromARGB(255, 90, 44, 41)),
   green(Colors.green),
   transparent(Color(0x00000000));
 

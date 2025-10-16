@@ -39,7 +39,6 @@ class ModalWidget extends StatelessWidget {
       builder: (BuildContext context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget> [
 
             // The Material widget is used here to prevent splash effects from overflowing onto other children of the Column.
@@ -49,6 +48,7 @@ class ModalWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(15),
                 child: Row(
                   spacing: 7.5,
+                  mainAxisSize: MainAxisSize.max,
                   children: actions,
                 ),
               ),

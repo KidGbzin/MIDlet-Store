@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:midlet_store/application/core/entities/active_filters_entity.dart';
+
+import '../../../l10n/l10n_localizations.dart';
 
 import '../../presenter/library/details/details_handler.dart';
 import '../../presenter/library/home/home_handler.dart';
@@ -10,6 +13,7 @@ import '../../presenter/library/midlets/midlets_handler.dart';
 import '../../presenter/library/profile/profile_handler.dart';
 import '../../presenter/library/reviews/reviews_handler.dart';
 import '../../presenter/library/search/search_handler.dart';
+import '../../presenter/library/search_filters/search_filters_handler.dart';
 import '../../presenter/library/update/update_handler.dart';
 
 import '../entities/game_entity.dart';
@@ -68,8 +72,27 @@ final GoRouter router = GoRouter(
       path: '/search',
       builder: (BuildContext context, GoRouterState state) {
         final String? publisher = state.extra as String?;
+        
         return Search(
           publisher: publisher,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/search/filters',
+      builder: (BuildContext context, GoRouterState state) {
+        final arguments = state.extra as ({
+          ActiveFilters active,
+          List<Game> games,
+          AppLocalizations l10n,
+          Future<void> Function(ActiveFilters) onApply,
+        });
+        
+        return SearchFilters(
+          activeFilters: arguments.active,
+          games: arguments.games,
+          onApply: arguments.onApply,
+          l10n: arguments.l10n,
         );
       },
     ),
