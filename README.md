@@ -8,6 +8,16 @@ Preserving Java ME (J2ME) games for a new generation.
 ![GitHub License](https://img.shields.io/github/license/KidGbzin/MIDlet-Store?style=plastic&label=License&color=purple)
 ![Chocolatey Version](https://img.shields.io/chocolatey/v/flutter?style=plastic&logo=flutter&label=Flutter)
 
+### ⚠️ Project Status
+
+This project is not abandoned. I (@KidGbzin) am currently gathering J2ME files from across the internet and testing them one by one. The collection has already reached nearly 1TB of J2ME games. Removing duplicates, filtering out malicious files, and properly organizing everything is a time-consuming process.
+
+Additionally, I have other responsibilities and cannot dedicate myself to this project full-time.
+
+Due to high bandwidth costs, the project can no longer be hosted in the cloud, so I am setting up a dedicated home server to support it.
+
+Thank you for your patience.
+
 ### 🎯 Our mission:
 
 MIDlet Store is dedicated to preserving classic Java ME (J2ME) games, making them easily accessible and playable on modern Android smartphones. With a simple and intuitive interface, it brings back the nostalgia of classic mobile gaming—completely free for everyone.
